@@ -2,9 +2,9 @@
 
 # Extractor CLI
 
-`blazor-loc` scans any `IStringLocalizer` codebase — `.razor`, `.cs`, and `.resx` files — and exports the source strings to translation files. It works regardless of which localization backend you use. Upload the output to Crowdin, Lokalise, or any translation management system.
+`blazor-loc` scans your `.razor`, `.cs`, and `.resx` files and exports source strings to translation files. Upload the output to Crowdin, Lokalise, or any translation management system.
 
-Under the hood it uses Roslyn's semantic analysis — it understands your fluent builder chains, resolves overloads, and extracts every key, source text, plural form, select branch, and inline `.For()` per-locale source text.
+It works with any `IStringLocalizer` codebase — regardless of which localization backend you use.
 
 ## Install
 
@@ -48,7 +48,7 @@ When output is a directory, inline `.For()` per-locale source texts are automati
 blazor-loc extract ./src -f i18next -o ./translations
 ```
 
-To suppress per-locale files and export source strings only:
+To suppress per-locale files and export source strings only (useful when uploading to Crowdin — translators should provide translations, not your inline `.For()` text):
 
 ```bash
 blazor-loc extract ./src -f i18next -o ./translations --source-only
@@ -66,6 +66,8 @@ Debug what the scanner detects (raw calls + merged entries):
 blazor-loc inspect ./src
 ```
 
+`inspect` dumps every detected `IStringLocalizer` call with its key, source text, plural forms, and file location — useful for verifying the scanner found what you expected.
+
 ## Export Formats
 
 | Format | Flag | Best for |
@@ -75,6 +77,10 @@ blazor-loc inspect ./src
 | **Generic JSON** | `-f json` | Debugging and custom tooling. Full-fidelity export with all metadata. |
 
 New formats are easy to add — the exporter is a simple interface. PRs welcome.
+
+## How It Works
+
+Under the hood, `blazor-loc` uses Roslyn's semantic analysis — it understands fluent builder chains, resolves overloads, and extracts every key, source text, plural form, select branch, and inline `.For()` per-locale source text. This means it catches strings that simple regex-based extractors miss.
 
 ## GitHub Actions
 
@@ -117,3 +123,7 @@ For all available flags and options:
 blazor-loc extract --help
 blazor-loc inspect --help
 ```
+
+---
+
+**See also:** [Examples](Examples.md) for `Translation()` API usage · [Configuration](Configuration.md) for runtime setup

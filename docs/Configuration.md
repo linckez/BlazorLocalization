@@ -2,13 +2,15 @@
 
 # Configuration
 
-`AddProviderBasedLocalization()` replaces `AddLocalization()` — it registers its own `IStringLocalizerFactory` and `IStringLocalizer<>`, backed by pluggable providers instead of `ResourceManager` / `.resx` files. Do not call both.
+`AddProviderBasedLocalization()` replaces `AddLocalization()`. Do not call both — both register `IStringLocalizerFactory`, the last one wins, and behavior becomes unpredictable.
 
-ASP.NET Core's culture detection middleware is still needed. BlazorLocalization resolves translations for the current culture — but determining *which* culture applies to a request is the framework's job.
+> **Note:** You still need ASP.NET Core's `UseRequestLocalization()` middleware for culture detection. BlazorLocalization resolves translations for the current culture — but determining *which* culture applies to a request is the framework's job.
+
+**On this page:** [Culture & Request Pipeline](#culture--request-pipeline) · [Minimal Setup](#minimal-setup) · [Cache Options](#cache-options) · [Custom Configuration Section](#custom-configuration-section) · [Multiple Providers](#multiple-providers) · [L2 Distributed Cache](#l2-distributed-cache) · [Code-Only Configuration](#code-only-configuration) · [Full Example](#full-example) · [Translation Providers](#translation-providers) · [How It Works](#how-it-works)
 
 ## Culture & Request Pipeline
 
-Configure supported cultures and add the request localization middleware. Place it before `MapRazorComponents` (Blazor) or `MapControllers` / `app.Run()` (API):
+Add the request localization middleware **before** `MapRazorComponents` (Blazor) or `MapControllers` / `app.Run()` (API):
 
 ```csharp
 var supportedCultures = new[] { "en-US", "de", "pl", "da" };
@@ -120,7 +122,18 @@ builder.Services.AddProviderBasedLocalization(
 
 ## Multiple Providers
 
-Register multiple Crowdin distributions with unique names. Each name maps to a `TranslationProviders:{name}` section:
+Stack providers for fallback chains. Providers are tried in registration order — the first non-null result wins.
+
+**Common pattern** — Crowdin OTA with local JSON fallback:
+
+```csharp
+builder.Services.AddProviderBasedLocalization()
+    .AddCrowdinTranslationProvider()         // try Crowdin first
+    .AddJsonFileTranslationProvider(opts =>  // fall back to local files
+        opts.TranslationsPath = "Translations");
+```
+
+Multiple Crowdin distributions with unique names:
 
 ```csharp
 builder.Services.AddProviderBasedLocalization()
@@ -143,7 +156,7 @@ builder.Services.AddProviderBasedLocalization()
 }
 ```
 
-Providers are tried in registration order — the first non-null result wins. Registering the same name twice throws `InvalidOperationException`.
+Registering the same name twice throws `InvalidOperationException`.
 
 ## L2 Distributed Cache
 
@@ -228,6 +241,8 @@ For provider-specific setup, file formats, and options, see the dedicated docs:
 
 **Runtime:** The Extensions library replaces `ResourceManager` with a cache-backed translation loader. On each call, it checks [FusionCache](https://github.com/ZiggyCreatures/FusionCache) (L1 memory → L2 distributed), falls back to your `ITranslationProvider`(s), and walks the culture chain (`da-DK` → `da` → source text).
 
-## Cold Boot Behavior
+On a cold boot with an empty cache, `Translation()` calls show your source text as fallback. The background fetch starts immediately, and translations appear once the provider responds. With an L2 cache (Redis, SQLite), cold boots are warm — translations are served from L2 while the provider refreshes in the background.
 
-On a cold boot with an empty cache, `Translation()` calls show your source text as fallback. The background fetch starts immediately, and translations appear once the provider responds.
+---
+
+**See also:** [Examples](Examples.md) for API usage · [Extractor CLI](Extractor.md) for string extraction

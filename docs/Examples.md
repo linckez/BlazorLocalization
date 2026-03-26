@@ -2,11 +2,15 @@
 
 # Examples
 
+Every method shown here works with any translation provider — or no provider at all. Inline translations and source-text fallback work out of the box.
+
 All examples assume an injected localizer:
 
 ```razor
 @inject IStringLocalizer<Home> Loc
 ```
+
+**On this page:** [Simple](#simple) · [Placeholders](#placeholders) · [Plurals](#plurals) · [Ordinals](#ordinals) · [Exact Counts](#exact-counts) · [Select](#select) · [Select + Plural](#select--plural) · [Inline Translations](#inline-translations) · [Enums](#enums) · [Standard IStringLocalizer](#standard-istringlocalizer)
 
 ---
 
@@ -16,7 +20,7 @@ All examples assume an injected localizer:
 <h1>@Loc.Translation("Home.Title", "Welcome to our app")</h1>
 ```
 
-If translations haven't loaded yet, your source text is shown — users never see blank strings or raw keys.
+Your source text is always the fallback — users never see blank strings or raw keys.
 
 ## Placeholders
 
@@ -40,10 +44,9 @@ Chain `.One()`, `.Other()`, and any other [CLDR plural category](https://www.uni
 
 `howMany` determines which form to pick. Pass it in `replaceWith` too if the message needs to display it.
 
-Most languages only need `.One()` and `.Other()`. Some need more:
+**Most languages only need `.One()` and `.Other()`.** Some languages need additional categories — Arabic uses all six CLDR categories:
 
 ```razor
-@* Arabic uses all six CLDR categories *@
 <p>@(Loc.Translation("Items", howMany: itemCount, replaceWith: new { ItemCount = itemCount })
     .Zero("لا عناصر")
     .One("عنصر واحد")
@@ -112,6 +115,8 @@ Combine categorical branching with plural forms.
     .Other("They have {MessageCount} messages"))</p>
 ```
 
+With `msgCount = 3` and `Gender.Female`, this renders: **"She has 3 messages"**.
+
 ## Inline Translations
 
 Already know the translation? Write it where you have the context — no need to switch to Crowdin and back:
@@ -171,11 +176,15 @@ ArrivedABitLate
 
 ## Standard IStringLocalizer
 
-Microsoft's built-in indexer and `GetString()` still work — this is the standard `IStringLocalizer` API that every ASP.NET Core developer already knows:
+This is a standard `IStringLocalizer` — the built-in indexer and `GetString()` work as expected:
 
 ```razor
 <h1>@Loc["Home.Title"]</h1>
 <p>@Loc.GetString("Home.Title")</p>
 ```
 
-If translations haven't loaded yet, the raw key is returned (`"Home.Title"`). Prefer `Translation()` — it gives users readable source text instead of a cryptic key.
+With the indexer, the raw key is returned when translations haven't loaded (`"Home.Title"`). Prefer `Translation()` — it gives users readable source text instead of a cryptic key.
+
+---
+
+**Next:** [Configuration](Configuration.md) for cache settings, culture detection, and provider setup.

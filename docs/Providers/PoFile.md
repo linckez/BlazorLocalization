@@ -74,9 +74,15 @@ msgstr[0] "{Quantity} genstand"
 msgstr[1] "{Quantity} genstande"
 ```
 
-The provider maps these to `_one` / `_other` key suffixes:
-- `msgstr[0]` → `Home.ItemCount_one`
-- `msgstr[1]` → `Home.ItemCount_other`
+> **Note:** Both `msgid` and `msgid_plural` carry the same key. This is a key-based convention — the key is an identifier, not English text.
+
+The provider maps `msgstr[N]` indices to CLDR plural categories **dynamically based on the file's locale**. The mapping follows CLDR 46 canonical order: `zero`, `one`, `two`, `few`, `many`, `other` — but only the categories that are active for the locale are used.
+
+**Danish (2 forms):** `msgstr[0]` → `_one`, `msgstr[1]` → `_other`
+
+**Polish (4 forms):** `msgstr[0]` → `_one`, `msgstr[1]` → `_few`, `msgstr[2]` → `_many`, `msgstr[3]` → `_other`
+
+**Arabic (6 forms):** `msgstr[0]` → `_zero`, `msgstr[1]` → `_one`, `msgstr[2]` → `_two`, `msgstr[3]` → `_few`, `msgstr[4]` → `_many`, `msgstr[5]` → `_other`
 
 This matches SmartFormat's plural resolution convention used by `Translation()`.
 
@@ -88,7 +94,7 @@ The Extractor CLI can generate PO source files from your code:
 blazor-loc extract ./src --format po --output ./translations
 ```
 
-The generated `.pot` file includes `#:` source references and `#.` extracted comments — rich context for translators. Upload to your translation provider, then download the translated `.po` files and place them in your `TranslationsPath`.
+The generated `.pot` template includes `#:` source references and `#.` extracted comments — rich context for translators. Translators produce `.po` files from it. Upload the `.pot` to your translation provider, then download the translated `.po` files and place them in your `TranslationsPath`.
 
 ## Multiple Providers
 
@@ -106,7 +112,7 @@ Providers are tried in registration order — first non-null result wins.
 
 ## How It Works
 
-Each culture's PO file is loaded once per TTL cycle via a FusionCache sentinel. Individual keys are fanned out into cache entries, so subsequent lookups are O(1) with zero disk I/O.
+Each culture's PO file is loaded once per cache duration cycle (default 1 hour — see [Configuration](../Configuration.md#cache-options)) via a FusionCache sentinel. Individual keys are fanned out into cache entries, so subsequent lookups are O(1) with zero disk I/O.
 
 Missing files are not an error — the localizer walks the culture fallback chain (`es-MX` → `es` → source text) automatically.
 
@@ -115,6 +121,10 @@ Missing files are not an error — the localizer walks the culture fallback chai
 | Scenario | Behavior |
 |---|---|
 | File doesn't exist | Debug log. No translations for this culture — localizer falls back. |
-| I/O error (permissions, disk) | Warning log. Sentinel set — retries after TTL. Stale translations served if available. |
+| I/O error (permissions, disk) | Warning log. Sentinel set — retries after cache expiry. Stale translations served if available. |
 
 No exceptions propagate to callers — the provider absorbs all I/O errors at the sentinel level.
+
+---
+
+**See also:** [Configuration](../Configuration.md) for cache settings and multi-provider setup · [JSON File Provider](JsonFile.md) for an alternative file format

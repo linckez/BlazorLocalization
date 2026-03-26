@@ -96,7 +96,9 @@ Flat `"key": "value"` objects. Non-string values are ignored.
 }
 ```
 
-This is the same flat format that Crowdin exports when configured for Crowdin i18next JSON output, making it easy to download translations from Crowdin during CI and serve them from disk at runtime.
+This is the same flat format that Crowdin exports when configured for Crowdin i18next JSON output.
+
+> **Tip:** You can download translations from Crowdin during CI and serve them from disk at runtime — no need for the Crowdin OTA provider if you prefer file-based deployments.
 
 ## Multiple Providers
 
@@ -114,7 +116,7 @@ Providers are tried in registration order — first non-null result wins.
 
 ## How It Works
 
-Each culture's JSON file is loaded once per TTL cycle via a FusionCache sentinel. Individual keys are fanned out into cache entries, so subsequent lookups are O(1) with zero disk I/O.
+Each culture's JSON file is loaded once per cache duration cycle (default 1 hour — see [Configuration](../Configuration.md#cache-options)) via a FusionCache sentinel. Individual keys are fanned out into cache entries, so subsequent lookups are O(1) with zero disk I/O.
 
 Missing files are not an error — the localizer walks the culture fallback chain (`es-MX` → `es` → source text) automatically. This means you only need to provide files for cultures you've actually translated.
 
@@ -123,7 +125,11 @@ Missing files are not an error — the localizer walks the culture fallback chai
 | Scenario | Behavior |
 |---|---|
 | File doesn't exist | Debug log. No translations for this culture — localizer falls back. |
-| File not valid JSON | Warning log. Sentinel set — retries after TTL. Stale translations served if available. |
-| I/O error (permissions, disk) | Warning log. Same retry-after-TTL behavior. |
+| File not valid JSON | Warning log. Sentinel set — retries after cache expiry. Stale translations served if available. |
+| I/O error (permissions, disk) | Warning log. Same retry-after-expiry behavior. |
 
 No exceptions propagate to callers — the provider absorbs all I/O and parse errors at the sentinel level.
+
+---
+
+**See also:** [Configuration](../Configuration.md) for cache settings and multi-provider setup · [PO File Provider](PoFile.md) for an alternative file format

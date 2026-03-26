@@ -4,9 +4,9 @@
 
 `BlazorLocalization.TranslationProvider.Crowdin` fetches translations from [Crowdin](https://crowdin.com/) at runtime — no redeployment needed when translators update strings.
 
-Crowdin offers two delivery methods: **CDN Distributions** (OTA) and **API**. This provider currently supports CDN Distributions. API support is planned.
+Crowdin offers two delivery methods: **CDN Distributions** (OTA) and **API**. This provider supports CDN Distributions. API support is planned.
 
-> **Scope:** This page documents CDN Distributions only (also called Over-The-Air Content Delivery). [API Exported File Bundles](https://support.crowdin.com/bundles/) are a different feature and not yet supported.
+> **Scope:** Covers CDN Distributions (Over-The-Air Content Delivery). [API Exported File Bundles](https://support.crowdin.com/bundles/) are a different feature and not yet supported.
 
 ## Quick Start
 
@@ -35,7 +35,7 @@ Options bind from `Localization:TranslationProviders:Crowdin` automatically. See
 
 1. Open your Crowdin project → **Content Delivery** (or **Over-The-Air Content Delivery** in Enterprise).
 2. Create a new distribution (or use an existing one).
-3. The export format is **Android XML** — one of the three system default exporters. No community apps required.
+3. The export format is **Android XML** — one of the three system default exporters.
 4. Copy the **Distribution Hash** — it looks like `e-abc123def456`.
 
 ### Android XML Exporter Settings
@@ -64,7 +64,7 @@ The generated `.po` file carries:
 
 Translators see file locations and context comments directly in the Crowdin editor. This is the single biggest quality improvement you can give them — a string like `"Cycle"` means completely different things in a machine settings page vs. a billing page.
 
-Upload format and download format are independent — PO for upload (rich context), Android XML for download (lightweight runtime).
+> **Key insight:** Upload format and download format are independent — **PO for upload** (rich translator context), **Android XML for download** (lightweight runtime).
 
 ## How It Works
 
@@ -91,7 +91,7 @@ builder.Services.AddProviderBasedLocalization()
     .AddCrowdinTranslationProvider("InternalDocs");   // resolves from TranslationProviders:InternalDocs
 ```
 
-Cache keys are namespaced per provider (`crowdin:{name}:{culture}:{key}`) — no collisions.
+Providers are tried in registration order — first non-null result wins.
 
 ## Error Handling
 
@@ -117,3 +117,7 @@ No. FusionCache handles all caching. The provider is a pure fetcher.
 
 **Can I use other export formats (PO, RESX, i18next JSON)?**
 Not with CDN Distributions. Those formats require installing community exporter apps from the [Crowdin Store](https://store.crowdin.com/). CDN Distributions only support the three system default exporters (Android XML, iOS Strings, XLIFF), and this provider uses Android XML.
+
+---
+
+**See also:** [Configuration](../Configuration.md) for cache settings and multi-provider setup · [Extractor CLI](../Extractor.md) for generating source files to upload
