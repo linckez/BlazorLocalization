@@ -17,7 +17,7 @@
         <PackageId>BlazorLocalization.Extractor</PackageId>
         <PackageTags>blazor;localization;i18n;extractor;dotnet-tool;translation;i18next;resx;po;gettext;cli;roslyn;json</PackageTags>
     </PropertyGroup>
-
+ 
     <ItemGroup>
         <None Include="../../README.md" Pack="true" PackagePath=""/>
     </ItemGroup>
