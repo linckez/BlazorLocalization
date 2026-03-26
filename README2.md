@@ -6,7 +6,8 @@
 
 Your users see text in their language. Always.
 
-A drop-in replacement for `AddLocalization()` — any `IStringLocalizer` project, without `.resx` files
+A modern localization library for ASP.NET Core — Blazor, MVC, Razor Pages, APIs  
+No `.resx` files. No rebuild to update a translation.
 
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 [![NuGet](https://img.shields.io/nuget/v/BlazorLocalization.Extensions.svg)](https://www.nuget.org/packages/BlazorLocalization.Extensions)
@@ -17,7 +18,7 @@ Inline translations · Pluggable providers · Plurals & ordinals · Over-the-air
 
 ---
 
-## Quick Start
+## ⭐ Quick Start
 
 **1. Install:**
 
@@ -52,7 +53,7 @@ See [Examples](docs/Examples.md) for plurals, ordinals, enum display names, and 
 
 ---
 
-## Packages
+## 📦 Packages
 
 | Package | Version | Install |
 |---------|:-------:|--------:|
@@ -69,7 +70,7 @@ Translation providers:
 
 ---
 
-## Add a Provider
+## 🔌 Add a Provider
 
 Translation providers are pluggable and optional. Use them when you have too many strings for inline `.For()`, or want to connect a translation management platform.
 
@@ -92,7 +93,7 @@ See [Providers](docs/Configuration.md#translation-providers) for all available p
 
 ---
 
-## Why BlazorLocalization?
+## ✨ Why BlazorLocalization?
 
 [`IStringLocalizer`](https://learn.microsoft.com/en-us/aspnet/core/blazor/globalization-localization?view=aspnetcore-10.0) is deeply embedded in ASP.NET Core — Blazor, MVC, Razor Pages, APIs. BlazorLocalization keeps it as the interface but [replaces `AddLocalization()`](https://learn.microsoft.com/en-us/aspnet/core/fundamentals/localization-extensibility?view=aspnetcore-10.0) and its `ResourceManager` / `.resx` backend entirely:
 
@@ -104,11 +105,11 @@ See [Providers](docs/Configuration.md#translation-providers) for all available p
 
 **What you're leaving behind:** `.resx` merge conflicts, rebuild-and-redeploy for every text change, no plural support, no distributed caching.
 
-Built on [Microsoft's `IStringLocalizer`](https://learn.microsoft.com/en-us/aspnet/core/fundamentals/localization-extensibility?view=aspnetcore-10.0), [FusionCache](https://github.com/ZiggyCreatures/FusionCache), and [SmartFormat.NET](https://github.com/axuno/SmartFormat).
+Built on [Microsoft's `IStringLocalizer`](https://learn.microsoft.com/en-us/aspnet/core/fundamentals/localization-extensibility?view=aspnetcore-10.0) · [FusionCache](https://github.com/ZiggyCreatures/FusionCache) · [SmartFormat.NET](https://github.com/axuno/SmartFormat)
 
 ---
 
-## String Extraction
+## 🎬 String Extraction
 
 Already using `IStringLocalizer`? The Extractor scans your `.razor`, `.cs`, and `.resx` files and exports every translation string — no matter which localization backend you use.
 
@@ -164,23 +165,17 @@ See [Extractor CLI](docs/Extractor.md) for recipes, CI integration, and export f
 
 ## FAQ
 
-**Can I load translations from a database?**
-Yes. Implement `ITranslationProvider` — it's a single method:
+**Can I load translations from a database?**  
+Yes. Implement `ITranslationProvider` (one method) and BlazorLocalization handles caching, fallback, and hot-swapping. See the [JsonFile provider](docs/Providers/JsonFile.md) as a reference.
 
-```csharp
-Task<string?> GetTranslationAsync(string culture, string key, CancellationToken ct);
-```
+**Does this only work with Blazor?**  
+No — anything that uses `IStringLocalizer`: Blazor, MVC, Razor Pages, Web APIs, minimal APIs.
 
-Load from a database, an API, a CMS — anything. BlazorLocalization handles caching, fallback, and hot-swapping. See the built-in [JsonFile](docs/Providers/JsonFile.md) provider as a reference.
+**Do I need a translation provider?**  
+No. Inline translations work on their own. Add a provider when you're ready for external files or a translation platform.
 
-**Does this only work with Blazor?**
-No. It works with anything that uses `IStringLocalizer` — Blazor Server, Blazor WASM, MVC, Razor Pages, Web APIs, minimal APIs. "Blazor" is in the name because that's where most developers first hit the `.resx` wall.
-
-**Do I need a translation provider?**
-No. `Translation("key", "source text")` works on its own for your default language. Add `.For()` when you need additional languages inline. When you're ready to connect a translation management platform or load from files, add a provider — Extensions ships with JSON file and PO file providers, and Crowdin is available as a separate package.
-
-**Is this production-ready?**
-It's used in production. Born from real frustration with `.resx` in a multilingual product. Actively maintained. If you find it useful, give it a ⭐.
+**Is this production-ready?**  
+Used in production. Born from real frustration with `.resx`. If you find it useful, give it a ⭐.
 
 ---
 
