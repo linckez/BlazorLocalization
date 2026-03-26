@@ -12,6 +12,12 @@ It works with any `IStringLocalizer` codebase — regardless of which localizati
 dotnet tool install -g BlazorLocalization.Extractor
 ```
 
+To upgrade to the latest version:
+
+```bash
+dotnet tool update -g BlazorLocalization.Extractor
+```
+
 ## Interactive Wizard
 
 Run with no arguments to launch the interactive wizard. It walks you through project selection, export format, and output destination:
@@ -77,10 +83,6 @@ blazor-loc inspect ./src
 | **Generic JSON** | `-f json` | Debugging and custom tooling. Full-fidelity export with all metadata. |
 
 New formats are easy to add — the exporter is a simple interface. PRs welcome.
-
-## How It Works
-
-Under the hood, `blazor-loc` uses Roslyn's semantic analysis — it understands fluent builder chains, resolves overloads, and extracts every key, source text, plural form, select branch, and inline `.For()` per-locale source text. This means it catches strings that simple regex-based extractors miss.
 
 ## GitHub Actions
 

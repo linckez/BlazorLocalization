@@ -22,11 +22,11 @@ app.UseRequestLocalization(new RequestLocalizationOptions()
 
 The middleware evaluates culture providers in order: **query string → cookie → `Accept-Language` header → default culture**. On a first visit (no cookie), the browser's `Accept-Language` header auto-detects culture — the same mechanism that drives Web APIs.
 
-When the requested culture isn't available from any provider, BlazorLocalization walks the culture fallback chain automatically: `da-DK` → `da` → source text. Your default culture's source text is always the last resort — users never see blank strings or raw keys.
+When the requested culture isn't available from any provider, BlazorLocalization walks the culture fallback chain automatically: `es-MX` → `es` → source text. Your default culture's source text is always the last resort — users never see blank strings or raw keys.
 
-For **Blazor Server**, persist the detected culture into a cookie so subsequent requests stay consistent. `App.razor` does this in `OnInitialized()` by writing `CultureInfo.CurrentCulture` to `CookieRequestCultureProvider.DefaultCookieName`. A `CultureController` lets users override the auto-detected culture via a UI dropdown.
+For **Blazor Server**, persist the detected culture into a cookie so subsequent requests stay consistent.
 
-For **Web APIs**, `Accept-Language` drives every request — no cookie or controller needed.
+For **Web APIs**, `Accept-Language` drives every request — no cookie needed.
 
 > For the full picture on culture determination, cookie providers, and client-side Blazor, see Microsoft's [Blazor globalization and localization](https://learn.microsoft.com/en-us/aspnet/core/blazor/globalization-localization?view=aspnetcore-10.0).
 >
@@ -40,7 +40,7 @@ With no provider, inline translations and source text work immediately:
 builder.Services.AddProviderBasedLocalization();
 ```
 
-Add a provider when you're ready. For example, Crowdin OTA:
+Add a provider when you're ready. For example, Crowdin:
 
 ```csharp
 builder.Services.AddProviderBasedLocalization()
@@ -124,7 +124,7 @@ builder.Services.AddProviderBasedLocalization(
 
 Stack providers for fallback chains. Providers are tried in registration order — the first non-null result wins.
 
-**Common pattern** — Crowdin OTA with local JSON fallback:
+**Common pattern** — Crowdin with local JSON fallback:
 
 ```csharp
 builder.Services.AddProviderBasedLocalization()
@@ -216,32 +216,17 @@ builder.Services.AddProviderBasedLocalization()
 
 For provider-specific setup, file formats, and options, see the dedicated docs:
 
-- [Crowdin Provider](Providers/Crowdin.md) — OTA translations from Crowdin CDN
+- [Crowdin Provider](Providers/Crowdin.md) — Over-the-air translations from Crowdin
 - [JSON File Provider](Providers/JsonFile.md) — flat JSON files on disk
 - [PO File Provider](Providers/PoFile.md) — GNU gettext PO files on disk
 
 ## How It Works
 
-```
-┌─────────────────────┐         ┌──────────────────┐         ┌─────────────────────┐
-│   Your Blazor App   │  out →  │  Crowdin / API / │  in →   │   Your Blazor App   │
-│                     │         │  Database / Disk │         │                     │
-│  Loc.Translation()  │───────▶ │                  │───────▶ │  cached translations│
-│  Loc["Key"]         │ blazor- │  translated      │ ITransl │  with fallback to   │
-│  .resx files        │  loc    │  strings         │ ationPr │  your source text    │
-│                     │ extract │                  │ ovider  │                     │
-└─────────────────────┘         └──────────────────┘         └─────────────────────┘
-   Extractor (build time)          Your translation            Extensions (runtime)
-                                      provider
-```
+**Build time:** The [Extractor CLI](Extractor.md) scans your code, finds every `IStringLocalizer` usage, and exports source strings. Upload these to your translation provider — manually, or automate it in CI.
 
-**Build time:** The Extractor scans your code via Roslyn, finds every `IStringLocalizer` usage, and exports source strings in your chosen export format. Upload these to your translation provider — manually, or automate it in CI (e.g. Crowdin GitHub Action).
+**Runtime:** On each `Translation()` call, the library checks the cache, falls back to your provider(s), and walks the culture chain (`es-MX` → `es` → source text). Translations are cached by [FusionCache](https://github.com/ZiggyCreatures/FusionCache) — L1 in-memory, optional L2 distributed.
 
-**Export formats:** Crowdin i18next JSON, GNU Gettext PO, and plain key-value JSON. More formats are planned.
-
-**Runtime:** The Extensions library replaces `ResourceManager` with a cache-backed translation loader. On each call, it checks [FusionCache](https://github.com/ZiggyCreatures/FusionCache) (L1 memory → L2 distributed), falls back to your `ITranslationProvider`(s), and walks the culture chain (`da-DK` → `da` → source text).
-
-On a cold boot with an empty cache, `Translation()` calls show your source text as fallback. The background fetch starts immediately, and translations appear once the provider responds. With an L2 cache (Redis, SQLite), cold boots are warm — translations are served from L2 while the provider refreshes in the background.
+On a cold boot with an empty cache, users see your source text as fallback. The background fetch starts immediately, and translations appear once the provider responds. With an L2 cache (Redis, SQLite), cold boots are warm — translations are served from L2 while the provider refreshes in the background.
 
 ---
 

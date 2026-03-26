@@ -103,19 +103,19 @@ Branch on a categorical enum value — gender, role, formality, or any domain co
 
 ## Select + Plural
 
-Combine categorical branching with plural forms.
+Combine categorical branching with plural forms. Here a premium user gets a different message than a free user, and both vary by quantity:
 
 ```razor
-<p>@(Loc.Translation("Inbox", select: Gender.Female, howMany: msgCount, replaceWith: new { MessageCount = msgCount })
-    .When(Gender.Female)
-    .One("She has {MessageCount} message")
-    .Other("She has {MessageCount} messages")
+<p>@(Loc.Translation("Cart.Summary", select: userTier, howMany: itemCount, replaceWith: new { ItemCount = itemCount })
+    .When(Tier.Premium)
+    .One("1 item in your cart — free express shipping!")
+    .Other("{ItemCount} items in your cart — free express shipping!")
     .Otherwise()
-    .One("They have {MessageCount} message")
-    .Other("They have {MessageCount} messages"))</p>
+    .One("1 item in your cart")
+    .Other("{ItemCount} items in your cart"))</p>
 ```
 
-With `msgCount = 3` and `Gender.Female`, this renders: **"She has 3 messages"**.
+With `itemCount = 3` and `Tier.Premium`, this renders: **"3 items in your cart — free express shipping!"**.
 
 ## Inline Translations
 
@@ -161,9 +161,7 @@ public enum FlightStatus
 
 The auto-generated key is `Enum.{TypeName}_{MemberName}` (e.g. `Enum.FlightStatus_Delayed`).
 
-Same fallback as `Translation()`: translation provider → inline per-locale source text → source text → member name.
-
-Inline per-locale source texts work the same way as `.For()` — write them at the declaration site, the provider wins when a real translation exists.
+Same fallback chain as `Translation()`: translation provider → inline per-locale source text → source text → member name.
 
 Override the auto-generated key with `Key`:
 

@@ -80,15 +80,7 @@ This looks for `translations.da.json`, `translations.es-MX.json`, etc.
 
 Flat `"key": "value"` objects. Non-string values are ignored.
 
-**Singular keys:**
-```json
-{
-  "Home.Title": "Velkommen",
-  "Home.Greeting": "Hej, {Name}!"
-}
-```
-
-**Plural keys** use `_one` / `_other` suffixes, matching the convention used by SmartFormat:
+**Plural keys** use `_one` / `_other` suffixes (matching the convention used by SmartFormat):
 ```json
 {
   "Home.ItemCount_one": "{Quantity} genstand",
@@ -98,7 +90,7 @@ Flat `"key": "value"` objects. Non-string values are ignored.
 
 This is the same flat format that Crowdin exports when configured for Crowdin i18next JSON output.
 
-> **Tip:** You can download translations from Crowdin during CI and serve them from disk at runtime — no need for the Crowdin OTA provider if you prefer file-based deployments.
+> **Tip:** You can download translations from Crowdin during CI and serve them from disk at runtime — no need for the Crowdin provider if you prefer file-based deployments.
 
 ## Multiple Providers
 
@@ -116,19 +108,19 @@ Providers are tried in registration order — first non-null result wins.
 
 ## How It Works
 
-Each culture's JSON file is loaded once per cache duration cycle (default 1 hour — see [Configuration](../Configuration.md#cache-options)) via a FusionCache sentinel. Individual keys are fanned out into cache entries, so subsequent lookups are O(1) with zero disk I/O.
+Each culture's JSON file is loaded once per cache duration (default 1 hour — see [Configuration](../Configuration.md#cache-options)). After loading, individual key lookups are fast with zero disk I/O until the next refresh.
 
 Missing files are not an error — the localizer walks the culture fallback chain (`es-MX` → `es` → source text) automatically. This means you only need to provide files for cultures you've actually translated.
 
 ## Error Handling
 
-| Scenario | Behavior |
+| Situation | What happens |
 |---|---|
-| File doesn't exist | Debug log. No translations for this culture — localizer falls back. |
-| File not valid JSON | Warning log. Sentinel set — retries after cache expiry. Stale translations served if available. |
-| I/O error (permissions, disk) | Warning log. Same retry-after-expiry behavior. |
+| File doesn't exist | No translations for this culture — falls back through the culture chain. |
+| File not valid JSON | Warning logged. Retries on next cache refresh. Stale translations served if available. |
+| I/O error (permissions, disk) | Warning logged. Same retry behavior. |
 
-No exceptions propagate to callers — the provider absorbs all I/O and parse errors at the sentinel level.
+Errors never propagate to your application code.
 
 ---
 

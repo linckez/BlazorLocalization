@@ -112,18 +112,18 @@ Providers are tried in registration order — first non-null result wins.
 
 ## How It Works
 
-Each culture's PO file is loaded once per cache duration cycle (default 1 hour — see [Configuration](../Configuration.md#cache-options)) via a FusionCache sentinel. Individual keys are fanned out into cache entries, so subsequent lookups are O(1) with zero disk I/O.
+Each culture's PO file is loaded once per cache duration (default 1 hour — see [Configuration](../Configuration.md#cache-options)). After loading, individual key lookups are fast with zero disk I/O until the next refresh.
 
 Missing files are not an error — the localizer walks the culture fallback chain (`es-MX` → `es` → source text) automatically.
 
 ## Error Handling
 
-| Scenario | Behavior |
+| Situation | What happens |
 |---|---|
-| File doesn't exist | Debug log. No translations for this culture — localizer falls back. |
-| I/O error (permissions, disk) | Warning log. Sentinel set — retries after cache expiry. Stale translations served if available. |
+| File doesn't exist | No translations for this culture — falls back through the culture chain. |
+| I/O error (permissions, disk) | Warning logged. Retries on next cache refresh. Stale translations served if available. |
 
-No exceptions propagate to callers — the provider absorbs all I/O errors at the sentinel level.
+Errors never propagate to your application code.
 
 ---
 

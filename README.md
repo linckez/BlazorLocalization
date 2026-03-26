@@ -64,7 +64,7 @@ Translation providers:
 
 | Package | Version | Install |
 |---------|:-------:|--------:|
-| [**BlazorLocalization.TranslationProvider.Crowdin**](https://www.nuget.org/packages/BlazorLocalization.TranslationProvider.Crowdin) <br/> Fetch translations from [Crowdin](https://crowdin.com/) OTA CDN | [![NuGet](https://img.shields.io/nuget/v/BlazorLocalization.TranslationProvider.Crowdin.svg)](https://www.nuget.org/packages/BlazorLocalization.TranslationProvider.Crowdin) | `dotnet add package BlazorLocalization.TranslationProvider.Crowdin` |
+| [**BlazorLocalization.TranslationProvider.Crowdin**](https://www.nuget.org/packages/BlazorLocalization.TranslationProvider.Crowdin) <br/> Fetch translations over-the-air from [Crowdin](https://crowdin.com/) | [![NuGet](https://img.shields.io/nuget/v/BlazorLocalization.TranslationProvider.Crowdin.svg)](https://www.nuget.org/packages/BlazorLocalization.TranslationProvider.Crowdin) | `dotnet add package BlazorLocalization.TranslationProvider.Crowdin` |
 | **JsonFile** <br/> Load translations from flat JSON files on disk | Ships with Extensions | — |
 | **PoFile** <br/> Load translations from GNU Gettext PO files | Ships with Extensions | — |
 
@@ -81,7 +81,7 @@ builder.Services.AddProviderBasedLocalization(builder.Configuration)
 ```
 
 ```csharp
-// Or over-the-air from Crowdin CDN (separate package):
+// Or over-the-air from Crowdin (separate package):
 // Configure your distribution hash in appsettings.json — see Crowdin Provider docs
 builder.Services.AddProviderBasedLocalization()
     .AddCrowdinTranslationProvider();
@@ -156,7 +156,7 @@ See [Extractor CLI](docs/Extractor.md) for recipes, CI integration, and export f
 | [Examples](docs/Examples.md) | `Translation()` usage — simple, placeholders, plurals, ordinals, select, inline translations |
 | [Extractor CLI](docs/Extractor.md) | Install, interactive wizard, common recipes, CI integration, export formats |
 | [Configuration](docs/Configuration.md) | Cache settings, `appsettings.json` binding, multiple providers, code-only config |
-| [Crowdin Provider](docs/Providers/Crowdin.md) | Crowdin OTA setup — distribution hash, export formats, error handling |
+| [Crowdin Provider](docs/Providers/Crowdin.md) | Over-the-air translations from Crowdin — distribution hash, export formats, error handling |
 | [JSON File Provider](docs/Providers/JsonFile.md) | Load translations from flat JSON files on disk |
 | [PO File Provider](docs/Providers/PoFile.md) | Load translations from GNU gettext PO files |
 | [Samples](samples/) | Runnable Blazor Server and Web API projects with full setup |

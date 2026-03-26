@@ -4,9 +4,7 @@
 
 `BlazorLocalization.TranslationProvider.Crowdin` fetches translations from [Crowdin](https://crowdin.com/) at runtime — no redeployment needed when translators update strings.
 
-Crowdin offers two delivery methods: **CDN Distributions** (OTA) and **API**. This provider supports CDN Distributions. API support is planned.
-
-> **Scope:** Covers CDN Distributions (Over-The-Air Content Delivery). [API Exported File Bundles](https://support.crowdin.com/bundles/) are a different feature and not yet supported.
+This provider uses Crowdin's CDN Distributions (Over-The-Air Content Delivery). [API Exported File Bundles](https://support.crowdin.com/bundles/) are not yet supported.
 
 ## Quick Start
 
@@ -44,42 +42,25 @@ Crowdin's Android XML exporter has three settings. The recommended configuration
 
 | Setting | Recommended | Why |
 |---|---|---|
-| **Placeholder conversion** | Leave default | SmartFormat named placeholders (`{count}`) pass through as-is. |
-| **CDATA** | Either | XDocument handles CDATA transparently — no difference at runtime. |
-| **Line break conversion** | **OFF** | Leave off. If enabled, Crowdin converts `\n` to `\\n` literals which appear as backslash-n in your UI. |
+| **Placeholder conversion** | Leave default | Your placeholders (`{count}`) will work as-is. |
+| **CDATA** | Either | Both work — no difference at runtime. |
+| **Line break conversion** | **OFF** | If enabled, `\n` becomes literal backslash-n in your UI. |
 
 ## Uploading Source Strings
 
-**Use PO.** When you run the Extractor with `--format po`, the output includes metadata that Crowdin surfaces to translators:
+**Use PO format.** It gives translators file locations and context comments directly in the Crowdin editor — the single biggest quality improvement you can give them.
 
 ```bash
 blazor-loc extract ./src --format po --output ./translations
 ```
 
-The generated `.po` file carries:
-
-- **`#:` source references** — `Components/Pages/Home.razor:42` tells the translator exactly which component and line the string comes from
-- **`#.` extracted comments** — additional context from your code, when present
-- **`msgid_plural`** — native plural support without key-suffix hacks
-
-Translators see file locations and context comments directly in the Crowdin editor. This is the single biggest quality improvement you can give them — a string like `"Cycle"` means completely different things in a machine settings page vs. a billing page.
-
 > **Key insight:** Upload format and download format are independent — **PO for upload** (rich translator context), **Android XML for download** (lightweight runtime).
 
 ## How It Works
 
-```
-IStringLocalizer["key"]
-    └─► FusionCache (L1/L2)
-            └─► CrowdinTranslationProvider
-                    └─► CrowdinOtaClient
-                            ├─► GET /manifest.json   (cached, refreshes per TTL)
-                            └─► GET /{culture}.xml   (once per culture per TTL)
-```
+Translations are fetched from the Crowdin CDN once per culture, then cached. After the cache expires (default 1 hour — see [Configuration](../Configuration.md#cache-options)), a background refresh fetches updated translations without blocking your app.
 
-- **Manifest** maps culture codes to CDN content paths. Cached with the same TTL as translations.
-- **Translation files** are fetched once per culture on first demand. Concurrent requests share a single HTTP call (stampede protection via FusionCache).
-- **FusionCache** owns TTL, eviction, fail-safe, and L2 persistence. The provider stores nothing itself.
+If Crowdin is unreachable, the last known good translations are served until Crowdin comes back.
 
 ## Multiple Crowdin Distributions
 
@@ -95,25 +76,17 @@ Providers are tried in registration order — first non-null result wins.
 
 ## Error Handling
 
-Provider exceptions are classified so you can tell "wait it out" from "fix your config":
-
-| Exception | Cause | Self-heals? |
+| Situation | What you see | What to do |
 |---|---|---|
-| `TranslationProviderTransientException` | CDN timeout, network down, HTTP 5xx | Yes — fail-safe serves stale |
-| `TranslationProviderConfigurationException` | Wrong hash, bad distribution config | No — developer must fix |
+| Crowdin is down, network issue, timeout | Nothing — last known good translations are served silently | Wait it out. Self-heals when connectivity returns. |
+| Wrong distribution hash, bad config | Warning in logs immediately | Fix your `DistributionHash` in `appsettings.json`. |
 
-Both carry a `ProviderName` property for log correlation.
-
-- **Transient:** Nothing at default log levels. FusionCache serves the last known good value silently.
-- **Configuration:** A Warning surfaces immediately — won't self-heal.
+Your app never shows broken strings — stale translations are served until the issue resolves or you fix the config.
 
 ## FAQ
 
-**What happens if Crowdin is down?**
-FusionCache's fail-safe returns the last known good value indefinitely (default). Your app never shows broken strings.
-
 **Does the provider cache translations internally?**
-No. FusionCache handles all caching. The provider is a pure fetcher.
+No. All caching is handled by FusionCache — configured in [Configuration](../Configuration.md#cache-options).
 
 **Can I use other export formats (PO, RESX, i18next JSON)?**
 Not with CDN Distributions. Those formats require installing community exporter apps from the [Crowdin Store](https://store.crowdin.com/). CDN Distributions only support the three system default exporters (Android XML, iOS Strings, XLIFF), and this provider uses Android XML.
