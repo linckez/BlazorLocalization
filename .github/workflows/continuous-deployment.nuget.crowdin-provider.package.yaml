@@ -79,7 +79,6 @@ jobs:
     name: .NET Release
     runs-on: ubuntu-latest
     needs: test
-    environment: production
     permissions:
       id-token: write
     steps:
