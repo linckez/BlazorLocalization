@@ -80,6 +80,23 @@ See [Providers](docs/Configuration.md#translation-providers) for all available p
 
 ---
 
+## Packages
+
+| Package | Version | Install |
+|---------|:-------:|--------:|
+| [**BlazorLocalization.Extensions**](https://www.nuget.org/packages/BlazorLocalization.Extensions) <br/> Runtime library — cache-backed `IStringLocalizer` with plural support and pluggable translation providers | [![NuGet](https://img.shields.io/nuget/v/BlazorLocalization.Extensions.svg)](https://www.nuget.org/packages/BlazorLocalization.Extensions) | `dotnet add package BlazorLocalization.Extensions` |
+| [**BlazorLocalization.Extractor**](https://www.nuget.org/packages/BlazorLocalization.Extractor) <br/> CLI tool (`blazor-loc`) — Roslyn-based scanner that extracts source strings from `.razor`, `.cs`, and `.resx` files | [![NuGet](https://img.shields.io/nuget/v/BlazorLocalization.Extractor.svg)](https://www.nuget.org/packages/BlazorLocalization.Extractor) | `dotnet tool install -g BlazorLocalization.Extractor` |
+
+Translation providers:
+
+| Package | Version | Install |
+|---------|:-------:|--------:|
+| [**BlazorLocalization.TranslationProvider.Crowdin**](https://www.nuget.org/packages/BlazorLocalization.TranslationProvider.Crowdin) <br/> Fetch translations from [Crowdin](https://crowdin.com/) OTA CDN | [![NuGet](https://img.shields.io/nuget/v/BlazorLocalization.TranslationProvider.Crowdin.svg)](https://www.nuget.org/packages/BlazorLocalization.TranslationProvider.Crowdin) | `dotnet add package BlazorLocalization.TranslationProvider.Crowdin` |
+| **JsonFile** <br/> Load translations from flat JSON files on disk | Ships with Extensions | — |
+| **PoFile** <br/> Load translations from GNU Gettext PO files | Ships with Extensions | — |
+
+---
+
 ## 🎬 String Extraction
 
 Already using `IStringLocalizer`? The Extractor scans your `.razor`, `.cs`, and `.resx` files and exports every translation string — no matter which localization backend you use.
@@ -138,23 +155,6 @@ Built on [Microsoft's `IStringLocalizer`](https://learn.microsoft.com/en-us/aspn
 | Battle-tested | Yes — 20+ years | Yes | New |
 
 \* OrchardCore uses the `IStringLocalizer` indexer key as both the lookup key and the source text. Updating the original text creates a new entry — existing translations are orphaned.
-
----
-
-## Packages
-
-| Package | Version | Install |
-|---------|:-------:|--------:|
-| [**BlazorLocalization.Extensions**](https://www.nuget.org/packages/BlazorLocalization.Extensions) <br/> Runtime library — cache-backed `IStringLocalizer` with plural support and pluggable translation providers | [![NuGet](https://img.shields.io/nuget/v/BlazorLocalization.Extensions.svg)](https://www.nuget.org/packages/BlazorLocalization.Extensions) | `dotnet add package BlazorLocalization.Extensions` |
-| [**BlazorLocalization.Extractor**](https://www.nuget.org/packages/BlazorLocalization.Extractor) <br/> CLI tool (`blazor-loc`) — Roslyn-based scanner that extracts source strings from `.razor`, `.cs`, and `.resx` files | [![NuGet](https://img.shields.io/nuget/v/BlazorLocalization.Extractor.svg)](https://www.nuget.org/packages/BlazorLocalization.Extractor) | `dotnet tool install -g BlazorLocalization.Extractor` |
-
-Translation providers:
-
-| Package | Version | Install |
-|---------|:-------:|--------:|
-| [**BlazorLocalization.TranslationProvider.Crowdin**](https://www.nuget.org/packages/BlazorLocalization.TranslationProvider.Crowdin) <br/> Fetch translations from [Crowdin](https://crowdin.com/) OTA CDN | [![NuGet](https://img.shields.io/nuget/v/BlazorLocalization.TranslationProvider.Crowdin.svg)](https://www.nuget.org/packages/BlazorLocalization.TranslationProvider.Crowdin) | `dotnet add package BlazorLocalization.TranslationProvider.Crowdin` |
-| **JsonFile** <br/> Load translations from flat JSON files on disk | Ships with Extensions | — |
-| **PoFile** <br/> Load translations from GNU Gettext PO files | Ships with Extensions | — |
 
 ---
 
