@@ -4,7 +4,8 @@
 	
 # BlazorLocalization
 
-A drop-in replacement for `AddLocalization()` — Blazor, MVC, Razor Pages, APIs
+A drop-in replacement for `AddLocalization()` — Blazor, MVC, Razor Pages, APIs  
+Translations via .NET's `IStringLocalizer`, without `.resx` files
 
 </div>
 
@@ -17,7 +18,7 @@ A drop-in replacement for `AddLocalization()` — Blazor, MVC, Razor Pages, APIs
 
 ### Your users see text in their language. Always.
 
-Inline translations · Pluggable providers · CLDR plurals · Over-the-air updates · Distributed caching
+Inline translations · Pluggable providers · Plurals & ordinals · Over-the-air updates · Any `IStringLocalizer` project
 
 ---
 
@@ -32,7 +33,7 @@ dotnet add package BlazorLocalization.Extensions
 **2. Register in `Program.cs`:**
 
 ```csharp
-// Replaces services.AddLocalization():
+// Replaces the built-in services.AddLocalization():
 builder.Services.AddProviderBasedLocalization();
 ```
 
@@ -41,18 +42,18 @@ builder.Services.AddProviderBasedLocalization();
 ```razor
 @inject IStringLocalizer<Home> Loc
 
-<h1>@(Loc.Translation("Home.Title", "Welcome to our app")
-    .For("da", "Velkommen til vores app")
-    .For("de", "Willkommen in unserer App"))</h1>
+<h1>@Loc.Translation("Home.Title", "Welcome to our app")</h1>
 
-<p>@Loc.Translation("Home.Greeting", "Hello, {Name}!", new { Name = user.Name })</p>
+<p>@(Loc.Translation("Home.Greeting", "Hello, {Name}!", new { Name = user.Name })
+    .For("da", "Hej, {Name}!")
+    .For("de", "Hallo, {Name}!"))</p>
 ```
 
-Your source text is always the fallback — users never see blank strings or raw keys.
+Your source text is always the fallback — users never see blank strings or raw keys. `.For()` adds inline translations for other languages right where you write the text.
 
 See [Examples](docs/Examples.md) for plurals, ordinals, enum display names, and more.
 
-> **Note:** You still need ASP.NET Core's `UseRequestLocalization()` middleware for culture detection. See [Configuration](docs/Configuration.md) for the full setup.
+> **Note:** You still need `UseRequestLocalization()` middleware for culture detection — see [Configuration](docs/Configuration.md).
 
 ---
 
@@ -75,14 +76,17 @@ Translation providers:
 
 ## Add a Provider
 
-Translation providers are pluggable and optional. Use them when you outgrow inline translations or want to connect a translation management platform.
+Translation providers are pluggable and optional. Use them when you have too many strings for inline `.For()`, or want to connect a translation management platform.
 
 ```csharp
-// Load from JSON files on disk (ships with Extensions — no extra package):
+// JSON files on disk (ships with Extensions — no extra package):
 builder.Services.AddProviderBasedLocalization(builder.Configuration)
     .AddJsonFileTranslationProvider();
+```
 
-// — or fetch over-the-air from Crowdin CDN (separate package):
+```csharp
+// Or over-the-air from Crowdin CDN (separate package):
+// Configure your distribution hash in appsettings.json — see Crowdin Provider docs
 builder.Services.AddProviderBasedLocalization()
     .AddCrowdinTranslationProvider();
 ```
@@ -95,17 +99,20 @@ See [Providers](docs/Configuration.md#translation-providers) for all available p
 
 ## Why BlazorLocalization?
 
-BlazorLocalization replaces the default `ResourceManager` / `.resx` backend behind [`IStringLocalizer`](https://learn.microsoft.com/en-us/aspnet/core/fundamentals/localization-extensibility?view=aspnetcore-10.0) with a modern, cache-backed, provider-driven architecture:
+Microsoft's [`IStringLocalizer`](https://learn.microsoft.com/en-us/aspnet/core/blazor/globalization-localization?view=aspnetcore-10.0) is deeply embedded in ASP.NET Core — Blazor, MVC, Razor Pages, APIs. It works. But the default backend is `ResourceManager` with `.resx` files:
 
-- **Over-the-air translations** — refresh from your provider without redeployment
+- Merge conflicts — `.resx` XML files conflict constantly across team branches
+- No over-the-air updates — change a translation? Rebuild and redeploy
+- No plural support — `IStringLocalizer` has no built-in plural category handling
+- No distributed caching — translations live in flat files, not in Redis or a database
+
+BlazorLocalization keeps `IStringLocalizer` as the interface but [replaces `AddLocalization()`](https://learn.microsoft.com/en-us/aspnet/core/fundamentals/localization-extensibility?view=aspnetcore-10.0) and its `ResourceManager` / `.resx` backend entirely:
+
+- **Over-the-air translations** — FusionCache refreshes from your provider in the background. Change a translation, your app picks it up without redeployment
 - **Source text fallback** — if translations haven't loaded yet, users see your source text, never blank strings or keys
 - **CLDR plural support** — plural categories, ordinals, gender/select. ICU concepts, C# ergonomics
 - **Distributed caching** — L1 memory out of the box, optional L2 via any `IDistributedCache` (Redis, SQLite, etc.)
-- **Pluggable providers** — stack translation sources with fallback chains. First non-null wins
-
-`IStringLocalizer` stays as the interface — it's embedded in Blazor, MVC, Razor Pages, and APIs. Why fight it?
-
-**What you're replacing:** `.resx` merge conflicts across team branches, no over-the-air updates (change a translation → rebuild and redeploy), no plural support, no distributed caching.
+- **Pluggable providers** — load translations from JSON files, Crowdin, a database, or any custom source. Stack multiple providers with fallback chains
 
 Built on [Microsoft's `IStringLocalizer`](https://learn.microsoft.com/en-us/aspnet/core/fundamentals/localization-extensibility?view=aspnetcore-10.0), [FusionCache](https://github.com/ZiggyCreatures/FusionCache), and [SmartFormat.NET](https://github.com/axuno/SmartFormat).
 
@@ -134,7 +141,7 @@ See [Extractor CLI](docs/Extractor.md) for recipes, CI integration, and export f
 
 ## Comparison
 
-| Feature | `.resx` / ResourceManager | OrchardCore PO | **BlazorLocalization** |
+| Feature | Built-in `.resx` | OrchardCore PO | **BlazorLocalization** |
 |---------|:-------------------------:|:--------------:|:----------------------:|
 | Over-the-air updates | ✗ | ✗ | ✓ |
 | Distributed cache (Redis, etc.) | ✗ | ✗ | ✓ |
@@ -145,7 +152,7 @@ See [Extractor CLI](docs/Extractor.md) for recipes, CI integration, and export f
 | Merge-conflict-free | ✗ — XML | ✗ — PO files | ✓ — with OTA providers. File-based providers are opt-in |
 | Automated string extraction | Manual | Manual | Roslyn-based CLI |
 | Standard `IStringLocalizer` | ✓ | ✓ | ✓ |
-| Battle-tested | ✓ — 20+ years | ✓ | New |
+| Battle-tested | ✓ — 20+ years | ✓ | Production use, actively maintained |
 
 \* OrchardCore uses the `IStringLocalizer` indexer key as both the lookup key and the source text. Updating the original text creates a new entry — existing translations are orphaned.
 
@@ -166,6 +173,15 @@ See [Extractor CLI](docs/Extractor.md) for recipes, CI integration, and export f
 ---
 
 ## FAQ
+
+**Can I load translations from a database?**
+Yes. Implement `ITranslationProvider` — it's a single method:
+
+```csharp
+Task<string?> GetTranslationAsync(string culture, string key, CancellationToken ct);
+```
+
+Load from a database, an API, a CMS — anything. BlazorLocalization handles caching, fallback, and hot-swapping. See the built-in [JsonFile](docs/Providers/JsonFile.md) provider as a reference.
 
 **Does this only work with Blazor?**
 No. It works with anything that uses `IStringLocalizer` — Blazor Server, Blazor WASM, MVC, Razor Pages, Web APIs, minimal APIs. "Blazor" is in the name because that's where most developers first hit the `.resx` wall.
