@@ -89,5 +89,6 @@ public static class ResxImporter
 	private static IEnumerable<string> EnumerateResxFiles(string root) =>
 		Directory.EnumerateFiles(root, "*.resx", SearchOption.AllDirectories)
 			.Where(path => !path.Contains($"{Path.DirectorySeparatorChar}obj{Path.DirectorySeparatorChar}")
-						&& !path.Contains($"{Path.DirectorySeparatorChar}bin{Path.DirectorySeparatorChar}"));
+						&& !path.Contains($"{Path.DirectorySeparatorChar}bin{Path.DirectorySeparatorChar}"))
+			.Order();
 }

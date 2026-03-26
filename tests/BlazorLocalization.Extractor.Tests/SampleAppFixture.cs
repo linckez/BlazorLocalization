@@ -13,13 +13,15 @@ public sealed class SampleAppFixture
 {
 	public ScanResult ScanResult { get; }
 	public MergeResult MergeResult { get; }
+	public string SolutionDirectory { get; }
 
 	/// <summary>Keyed lookup into merged entries for spot-check assertions.</summary>
 	public IReadOnlyDictionary<string, MergedTranslationEntry> EntryByKey { get; }
 
 	public SampleAppFixture()
 	{
-		var sampleAppDir = ResolveSampleAppDir();
+		var (solutionDir, sampleAppDir) = ResolvePaths();
+		SolutionDirectory = solutionDir;
 
 		var providers = new ISourceProvider[]
 		{
@@ -40,7 +42,7 @@ public sealed class SampleAppFixture
 		EntryByKey = MergeResult.Entries.ToDictionary(e => e.Key);
 	}
 
-	private static string ResolveSampleAppDir()
+	private static (string SolutionDir, string SampleAppDir) ResolvePaths()
 	{
 		// Walk up from the test assembly's output directory to the repo root,
 		// then navigate to tests/SampleBlazorApp.
@@ -57,6 +59,6 @@ public sealed class SampleAppFixture
 		if (!Directory.Exists(sampleApp))
 			throw new DirectoryNotFoundException($"SampleBlazorApp not found at {sampleApp}");
 
-		return sampleApp;
+		return (dir, sampleApp);
 	}
 }

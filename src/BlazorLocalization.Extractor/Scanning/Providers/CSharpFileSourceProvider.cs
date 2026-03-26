@@ -27,5 +27,6 @@ public sealed class CSharpFileSourceProvider : ISourceProvider
 	private static IEnumerable<string> EnumerateSourceFiles(string root) =>
 		Directory.EnumerateFiles(root, "*.cs", SearchOption.AllDirectories)
 			.Where(path => !path.Contains($"{Path.DirectorySeparatorChar}obj{Path.DirectorySeparatorChar}")
-						&& !path.Contains($"{Path.DirectorySeparatorChar}bin{Path.DirectorySeparatorChar}"));
+						&& !path.Contains($"{Path.DirectorySeparatorChar}bin{Path.DirectorySeparatorChar}"))
+			.Order();
 }

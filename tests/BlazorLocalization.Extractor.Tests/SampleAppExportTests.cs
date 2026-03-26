@@ -15,7 +15,7 @@ public class SampleAppExportTests(SampleAppFixture fixture) : IClassFixture<Samp
 
 	[Fact]
 	public Task Po_FullOutput() =>
-		Verify(new PoExporter().Export(fixture.MergeResult.Entries.ToList()));
+		Verify(new PoExporter().Export(RelativizePaths(fixture.MergeResult.Entries)));
 
 	/// <summary>
 	/// Per-locale files should contain only entries that have a .For() translation for that locale —
@@ -38,4 +38,18 @@ public class SampleAppExportTests(SampleAppFixture fixture) : IClassFixture<Samp
 
 		return new I18NextJsonExporter().Export(entries);
 	}
+
+	/// <summary>
+	/// Converts absolute source paths to solution-relative forward-slash paths,
+	/// mirroring what the CLI does with <c>PathStyle.Relative</c>.
+	/// This avoids platform-dependent Verify path scrubbing issues.
+	/// </summary>
+	private List<MergedTranslationEntry> RelativizePaths(IReadOnlyList<MergedTranslationEntry> entries) =>
+		entries.Select(e => e with
+		{
+			Sources = e.Sources.Select(s => s with
+			{
+				FilePath = Path.GetRelativePath(fixture.SolutionDirectory, s.FilePath).Replace('\\', '/')
+			}).ToList()
+		}).ToList();
 }

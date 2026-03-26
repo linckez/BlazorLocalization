@@ -54,8 +54,8 @@
   "S21.Raw": "This has \u0022raw quotes\u0022 inside",
   "S21.Concat": "First half second half",
   "S22.Nested": "Nested value",
+  "CB.CodeBehind": "From code-behind",
   "Enum.FlightStatus_Delayed": "Delayed",
   "Flight.Late": "Arrived a bit late",
-  "CB.CodeBehind": "From code-behind",
   "Resx.Only": "Only in resx, no code counterpart"
 }

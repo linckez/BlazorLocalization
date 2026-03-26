@@ -35,20 +35,12 @@ public sealed class RazorGeneratedSourceProvider : ISourceProvider
 		}
 	}
 
-	private static IEnumerable<string> EnumerateRazorFiles(string root)
-	{
-		foreach (var ext in new[] { "*.razor", "*.cshtml" })
-		{
-			foreach (var path in Directory.EnumerateFiles(root, ext, SearchOption.AllDirectories))
-			{
-				if (path.Contains($"{Path.DirectorySeparatorChar}obj{Path.DirectorySeparatorChar}")
-					|| path.Contains($"{Path.DirectorySeparatorChar}bin{Path.DirectorySeparatorChar}"))
-					continue;
-
-				yield return path;
-			}
-		}
-	}
+	private static IEnumerable<string> EnumerateRazorFiles(string root) =>
+		new[] { "*.razor", "*.cshtml" }
+			.SelectMany(ext => Directory.EnumerateFiles(root, ext, SearchOption.AllDirectories))
+			.Where(path => !path.Contains($"{Path.DirectorySeparatorChar}obj{Path.DirectorySeparatorChar}")
+						&& !path.Contains($"{Path.DirectorySeparatorChar}bin{Path.DirectorySeparatorChar}"))
+			.Order();
 
 	private static string? CompileRazorToCSharp(string filePath, string projectRoot, string rootNamespace)
 	{
