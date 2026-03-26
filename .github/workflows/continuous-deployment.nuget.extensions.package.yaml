@@ -42,12 +42,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Code 📥
-        uses: actions/checkout@v6
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
         with:
           ref: ${{ inputs.git-commit || inputs.git-tag || inputs.git-branch || github.ref }}
 
       - name: Setup .NET 👨🏽‍💻
-        uses: actions/setup-dotnet@v5
+        uses: actions/setup-dotnet@c2fa09f4bde5ebb9d1777cf28262a3eb3db3ced7 # v5
         with:
           dotnet-version: 10.x
 
@@ -68,7 +68,7 @@ jobs:
         shell: bash
 
       - name: Upload Artifact 🚀
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
           name: package
           path: artifacts/**/*
@@ -83,18 +83,18 @@ jobs:
       id-token: write
     steps:
       - name: Setup .NET 👨🏽‍💻
-        uses: actions/setup-dotnet@v5
+        uses: actions/setup-dotnet@c2fa09f4bde5ebb9d1777cf28262a3eb3db3ced7 # v5
         with:
           dotnet-version: 10.x
 
       - name: Download Artifact 📥
-        uses: actions/download-artifact@v6
+        uses: actions/download-artifact@018cc2cf5baa6db3ef3c5f8a56943fffe632ef53 # v6
         with:
           name: package
           path: artifacts
 
       - name: NuGet Login (OIDC Trusted Publishing) 🔐
-        uses: NuGet/login@v1
+        uses: NuGet/login@d22cc5f58ff5b88bf9bd452535b4335137e24544 # v1
         id: nuget-login
         with:
           user: linckez

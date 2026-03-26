@@ -25,12 +25,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Repository Checkout 📥
-        uses: actions/checkout@v6
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
         with:
           fetch-depth: 0
 
       - name: Setup .NET 👨🏽‍💻
-        uses: actions/setup-dotnet@v5
+        uses: actions/setup-dotnet@c2fa09f4bde5ebb9d1777cf28262a3eb3db3ced7 # v5
         with:
           dotnet-version: 10.x
 
@@ -39,7 +39,7 @@ jobs:
         run: echo "package_version=$(dotnet msbuild src/BlazorLocalization.TranslationProvider.Crowdin/BlazorLocalization.TranslationProvider.Crowdin.csproj -getProperty:PackageVersion)" >> $GITHUB_OUTPUT
 
       - name: Create Release 🚀
-        uses: softprops/action-gh-release@v2
+        uses: softprops/action-gh-release@153bb8e04406b158c6c84fc1615b65b24149a1fe # v2
         with:
           name: Crowdin Provider Release v${{ steps.version.outputs.package_version }}.${{ github.run_number }}
           tag_name: crowdin-provider/v${{ steps.version.outputs.package_version }}.${{ github.run_number }}
