@@ -1,0 +1,44 @@
+@WebApiSample_HostAddress = http://localhost:5147
+
+### Simple translation (English — default)
+GET {{WebApiSample_HostAddress}}/greetings
+Accept: application/json
+
+### Simple translation (German)
+GET {{WebApiSample_HostAddress}}/greetings
+Accept: application/json
+Accept-Language: de
+
+### Valid product
+GET {{WebApiSample_HostAddress}}/products/42
+Accept: application/json
+
+### Localized 404 ProblemDetails (German)
+GET {{WebApiSample_HostAddress}}/products/0
+Accept: application/json
+Accept-Language: de
+
+### Localized 404 ProblemDetails (Polish)
+GET {{WebApiSample_HostAddress}}/products/0
+Accept: application/json
+Accept-Language: pl
+
+### Valid product creation
+POST {{WebApiSample_HostAddress}}/products
+Content-Type: application/json
+
+{ "name": "Widget", "price": 9.99 }
+
+### Validation error — missing name + bad price (German)
+POST {{WebApiSample_HostAddress}}/products
+Content-Type: application/json
+Accept-Language: de
+
+{ "name": "", "price": -1 }
+
+### Validation error — missing name + bad price (Danish)
+POST {{WebApiSample_HostAddress}}/products
+Content-Type: application/json
+Accept-Language: da
+
+{ "name": "", "price": 0 }

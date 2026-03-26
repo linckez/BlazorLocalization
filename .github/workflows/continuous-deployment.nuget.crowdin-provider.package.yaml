@@ -1,0 +1,105 @@
+###########################################################
+#                                                         #
+#   TL;DR: Builds, tests, and publishes NuGet package     #
+#   to nuget.org using OIDC trusted publishing.           #
+#   - Automatically triggered on pushes to main branch.   #
+#                                                         #
+###########################################################
+
+name: Continuous Deployment | NuGet | BlazorLocalization.TranslationProvider.Crowdin Package
+permissions:
+  contents: read
+
+on:
+  workflow_dispatch:
+    inputs:
+      git-commit:
+        description: 'Select by git commit SHA (e.g., a1b2c3d4) | (optional)'
+        required: false
+        type: string
+      git-tag:
+        description: 'Select by git tag (e.g., crowdin-provider/v0.1.0) | (optional)'
+        required: false
+        type: string
+      git-branch:
+        description: 'Select by git branch (e.g., foo/bar) | (optional)'
+        required: false
+        type: string
+
+  push:
+    branches:
+      - main
+    paths:
+      - src/BlazorLocalization.TranslationProvider.Crowdin/**
+      - src/BlazorLocalization.Extensions/**
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    name: .NET Test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code 📥
+        uses: actions/checkout@v6
+        with:
+          ref: ${{ inputs.git-commit || inputs.git-tag || inputs.git-branch || github.ref }}
+
+      - name: Setup .NET 👨🏽‍💻
+        uses: actions/setup-dotnet@v5
+        with:
+          dotnet-version: 10.x
+
+      - name: Install Packages 📚
+        shell: bash
+        run: dotnet restore src/BlazorLocalization.TranslationProvider.Crowdin/BlazorLocalization.TranslationProvider.Crowdin.csproj
+
+      - name: Build .NET Project 🚧
+        shell: bash
+        run: dotnet build src/BlazorLocalization.TranslationProvider.Crowdin/BlazorLocalization.TranslationProvider.Crowdin.csproj --no-restore --verbosity normal --configuration Release
+
+      - name: Test .NET Project 🐞
+        run: dotnet test tests/BlazorLocalization.TranslationProvider.Crowdin.Tests/BlazorLocalization.TranslationProvider.Crowdin.Tests.csproj --logger trx --results-directory "test-results" --no-restore --verbosity normal --configuration Release
+        shell: bash
+
+      - name: Package .NET Project 📦
+        run: dotnet pack src/BlazorLocalization.TranslationProvider.Crowdin/BlazorLocalization.TranslationProvider.Crowdin.csproj --no-restore --verbosity normal --configuration Release --output artifacts
+        shell: bash
+
+      - name: Upload Artifact 🚀
+        uses: actions/upload-artifact@v4
+        with:
+          name: package
+          path: artifacts/**/*
+          include-hidden-files: true
+
+  release:
+    name: .NET Release
+    runs-on: ubuntu-latest
+    needs: test
+    environment: production
+    permissions:
+      id-token: write
+    steps:
+      - name: Setup .NET 👨🏽‍💻
+        uses: actions/setup-dotnet@v5
+        with:
+          dotnet-version: 10.x
+
+      - name: Download Artifact 📥
+        uses: actions/download-artifact@v6
+        with:
+          name: package
+          path: artifacts
+
+      - name: NuGet Login (OIDC Trusted Publishing) 🔐
+        uses: NuGet/login@v1
+        id: nuget-login
+        with:
+          user: linckez
+
+      - name: Publish .NET Package 🚀
+        run: dotnet nuget push artifacts/*.nupkg --source https://api.nuget.org/v3/index.json --api-key ${{ steps.nuget-login.outputs.NUGET_API_KEY }} --skip-duplicate
+        shell: bash

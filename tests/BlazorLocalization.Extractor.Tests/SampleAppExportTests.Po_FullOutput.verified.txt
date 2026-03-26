@@ -1,0 +1,227 @@
+﻿msgid ""
+msgstr ""
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Crowdin-SourceKey: msgstr\n"
+
+#: {SolutionDirectory}tests/SampleBlazorApp/Components/Layout/ReconnectModal.razor:9
+#. StringLocalizerExtensions.Translation
+msgid "RC.Title"
+msgstr "Connection Interrupted"
+
+#: {SolutionDirectory}tests/SampleBlazorApp/Components/Pages/EdgeCasePage.razor:5
+#. StringLocalizerExtensions.Translation
+msgid "CB.Razor"
+msgstr "From Razor side"
+
+#: {SolutionDirectory}tests/SampleBlazorApp/Components/Pages/Home.razor:15
+#. StringLocalizerExtensions.Translation
+msgid "S01"
+msgstr "Hello World"
+
+#: {SolutionDirectory}tests/SampleBlazorApp/Components/Pages/Home.razor:21
+#. StringLocalizerExtensions.Translation
+msgid "S02"
+msgstr "Hi"
+
+#: {SolutionDirectory}tests/SampleBlazorApp/Components/Pages/Home.razor:30
+#. StringLocalizerExtensions.Translation
+msgid "S03"
+msgid_plural "S03"
+msgstr[0] "{ItemCount} item"
+msgstr[1] "{ItemCount} items"
+
+#: {SolutionDirectory}tests/SampleBlazorApp/Components/Pages/Home.razor:43
+#. StringLocalizerExtensions.Translation
+#. ⚠️ ORDINAL — use ordinal forms (1st, 2nd, 3rd), not cardinal (1, 2, 3)
+msgid "S04"
+msgid_plural "S04"
+msgstr[0] "{Position}st"
+msgstr[1] "{Position}th"
+
+#: {SolutionDirectory}tests/SampleBlazorApp/Components/Pages/Home.razor:55
+#. StringLocalizerExtensions.Translation
+msgid "S05"
+msgid_plural "S05"
+msgstr[0] "{ItemCount} item"
+msgstr[1] "{ItemCount} items"
+
+msgid "S05_exactly_0"
+msgstr "none at all"
+
+#: {SolutionDirectory}tests/SampleBlazorApp/Components/Pages/Home.razor:65
+#. StringLocalizerExtensions.Translation
+msgid "S06"
+msgid_plural "S06"
+msgstr[0] "{ItemCount} item"
+msgstr[1] "{ItemCount} items"
+
+#: {SolutionDirectory}tests/SampleBlazorApp/Components/Pages/Home.razor:77
+#. StringLocalizerExtensions.Translation
+msgid "S07_Alpha"
+msgstr "Alpha path"
+
+msgid "S07_Beta"
+msgstr "Beta path"
+
+msgid "S07"
+msgstr "Other path"
+
+#: {SolutionDirectory}tests/SampleBlazorApp/Components/Pages/Home.razor:87
+#. StringLocalizerExtensions.Translation
+msgid "S08_Alpha"
+msgstr "Alpha path"
+
+msgid "S08"
+msgstr "Other path"
+
+#: {SolutionDirectory}tests/SampleBlazorApp/Components/Pages/Home.razor:99
+#. StringLocalizerExtensions.Translation
+msgid "S09_Alpha"
+msgid_plural "S09_Alpha"
+msgstr[0] "{ItemCount} Alpha item"
+msgstr[1] "{ItemCount} Alpha items"
+
+msgid "S09_Beta"
+msgid_plural "S09_Beta"
+msgstr[0] "{ItemCount} Beta item"
+msgstr[1] "{ItemCount} Beta items"
+
+msgid "S09"
+msgid_plural "S09"
+msgstr[0] "{ItemCount} other item"
+msgstr[1] "{ItemCount} other items"
+
+#: {SolutionDirectory}tests/SampleBlazorApp/Components/Pages/Home.razor:115
+#. StringLocalizerExtensions.Translation
+#. ⚠️ ORDINAL — use ordinal forms (1st, 2nd, 3rd), not cardinal (1, 2, 3)
+msgid "S10_Alpha"
+msgid_plural "S10_Alpha"
+msgstr[0] "{Position}st Alpha"
+msgstr[1] "{Position}th Alpha"
+
+msgid "S10_Alpha_exactly_1"
+msgstr "1st Alpha"
+
+#. ⚠️ ORDINAL — use ordinal forms (1st, 2nd, 3rd), not cardinal (1, 2, 3)
+msgid "S10"
+msgid_plural "S10"
+msgstr[0] "{Position}st other"
+msgstr[1] "{Position}th other"
+
+#: {SolutionDirectory}tests/SampleBlazorApp/Components/Pages/Home.razor:130
+#. StringLocalizerExtensions.Translation
+msgid "S11_Alpha"
+msgid_plural "S11_Alpha"
+msgstr[0] "{ItemCount} Alpha item"
+msgstr[1] "{ItemCount} Alpha items"
+
+msgid "S11"
+msgid_plural "S11"
+msgstr[0] "{ItemCount} other item"
+msgstr[1] "{ItemCount} other items"
+
+#: {SolutionDirectory}tests/SampleBlazorApp/Components/Pages/Home.razor:148
+#. IStringLocalizer.this[]
+msgid "S12"
+msgstr ""
+
+#: {SolutionDirectory}tests/SampleBlazorApp/Components/Pages/Home.razor:152
+#. StringLocalizerExtensions.Translation
+msgid "_dynamicKey"
+msgstr "Dynamic message"
+
+#: {SolutionDirectory}tests/SampleBlazorApp/Components/Pages/Home.razor:156
+#. StringLocalizerExtensions.Translation
+#: {SolutionDirectory}tests/SampleBlazorApp/Resources/Home.resx:20
+#. Same text as S14 Translation() call — should merge cleanly
+msgid "Resx.Match"
+msgstr "Matching source text"
+
+#: {SolutionDirectory}tests/SampleBlazorApp/Components/Pages/Home.razor:160
+#. StringLocalizerExtensions.Translation
+#: {SolutionDirectory}tests/SampleBlazorApp/Resources/Home.resx:25
+#. Different text from S15 Translation() call — should produce KeyConflict
+msgid "Resx.Conflict"
+msgstr "Code says this"
+
+#: {SolutionDirectory}tests/SampleBlazorApp/Components/Pages/Home.razor:164
+#. StringLocalizerExtensions.Translation
+msgid "S16.Attr"
+msgstr "Search…"
+
+#: {SolutionDirectory}tests/SampleBlazorApp/Components/Pages/Home.razor:168
+#. StringLocalizerExtensions.Translation
+msgid "S17.TernA"
+msgstr "Edit"
+
+#: {SolutionDirectory}tests/SampleBlazorApp/Components/Pages/Home.razor:168
+#. StringLocalizerExtensions.Translation
+msgid "S17.TernB"
+msgstr "Add"
+
+#: {SolutionDirectory}tests/SampleBlazorApp/Components/Pages/Home.razor:172
+#. StringLocalizerExtensions.Translation
+msgid "S18.Cast"
+msgstr "Text with <strong>bold</strong>"
+
+#: {SolutionDirectory}tests/SampleBlazorApp/Components/Pages/Home.razor:176
+#. StringLocalizerExtensions.Translation
+msgid "S19.A"
+msgstr "First"
+
+#: {SolutionDirectory}tests/SampleBlazorApp/Components/Pages/Home.razor:176
+#. StringLocalizerExtensions.Translation
+msgid "S19.B"
+msgstr "Second"
+
+#: {SolutionDirectory}tests/SampleBlazorApp/Components/Pages/Home.razor:180
+#. StringLocalizerExtensions.Translation
+msgid "S20.TextBlock"
+msgstr "Inside text block"
+
+#: {SolutionDirectory}tests/SampleBlazorApp/Components/Pages/Home.razor:192
+#. StringLocalizerExtensions.Translation
+msgid "S23.Placeholder"
+msgstr "Visited {VisitCount} times"
+
+#: {SolutionDirectory}tests/SampleBlazorApp/Components/Pages/Home.razor:211
+#. StringLocalizerExtensions.Translation
+msgid "S21.Verbatim"
+msgstr "Line one\nLine two with \"quotes\""
+
+#: {SolutionDirectory}tests/SampleBlazorApp/Components/Pages/Home.razor:215
+#. StringLocalizerExtensions.Translation
+msgid "S21.Raw"
+msgstr "This has \"raw quotes\" inside"
+
+#: {SolutionDirectory}tests/SampleBlazorApp/Components/Pages/Home.razor:218
+#. StringLocalizerExtensions.Translation
+msgid "S21.Concat"
+msgstr "First half second half"
+
+#: {SolutionDirectory}tests/SampleBlazorApp/Components/Pages/Home.razor:221
+#. StringLocalizerExtensions.Translation
+msgid "S22.Nested"
+msgstr "Nested value"
+
+#: {SolutionDirectory}tests/SampleBlazorApp/FlightStatus.cs:7
+msgid "Enum.FlightStatus_Delayed"
+msgstr "Delayed"
+
+#: {SolutionDirectory}tests/SampleBlazorApp/FlightStatus.cs:12
+msgid "Flight.Late"
+msgstr "Arrived a bit late"
+
+#: {SolutionDirectory}tests/SampleBlazorApp/Components/Pages/EdgeCasePage.razor.cs:11
+#. StringLocalizerExtensions.Translation
+msgid "CB.CodeBehind"
+msgstr "From code-behind"
+
+#: {SolutionDirectory}tests/SampleBlazorApp/Resources/Home.resx:30
+#. Passive entry — no Translation() call references this key
+msgid "Resx.Only"
+msgstr "Only in resx, no code counterpart"
+

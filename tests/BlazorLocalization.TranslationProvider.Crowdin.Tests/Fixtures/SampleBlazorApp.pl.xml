@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <string name="&quot;RC.Title&quot;" comment="-&gt; RC.Title">Połączenie przerwane</string>
+  <string name="&quot;CB.Razor&quot;" comment="-&gt; CB.Razor">Z poziomu Razor</string>
+  <string name="S01" comment="-&gt; S01">Witaj Świecie</string>
+  <string name="S02" comment="-&gt; S02">Cześć</string>
+  <string name="S03_zero" comment="-&gt; S03_zero">brak elementów</string>
+  <string name="S03_one" comment="-&gt; S03_one">{} element</string>
+  <string name="S03_two" comment="-&gt; S03_two">{} elementy</string>
+  <string name="S03_few" comment="-&gt; S03_few">{} elementów</string>
+  <string name="S03_many" comment="-&gt; S03_many">{} elementów</string>
+  <string name="S03_other" comment="-&gt; S03_other">{} elementów</string>
+  <string name="S04_one" comment="-&gt; S04_one">{}wszy</string>
+  <string name="S04_two" comment="-&gt; S04_two">{}gi</string>
+  <string name="S04_few" comment="-&gt; S04_few">{}ci</string>
+  <string name="S04_other" comment="-&gt; S04_other">{}ty</string>
+  <string name="S05_one" comment="-&gt; S05_one">{} element</string>
+  <string name="S05_other" comment="-&gt; S05_other">{} elementów</string>
+  <string name="S05_exactly_0" comment="-&gt; S05_exactly_0">brak w całości</string>
+  <string name="S06_one" comment="-&gt; S06_one">{} element</string>
+  <string name="S06_other" comment="-&gt; S06_other">{} elementów</string>
+  <string name="S07_Alpha" comment="-&gt; S07_Alpha">Ścieżka Alpha</string>
+  <string name="S07_Beta" comment="-&gt; S07_Beta">Ścieżka Beta</string>
+  <string name="S07" comment="-&gt; S07">Inna ścieżka</string>
+  <string name="S08_Alpha" comment="-&gt; S08_Alpha">Ścieżka Alpha</string>
+  <string name="S08" comment="-&gt; S08">Inna ścieżka</string>
+  <string name="S09_Alpha_one" comment="-&gt; S09_Alpha_one">{} element Alpha</string>
+  <string name="S09_Alpha_other" comment="-&gt; S09_Alpha_other">{} elementy Alpha</string>
+  <string name="S09_Beta_one" comment="-&gt; S09_Beta_one">{} element Beta</string>
+  <string name="S09_Beta_other" comment="-&gt; S09_Beta_other">{} elementy Beta</string>
+  <string name="S09_one" comment="-&gt; S09_one">{} inny element</string>
+  <string name="S09_other" comment="-&gt; S09_other">{} inne elementy</string>
+  <string name="S10_Alpha_one" comment="-&gt; S10_Alpha_one">{}wszy Alpha</string>
+  <string name="S10_Alpha_other" comment="-&gt; S10_Alpha_other">{}ty Alpha</string>
+  <string name="S10_Alpha_exactly_1" comment="-&gt; S10_Alpha_exactly_1">1wszy Alpha</string>
+  <string name="S10_one" comment="-&gt; S10_one">{}wszy inny</string>
+  <string name="S10_other" comment="-&gt; S10_other">{}ty inny</string>
+  <string name="S11_Alpha_one" comment="-&gt; S11_Alpha_one">{} element Alpha</string>
+  <string name="S11_Alpha_other" comment="-&gt; S11_Alpha_other">{} elementy Alpha</string>
+  <string name="S11_one" comment="-&gt; S11_one">{} inny element</string>
+  <string name="S11_other" comment="-&gt; S11_other">{} inne elementy</string>
+  <string name="S12" comment="-&gt; S12"></string>
+  <string name="_dynamicKey" comment="-&gt; _dynamicKey">Wiadomość dynamiczna</string>
+  <string name="&quot;Resx.Match&quot;" comment="-&gt; Resx.Match">Pasujący tekst źródłowy</string>
+  <string name="&quot;Resx.Conflict&quot;" comment="-&gt; Resx.Conflict">Kod mówi to</string>
+  <string name="&quot;S16.Attr&quot;" comment="-&gt; S16.Attr">Szukaj…</string>
+  <string name="&quot;S17.TernA&quot;" comment="-&gt; S17.TernA">Edytuj</string>
+  <string name="&quot;S17.TernB&quot;" comment="-&gt; S17.TernB">Dodaj</string>
+  <string name="&quot;S18.Cast&quot;" comment="-&gt; S18.Cast">Tekst z &lt;strong&gt;pogrubieniem&lt;/strong&gt;</string>
+  <string name="&quot;S19.A&quot;" comment="-&gt; S19.A">Pierwszy</string>
+  <string name="&quot;S19.B&quot;" comment="-&gt; S19.B">Drugi</string>
+  <string name="&quot;S20.TextBlock&quot;" comment="-&gt; S20.TextBlock">Wewnątrz bloku tekstu</string>
+  <string name="&quot;S23.Placeholder&quot;" comment="-&gt; S23.Placeholder">Odwiedzono {VisitCount} razy</string>
+  <string name="&quot;S21.Verbatim&quot;" comment="-&gt; S21.Verbatim">Wiersz pierwszy
+Wiersz drugi z \"cudzysłowami\"</string>
+  <string name="&quot;S21.Raw&quot;" comment="-&gt; S21.Raw">To ma \"surowe cudzysłowy\" w środku</string>
+  <string name="&quot;S21.Concat&quot;" comment="-&gt; S21.Concat">Pierwsza połowa druga połowa</string>
+  <string name="&quot;S22.Nested&quot;" comment="-&gt; S22.Nested">Zagnieżdżona wartość</string>
+  <string name="&quot;CB.CodeBehind&quot;" comment="-&gt; CB.CodeBehind">Z poziomu code-behind</string>
+  <string name="&quot;Resx.Only&quot;" comment="-&gt; Resx.Only">Tylko w resx, brak odpowiednika w kodzie</string>
+</resources>

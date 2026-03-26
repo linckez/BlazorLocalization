@@ -1,0 +1,16 @@
+{
+  "Home.Title": "Willkommen beim Lokalisierungsbeispiel",
+  "Home.Welcome": "Hallo und willkommen!",
+  "Home.ItemCount_one": "{Count} Artikel in Ihrem Warenkorb",
+  "Home.ItemCount_other": "{Count} Artikel in Ihrem Warenkorb",
+  "Home.Position_one": "{Position}. Platz",
+  "Home.Position_two": "{Position}. Platz",
+  "Home.Position_few": "{Position}. Platz",
+  "Home.Position_other": "{Position}. Platz",
+  "Home.Greeting_Mr": "Sehr geehrter Herr Schmidt",
+  "Home.Greeting_Mrs": "Sehr geehrte Frau Schmidt",
+  "Home.Greeting": "Sehr geehrter Kunde",
+  "Home.Legacy": "Altschlüssel auf Deutsch",
+  "Home.LastVisit": "Zuletzt besucht von {UserName} am {Date}",
+  "NavMenu.Home": "Startseite"
+}

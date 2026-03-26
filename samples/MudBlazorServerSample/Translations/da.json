@@ -1,0 +1,14 @@
+{
+  "Home.Title": "Velkommen til lokaliseringseksemplet",
+  "Home.Welcome": "Hej og velkommen!",
+  "Home.ItemCount_one": "{Count} vare i din kurv",
+  "Home.ItemCount_other": "{Count} varer i din kurv",
+  "Home.Position_one": "{Position}. plads",
+  "Home.Position_other": "{Position}. plads",
+  "Home.Greeting_Mr": "Kære hr. Jensen",
+  "Home.Greeting_Mrs": "Kære fru Jensen",
+  "Home.Greeting": "Kære kunde",
+  "Home.Legacy": "Gammel nøgle på dansk",
+  "Home.LastVisit": "Sidst besøgt af {UserName} den {Date}",
+  "NavMenu.Home": "Hjem"
+}

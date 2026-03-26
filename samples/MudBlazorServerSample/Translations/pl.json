@@ -1,0 +1,18 @@
+{
+  "Home.Title": "Witamy w przykładzie lokalizacji",
+  "Home.Welcome": "Witaj!",
+  "Home.ItemCount_one": "{Count} przedmiot w koszyku",
+  "Home.ItemCount_few": "{Count} przedmioty w koszyku",
+  "Home.ItemCount_many": "{Count} przedmiotów w koszyku",
+  "Home.ItemCount_other": "{Count} przedmiotów w koszyku",
+  "Home.Position_one": "{Position}. miejsce",
+  "Home.Position_few": "{Position}. miejsce",
+  "Home.Position_many": "{Position}. miejsce",
+  "Home.Position_other": "{Position}. miejsce",
+  "Home.Greeting_Mr": "Szanowny Panie Kowalski",
+  "Home.Greeting_Mrs": "Szanowna Pani Kowalska",
+  "Home.Greeting": "Szanowny Kliencie",
+  "Home.Legacy": "Stary klucz po polsku",
+  "Home.LastVisit": "Ostatnia wizyta: {UserName}, dnia {Date}",
+  "NavMenu.Home": "Strona główna"
+}

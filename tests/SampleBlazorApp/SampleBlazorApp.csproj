@@ -1,0 +1,26 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <BlazorDisableThrowNavigationException>true</BlazorDisableThrowNavigationException>
+  </PropertyGroup>
+
+
+  <ItemGroup>
+
+    <PackageReference Include="MudBlazor" Version="9.*" />
+
+    <PackageReference Include="NeoSmart.Caching.Sqlite.AspNetCore" Version="9.0.1" />
+
+    <PackageReference Include="System.Resources.Extensions" Version="10.0.0-preview.1.25080.5" />
+
+  </ItemGroup>
+
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\BlazorLocalization.Extensions\BlazorLocalization.Extensions.csproj" />
+    <ProjectReference Include="..\..\src\BlazorLocalization.TranslationProvider.Crowdin\BlazorLocalization.TranslationProvider.Crowdin.csproj" />
+  </ItemGroup>
+</Project>

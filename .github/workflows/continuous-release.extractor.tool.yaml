@@ -1,0 +1,47 @@
+###########################################################
+#                                                         #
+#   TL;DR: Only makes a new "GitHub Releases"             #
+#   for changelog purpose. Nothing else.                  #
+#   - Automatically triggered on pushes to main branch.   #
+#                                                         #
+###########################################################
+
+name: Continuous Release | BlazorLocalization.Extractor Tool
+permissions:
+  contents: write
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - src/BlazorLocalization.Extractor/**
+      - src/BlazorLocalization.Extensions/**
+
+jobs:
+  release:
+    name: Create Release
+    runs-on: ubuntu-latest
+    steps:
+      - name: Repository Checkout 📥
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Setup .NET 👨🏽‍💻
+        uses: actions/setup-dotnet@v5
+        with:
+          dotnet-version: 10.x
+
+      - name: Extract Package Version 📌
+        id: version
+        run: echo "package_version=$(dotnet msbuild src/BlazorLocalization.Extractor/BlazorLocalization.Extractor.csproj -getProperty:PackageVersion)" >> $GITHUB_OUTPUT
+
+      - name: Create Release 🚀
+        uses: softprops/action-gh-release@v2
+        with:
+          name: Extractor Release v${{ steps.version.outputs.package_version }}.${{ github.run_number }}
+          tag_name: extractor/v${{ steps.version.outputs.package_version }}.${{ github.run_number }}
+          prerelease: false
+          make_latest: true
+          generate_release_notes: true

@@ -1,0 +1,17 @@
+﻿{
+  "App.Title": "Welcome",
+  "Cart.Items_zero": "No items",
+  "Cart.Items_one": "{ItemCount} item",
+  "Cart.Items_other": "{ItemCount} items",
+  "Cart.Items_exactly_42": "The answer",
+  "Invite_Female": "She invited you",
+  "Invite_Male": "He invited you",
+  "Invite": "They invited you",
+  "Inbox_Female_one": "She has {MessageCount} message",
+  "Inbox_Female_other": "She has {MessageCount} messages",
+  "Inbox_Male_one": "He has {MessageCount} message",
+  "Inbox_Male_other": "He has {MessageCount} messages",
+  "Inbox_one": "They have {MessageCount} message",
+  "Inbox_other": "They have {MessageCount} messages",
+  "Legacy.Key": ""
+}

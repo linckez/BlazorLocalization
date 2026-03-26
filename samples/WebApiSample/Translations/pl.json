@@ -1,0 +1,8 @@
+{
+  "Api.Greeting": "Witaj z API!",
+  "Api.Error.NotFound.Title": "Nie znaleziono produktu",
+  "Api.Error.NotFound.Detail": "Nie istnieje produkt o podanym identyfikatorze.",
+  "Api.Validation.Title": "Walidacja nie powiodła się",
+  "Api.Validation.NameRequired": "Nazwa jest wymagana.",
+  "Api.Validation.PricePositive": "Cena musi być większa od zera."
+}

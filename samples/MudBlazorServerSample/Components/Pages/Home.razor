@@ -1,0 +1,113 @@
+﻿@page "/"
+@inject IStringLocalizer<Home> Loc
+
+<PageTitle>Home</PageTitle>
+
+<MudText Typo="Typo.h3" GutterBottom="true">BlazorLocalization — MudBlazor Sample</MudText>
+<MudText Class="mb-8">
+    This page demonstrates the essential <code>Translation()</code> patterns.
+    Switch culture in the app bar to see translations in action.
+</MudText>
+
+<MudText Typo="Typo.body1" Class="mb-2">
+    Current culture: <strong>@CultureInfo.CurrentCulture.Name</strong> (@CultureInfo.CurrentCulture.DisplayName)
+</MudText>
+
+<MudDivider Class="my-4" />
+
+@* ── Simple ── *@
+
+<MudText Typo="Typo.h5" GutterBottom="true">Simple</MudText>
+<MudText>@Loc.Translation("Home.Title", "Welcome to the localization sample")</MudText>
+
+<MudDivider Class="my-4" />
+
+@* ── Simple + .For() inline translations ── *@
+
+<MudText Typo="Typo.h5" GutterBottom="true">Inline Translations (.For)</MudText>
+<MudText>
+    @(Loc.Translation("Home.Welcome", "Hello and welcome!")
+        .For("de", "Hallo und willkommen!")
+        .For("pl", "Witaj!")
+        .For("da", "Hej og velkommen!"))
+</MudText>
+
+<MudDivider Class="my-4" />
+
+@* ── Plural (cardinal) — Polish has one/few/many/other ── *@
+
+<MudText Typo="Typo.h5" GutterBottom="true">Plurals (Cardinal)</MudText>
+<MudText Class="mb-2">Change the count to see CLDR plural categories in action (Polish has one/few/many/other).</MudText>
+<MudSlider @bind-Value="_itemCount" Min="0" Max="25" Step="1" Class="mb-2" Style="max-width: 400px;">
+    Count: @_itemCount
+</MudSlider>
+<MudText>
+    @(Loc.Translation("Home.ItemCount", howMany: _itemCount, replaceWith: new { Count = _itemCount })
+        .One("{Count} item in your cart")
+        .Other("{Count} items in your cart"))
+</MudText>
+
+<MudDivider Class="my-4" />
+
+@* ── Ordinal ── *@
+
+<MudText Typo="Typo.h5" GutterBottom="true">Ordinal</MudText>
+<MudText>
+    @(Loc.Translation("Home.Position", howMany: 3, replaceWith: new { Position = 3 })
+        .Ordinal()
+        .One("{Position}st place")
+        .Two("{Position}nd place")
+        .Few("{Position}rd place")
+        .Other("{Position}th place"))
+</MudText>
+
+<MudDivider Class="my-4" />
+
+@* ── Select (enum-driven) — UserTitle for gender distinction ── *@
+
+<MudText Typo="Typo.h5" GutterBottom="true">Select (Enum)</MudText>
+<MudText Class="mb-2">German uses different forms for Mr/Mrs. English keeps it simple.</MudText>
+<MudRadioGroup @bind-Value="_selectedTitle">
+    <MudRadio Value="UserTitle.Mr" Color="Color.Primary">Mr</MudRadio>
+    <MudRadio Value="UserTitle.Mrs" Color="Color.Primary">Mrs</MudRadio>
+</MudRadioGroup>
+<MudText>
+    @(Loc.Translation("Home.Greeting", _selectedTitle)
+        .When(UserTitle.Mr, "Dear Mr. Smith")
+        .When(UserTitle.Mrs, "Dear Mrs. Smith")
+        .Otherwise("Dear customer"))
+</MudText>
+
+<MudDivider Class="my-4" />
+
+@* ── Standard IStringLocalizer indexer ── *@
+
+<MudText Typo="Typo.h5" GutterBottom="true">Indexer</MudText>
+<MudText>@Loc["Home.Legacy"]</MudText>
+
+<MudDivider Class="my-4" />
+
+@* ── Enum Display — [Translation] attribute ── *@
+
+<MudText Typo="Typo.h5" GutterBottom="true">Enum Display</MudText>
+<MudText Class="mb-2">
+    <code>[Translation]</code> attributes on enum members provide localized display names.
+</MudText>
+@foreach (var status in Enum.GetValues<FlightStatus>())
+{
+    <MudChip T="string" Class="mr-2">@Loc.Display(status)</MudChip>
+}
+
+<MudDivider Class="my-4" />
+
+@* ── SmartFormat named placeholders ── *@
+
+<MudText Typo="Typo.h5" GutterBottom="true">Named Placeholders</MudText>
+<MudText>
+    @Loc.Translation("Home.LastVisit", "Last visited by {UserName} on {Date}", new { UserName = "Anna", Date = DateTime.Now.ToShortDateString() })
+</MudText>
+
+@code {
+    private int _itemCount = 5;
+    private UserTitle _selectedTitle = UserTitle.Mr;
+}

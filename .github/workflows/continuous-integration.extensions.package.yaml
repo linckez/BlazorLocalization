@@ -1,0 +1,58 @@
+###########################################################
+#                                                         #
+#   TL;DR: Only tests and verifies code. Nothing else.    #
+#   - Automatically triggered on PRs to main branch.      #
+#                                                         #
+###########################################################
+
+name: Continuous Integration | BlazorLocalization.Extensions Package
+permissions:
+  contents: read
+
+on:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - src/BlazorLocalization.Extensions/**
+
+jobs:
+  test:
+    name: .NET Test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Repository Checkout 📥
+        uses: actions/checkout@v6
+
+      - name: Setup .NET 👨🏽‍💻
+        uses: actions/setup-dotnet@v5
+        with:
+          dotnet-version: 10.x
+
+      - name: Get Released Version 🏷️
+        id: released
+        run: echo "version=$(gh release list --json tagName --jq 'map(select(.tagName | startswith("extensions/"))) | first | .tagName | ltrimstr("extensions/v") | split(".")[:-1] | join(".")' --limit 20)" >> $GITHUB_OUTPUT
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Get Package Version 📌
+        id: csproj
+        run: echo "version=$(dotnet msbuild src/BlazorLocalization.Extensions/BlazorLocalization.Extensions.csproj -getProperty:PackageVersion)" >> $GITHUB_OUTPUT
+
+      - name: Fail if version not bumped ❌
+        if: steps.released.outputs.version == steps.csproj.outputs.version
+        run: |
+          echo "::error::PackageVersion ${{ steps.csproj.outputs.version }} matches latest release. Bump <PackageVersion> in the csproj."
+          exit 1
+
+      - name: Install Packages 📚
+        shell: bash
+        run: dotnet restore src/BlazorLocalization.Extensions/BlazorLocalization.Extensions.csproj
+
+      - name: Build .NET Project 🚧
+        shell: bash
+        run: dotnet build src/BlazorLocalization.Extensions/BlazorLocalization.Extensions.csproj --no-restore --verbosity normal --configuration Release
+
+      - name: Test .NET Project 🐞
+        run: dotnet test tests/BlazorLocalization.Extensions.Tests/BlazorLocalization.Extensions.Tests.csproj --logger trx --results-directory "test-results" --no-restore --verbosity normal --configuration Release
+        shell: bash

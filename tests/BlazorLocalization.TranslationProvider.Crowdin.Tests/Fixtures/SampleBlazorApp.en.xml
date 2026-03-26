@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <string name="&quot;RC.Title&quot;" comment="-&gt; RC.Title">Connection Interrupted</string>
+  <string name="&quot;CB.Razor&quot;" comment="-&gt; CB.Razor">From Razor side</string>
+  <string name="S01" comment="-&gt; S01">Hello World</string>
+  <string name="S02" comment="-&gt; S02">Hi</string>
+  <string name="S03_zero" comment="-&gt; S03_zero">no items</string>
+  <string name="S03_one" comment="-&gt; S03_one">{} item</string>
+  <string name="S03_two" comment="-&gt; S03_two">{} items</string>
+  <string name="S03_few" comment="-&gt; S03_few">{} items</string>
+  <string name="S03_many" comment="-&gt; S03_many">{} items</string>
+  <string name="S03_other" comment="-&gt; S03_other">{} items</string>
+  <string name="S04_one" comment="-&gt; S04_one">{}st</string>
+  <string name="S04_two" comment="-&gt; S04_two">{}nd</string>
+  <string name="S04_few" comment="-&gt; S04_few">{}rd</string>
+  <string name="S04_other" comment="-&gt; S04_other">{}th</string>
+  <string name="S05_one" comment="-&gt; S05_one">{} item</string>
+  <string name="S05_other" comment="-&gt; S05_other">{} items</string>
+  <string name="S05_exactly_0" comment="-&gt; S05_exactly_0">none at all</string>
+  <string name="S06_one" comment="-&gt; S06_one">{} item</string>
+  <string name="S06_other" comment="-&gt; S06_other">{} items</string>
+  <string name="S07_Alpha" comment="-&gt; S07_Alpha">Alpha path</string>
+  <string name="S07_Beta" comment="-&gt; S07_Beta">Beta path</string>
+  <string name="S07" comment="-&gt; S07">Other path</string>
+  <string name="S08_Alpha" comment="-&gt; S08_Alpha">Alpha path</string>
+  <string name="S08" comment="-&gt; S08">Other path</string>
+  <string name="S09_Alpha_one" comment="-&gt; S09_Alpha_one">{} Alpha item</string>
+  <string name="S09_Alpha_other" comment="-&gt; S09_Alpha_other">{} Alpha items</string>
+  <string name="S09_Beta_one" comment="-&gt; S09_Beta_one">{} Beta item</string>
+  <string name="S09_Beta_other" comment="-&gt; S09_Beta_other">{} Beta items</string>
+  <string name="S09_one" comment="-&gt; S09_one">{} other item</string>
+  <string name="S09_other" comment="-&gt; S09_other">{} other items</string>
+  <string name="S10_Alpha_one" comment="-&gt; S10_Alpha_one">{}st Alpha</string>
+  <string name="S10_Alpha_other" comment="-&gt; S10_Alpha_other">{}th Alpha</string>
+  <string name="S10_Alpha_exactly_1" comment="-&gt; S10_Alpha_exactly_1">1st Alpha</string>
+  <string name="S10_one" comment="-&gt; S10_one">{}st other</string>
+  <string name="S10_other" comment="-&gt; S10_other">{}th other</string>
+  <string name="S11_Alpha_one" comment="-&gt; S11_Alpha_one">{} Alpha item</string>
+  <string name="S11_Alpha_other" comment="-&gt; S11_Alpha_other">{} Alpha items</string>
+  <string name="S11_one" comment="-&gt; S11_one">{} other item</string>
+  <string name="S11_other" comment="-&gt; S11_other">{} other items</string>
+  <string name="S12" comment="-&gt; S12"></string>
+  <string name="_dynamicKey" comment="-&gt; _dynamicKey">Dynamic message</string>
+  <string name="&quot;Resx.Match&quot;" comment="-&gt; Resx.Match">Matching source text</string>
+  <string name="&quot;Resx.Conflict&quot;" comment="-&gt; Resx.Conflict">Code says this</string>
+  <string name="&quot;S16.Attr&quot;" comment="-&gt; S16.Attr">Search…</string>
+  <string name="&quot;S17.TernA&quot;" comment="-&gt; S17.TernA">Edit</string>
+  <string name="&quot;S17.TernB&quot;" comment="-&gt; S17.TernB">Add</string>
+  <string name="&quot;S18.Cast&quot;" comment="-&gt; S18.Cast">Text with &lt;strong&gt;bold&lt;/strong&gt;</string>
+  <string name="&quot;S19.A&quot;" comment="-&gt; S19.A">First</string>
+  <string name="&quot;S19.B&quot;" comment="-&gt; S19.B">Second</string>
+  <string name="&quot;S20.TextBlock&quot;" comment="-&gt; S20.TextBlock">Inside text block</string>
+  <string name="&quot;S23.Placeholder&quot;" comment="-&gt; S23.Placeholder">Visited {VisitCount} times</string>
+  <string name="&quot;S21.Verbatim&quot;" comment="-&gt; S21.Verbatim">Line one
+Line two with \"quotes\"</string>
+  <string name="&quot;S21.Raw&quot;" comment="-&gt; S21.Raw">This has \"raw quotes\" inside</string>
+  <string name="&quot;S21.Concat&quot;" comment="-&gt; S21.Concat">First half second half</string>
+  <string name="&quot;S22.Nested&quot;" comment="-&gt; S22.Nested">Nested value</string>
+  <string name="&quot;CB.CodeBehind&quot;" comment="-&gt; CB.CodeBehind">From code-behind</string>
+  <string name="&quot;Resx.Only&quot;" comment="-&gt; Resx.Only">Only in resx, no code counterpart</string>
+</resources>
