@@ -4,21 +4,16 @@
 	
 # BlazorLocalization
 
-A drop-in replacement for `AddLocalization()` — Blazor, MVC, Razor Pages, APIs  
-Translations via .NET's `IStringLocalizer`, without `.resx` files
+Your users see text in their language. Always.
 
-</div>
-
-<div align="center">
+A drop-in replacement for `AddLocalization()` — any `IStringLocalizer` project, without `.resx` files
 
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 [![NuGet](https://img.shields.io/nuget/v/BlazorLocalization.Extensions.svg)](https://www.nuget.org/packages/BlazorLocalization.Extensions)
 
 </div>
 
-### Your users see text in their language. Always.
-
-Inline translations · Pluggable providers · Plurals & ordinals · Over-the-air updates · Any `IStringLocalizer` project
+Inline translations · Pluggable providers · Plurals & ordinals · Over-the-air updates · Distributed caching
 
 ---
 
@@ -99,20 +94,15 @@ See [Providers](docs/Configuration.md#translation-providers) for all available p
 
 ## Why BlazorLocalization?
 
-Microsoft's [`IStringLocalizer`](https://learn.microsoft.com/en-us/aspnet/core/blazor/globalization-localization?view=aspnetcore-10.0) is deeply embedded in ASP.NET Core — Blazor, MVC, Razor Pages, APIs. It works. But the default backend is `ResourceManager` with `.resx` files:
-
-- Merge conflicts — `.resx` XML files conflict constantly across team branches
-- No over-the-air updates — change a translation? Rebuild and redeploy
-- No plural support — `IStringLocalizer` has no built-in plural category handling
-- No distributed caching — translations live in flat files, not in Redis or a database
-
-BlazorLocalization keeps `IStringLocalizer` as the interface but [replaces `AddLocalization()`](https://learn.microsoft.com/en-us/aspnet/core/fundamentals/localization-extensibility?view=aspnetcore-10.0) and its `ResourceManager` / `.resx` backend entirely:
+[`IStringLocalizer`](https://learn.microsoft.com/en-us/aspnet/core/blazor/globalization-localization?view=aspnetcore-10.0) is deeply embedded in ASP.NET Core — Blazor, MVC, Razor Pages, APIs. BlazorLocalization keeps it as the interface but [replaces `AddLocalization()`](https://learn.microsoft.com/en-us/aspnet/core/fundamentals/localization-extensibility?view=aspnetcore-10.0) and its `ResourceManager` / `.resx` backend entirely:
 
 - **Over-the-air translations** — FusionCache refreshes from your provider in the background. Change a translation, your app picks it up without redeployment
 - **Source text fallback** — if translations haven't loaded yet, users see your source text, never blank strings or keys
 - **CLDR plural support** — plural categories, ordinals, gender/select. ICU concepts, C# ergonomics
 - **Distributed caching** — L1 memory out of the box, optional L2 via any `IDistributedCache` (Redis, SQLite, etc.)
 - **Pluggable providers** — load translations from JSON files, Crowdin, a database, or any custom source. Stack multiple providers with fallback chains
+
+**What you're leaving behind:** `.resx` merge conflicts, rebuild-and-redeploy for every text change, no plural support, no distributed caching.
 
 Built on [Microsoft's `IStringLocalizer`](https://learn.microsoft.com/en-us/aspnet/core/fundamentals/localization-extensibility?view=aspnetcore-10.0), [FusionCache](https://github.com/ZiggyCreatures/FusionCache), and [SmartFormat.NET](https://github.com/axuno/SmartFormat).
 
