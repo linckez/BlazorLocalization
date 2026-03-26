@@ -32,7 +32,7 @@ jobs:
       - name: Get Released Version 🏷️
         id: released
         run: |
-          version=$(gh release list --json tagName --jq 'map(select(.tagName | startswith("extensions/"))) | first | .tagName | ltrimstr("extensions/v") | split(".")[:-1] | join(".")' --limit 20)
+          version=$(gh release list --json tagName --jq 'map(select(.tagName | startswith("extensions/"))) | first | .tagName // "" | ltrimstr("extensions/v") | split(".")[:-1] | join(".")' --limit 20)
           echo "version=$version" >> "$GITHUB_OUTPUT"
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
