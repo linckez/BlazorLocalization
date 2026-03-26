@@ -24,6 +24,7 @@ public class ProviderBasedStringLocalizer(
     ILogger<ProviderBasedStringLocalizer> logger) : IStringLocalizer
 {
     private readonly IReadOnlyList<ITranslationProvider> _providers = [.. providers];
+    private volatile bool _invariantCultureWarned;
 
     /// <inheritdoc/>
     /// <remarks>
@@ -84,7 +85,10 @@ public class ProviderBasedStringLocalizer(
     /// </summary>
     private string? GetLocalizedString(string key)
     {
+        var hasCulture = false;
         foreach (var cultureName in GetCultureFallbackChain())
+        {
+            hasCulture = true;
         {
             var cacheKey = $"locale_{cultureName}_{key}";
 
@@ -136,6 +140,16 @@ public class ProviderBasedStringLocalizer(
                 }
             );
 #pragma warning restore CA2012
+            }
+        }
+
+        if (!hasCulture && !_invariantCultureWarned)
+        {
+            _invariantCultureWarned = true;
+            logger.LogWarning(
+                "No language is set for the current request — translations will fall back to source text. " +
+                "This usually means the app is missing app.UseRequestLocalization() in Program.cs. " +
+                "See the ASP.NET Core globalization and localization docs for setup guidance.");
         }
 
         return null;

@@ -1,3 +1,4 @@
+using System.Globalization;
 using FluentAssertions;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -13,11 +14,15 @@ public sealed class ProviderBasedStringLocalizerTests : IDisposable
 {
     private const string CacheName = "SafetyTests";
 
+    private readonly CultureInfo _prevCulture;
     private readonly ServiceProvider _sp;
     private readonly ProviderBasedStringLocalizer _localizer;
 
     public ProviderBasedStringLocalizerTests()
     {
+        _prevCulture = CultureInfo.CurrentUICulture;
+        CultureInfo.CurrentUICulture = new CultureInfo("en");
+
         var services = new ServiceCollection();
         services.AddLogging();
         services.AddFusionCache(CacheName);
@@ -29,7 +34,11 @@ public sealed class ProviderBasedStringLocalizerTests : IDisposable
             _sp.GetRequiredService<ILogger<ProviderBasedStringLocalizer>>());
     }
 
-    public void Dispose() => _sp.Dispose();
+    public void Dispose()
+    {
+        CultureInfo.CurrentUICulture = _prevCulture;
+        _sp.Dispose();
+    }
 
     [Fact]
     public void PositionalIndexer_MalformedPlaceholder_ReturnsUnformattedTranslation()
@@ -37,8 +46,7 @@ public sealed class ProviderBasedStringLocalizerTests : IDisposable
         // A translator introduces {1} but the caller only passes one argument —
         // string.Format() would throw FormatException and crash the host app.
         var cache = _sp.GetRequiredService<IFusionCacheProvider>().GetCache(CacheName);
-        var culture = System.Globalization.CultureInfo.CurrentUICulture.Name;
-        cache.Set($"locale_{culture}_BadKey", "You have {1} items");
+        cache.Set("locale_en_BadKey", "You have {1} items");
 
         var result = _localizer["BadKey", 42];
 
