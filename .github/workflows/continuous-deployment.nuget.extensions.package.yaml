@@ -51,20 +51,20 @@ jobs:
         with:
           dotnet-version: 10.x
 
-      - name: Install Packages 📚
-        shell: bash
-        run: dotnet restore src/BlazorLocalization.Extensions/BlazorLocalization.Extensions.csproj
-
       - name: Build .NET Project 🚧
         shell: bash
-        run: dotnet build src/BlazorLocalization.Extensions/BlazorLocalization.Extensions.csproj --no-restore --verbosity normal --configuration Release
+        run: dotnet build src/BlazorLocalization.Extensions/BlazorLocalization.Extensions.csproj --verbosity normal --configuration Release
+
+      - name: Build .NET Tests 🧪
+        shell: bash
+        run: dotnet build tests/BlazorLocalization.Extensions.Tests/BlazorLocalization.Extensions.Tests.csproj --verbosity normal --configuration Release
 
       - name: Test .NET Project 🐞
-        run: dotnet test tests/BlazorLocalization.Extensions.Tests/BlazorLocalization.Extensions.Tests.csproj --logger trx --results-directory "test-results" --no-restore --verbosity normal --configuration Release
+        run: dotnet test tests/BlazorLocalization.Extensions.Tests/BlazorLocalization.Extensions.Tests.csproj --logger trx --results-directory "test-results" --no-build --verbosity normal --configuration Release
         shell: bash
 
       - name: Package .NET Project 📦
-        run: dotnet pack src/BlazorLocalization.Extensions/BlazorLocalization.Extensions.csproj --no-restore --verbosity normal --configuration Release --output artifacts
+        run: dotnet pack src/BlazorLocalization.Extensions/BlazorLocalization.Extensions.csproj --no-build --verbosity normal --configuration Release --output artifacts
         shell: bash
 
       - name: Upload Artifact 🚀

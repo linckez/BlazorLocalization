@@ -53,20 +53,20 @@ jobs:
         with:
           dotnet-version: 10.x
 
-      - name: Install Packages 📚
-        shell: bash
-        run: dotnet restore src/BlazorLocalization.TranslationProvider.Crowdin/BlazorLocalization.TranslationProvider.Crowdin.csproj
-
       - name: Build .NET Project 🚧
         shell: bash
-        run: dotnet build src/BlazorLocalization.TranslationProvider.Crowdin/BlazorLocalization.TranslationProvider.Crowdin.csproj --no-restore --verbosity normal --configuration Release
+        run: dotnet build src/BlazorLocalization.TranslationProvider.Crowdin/BlazorLocalization.TranslationProvider.Crowdin.csproj --verbosity normal --configuration Release
+
+      - name: Build .NET Tests 🧪
+        shell: bash
+        run: dotnet build tests/BlazorLocalization.TranslationProvider.Crowdin.Tests/BlazorLocalization.TranslationProvider.Crowdin.Tests.csproj --verbosity normal --configuration Release
 
       - name: Test .NET Project 🐞
-        run: dotnet test tests/BlazorLocalization.TranslationProvider.Crowdin.Tests/BlazorLocalization.TranslationProvider.Crowdin.Tests.csproj --logger trx --results-directory "test-results" --no-restore --verbosity normal --configuration Release
+        run: dotnet test tests/BlazorLocalization.TranslationProvider.Crowdin.Tests/BlazorLocalization.TranslationProvider.Crowdin.Tests.csproj --logger trx --results-directory "test-results" --no-build --verbosity normal --configuration Release
         shell: bash
 
       - name: Package .NET Project 📦
-        run: dotnet pack src/BlazorLocalization.TranslationProvider.Crowdin/BlazorLocalization.TranslationProvider.Crowdin.csproj --no-restore --verbosity normal --configuration Release --output artifacts
+        run: dotnet pack src/BlazorLocalization.TranslationProvider.Crowdin/BlazorLocalization.TranslationProvider.Crowdin.csproj --no-build --verbosity normal --configuration Release --output artifacts
         shell: bash
 
       - name: Upload Artifact 🚀

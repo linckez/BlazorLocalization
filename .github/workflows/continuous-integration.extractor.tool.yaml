@@ -46,14 +46,14 @@ jobs:
           echo "::error::PackageVersion ${{ steps.csproj.outputs.version }} matches latest release. Bump <PackageVersion> in the csproj."
           exit 1
 
-      - name: Install Packages 📚
-        shell: bash
-        run: dotnet restore src/BlazorLocalization.Extractor/BlazorLocalization.Extractor.csproj
-
       - name: Build .NET Project 🚧
         shell: bash
-        run: dotnet build src/BlazorLocalization.Extractor/BlazorLocalization.Extractor.csproj --no-restore --verbosity normal --configuration Release
+        run: dotnet build src/BlazorLocalization.Extractor/BlazorLocalization.Extractor.csproj --verbosity normal --configuration Release
+
+      - name: Build .NET Tests 🧪
+        shell: bash
+        run: dotnet build tests/BlazorLocalization.Extractor.Tests/BlazorLocalization.Extractor.Tests.csproj --verbosity normal --configuration Release
 
       - name: Test .NET Project 🐞
-        run: dotnet test tests/BlazorLocalization.Extractor.Tests/BlazorLocalization.Extractor.Tests.csproj --logger trx --results-directory "test-results" --no-restore --verbosity normal --configuration Release
+        run: dotnet test tests/BlazorLocalization.Extractor.Tests/BlazorLocalization.Extractor.Tests.csproj --logger trx --results-directory "test-results" --no-build --verbosity normal --configuration Release
         shell: bash
