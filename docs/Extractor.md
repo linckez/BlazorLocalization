@@ -26,7 +26,9 @@ Run with no arguments to launch the interactive wizard. It walks you through pro
 blazor-loc
 ```
 
+<p align="center">
 <img src="assets/blazor-loc.svg" alt="blazor-loc interactive wizard demo" width="750">
+</p>
 
 ## Common Recipes
 

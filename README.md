@@ -123,7 +123,9 @@ blazor-loc
 blazor-loc extract ./src -f po -o ./translations
 ```
 
+<p align="center">
 <img src="docs/assets/blazor-loc.svg" alt="blazor-loc interactive wizard demo" width="750">
+</p>
 
 Upload the generated files to Crowdin, Lokalise, or any translation management system.
 See [Extractor CLI](docs/Extractor.md) for recipes, CI integration, and export formats.
