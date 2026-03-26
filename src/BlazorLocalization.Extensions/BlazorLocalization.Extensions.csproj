@@ -13,9 +13,9 @@
 
     <PropertyGroup Label="Package Properties">
         <Title>BlazorLocalization.Extensions</Title>
-        <Description>Cache-backed IStringLocalizer with FusionCache, SmartFormat.NET template support, and pluggable translation providers for Blazor applications.</Description>
+        <Description>Drop-in IStringLocalizer replacement for ASP.NET Core. Pluggable translation providers, plural support, no .resx files.</Description>
         <PackageId>BlazorLocalization.Extensions</PackageId>
-        <PackageTags>blazor;localization;i18n;internationalization;IStringLocalizer;fusioncache;smartformat;translation;asp.net-core</PackageTags>
+        <PackageTags>blazor;localization;i18n;internationalization;IStringLocalizer;CLDR;plurals;translation;aspnetcore;string-localizer;json;database;icu;resourcemanager;resx</PackageTags>
     </PropertyGroup>
 
     <ItemGroup>

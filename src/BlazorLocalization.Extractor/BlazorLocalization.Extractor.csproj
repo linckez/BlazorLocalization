@@ -13,9 +13,9 @@
 
     <PropertyGroup Label="Package Properties">
         <Title>BlazorLocalization.Extractor</Title>
-        <Description>Extracts source translation strings from Blazor projects (IStringLocalizer usage, .resx files) and exports them as i18next JSON, PO, or generic JSON for upload to translation providers.</Description>
+        <Description>Scans .razor, .cs, and .resx files and exports translation strings as PO, i18next JSON, or generic JSON for Crowdin, Lokalise, or any platform.</Description>
         <PackageId>BlazorLocalization.Extractor</PackageId>
-        <PackageTags>blazor;localization;i18n;extractor;dotnet-tool;translation;i18next;resx;po;cli</PackageTags>
+        <PackageTags>blazor;localization;i18n;extractor;dotnet-tool;translation;i18next;resx;po;gettext;cli;roslyn;json</PackageTags>
     </PropertyGroup>
 
     <ItemGroup>

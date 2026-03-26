@@ -9,9 +9,9 @@
 
     <PropertyGroup Label="Package Properties">
         <Title>BlazorLocalization.TranslationProvider.Crowdin</Title>
-        <Description>Crowdin OTA CDN translation provider for BlazorLocalization.Extensions.</Description>
+        <Description>Crowdin translation provider for BlazorLocalization. Fetches translations over-the-air — update text without redeployment.</Description>
         <PackageId>BlazorLocalization.TranslationProvider.Crowdin</PackageId>
-        <PackageTags>blazor;localization;i18n;crowdin;crowdin-ota;translation;ota;ITranslationProvider</PackageTags>
+        <PackageTags>blazor;localization;i18n;internationalization;crowdin;translation;aspnetcore;IStringLocalizer;dotnet</PackageTags>
     </PropertyGroup>
 
     <ItemGroup>
