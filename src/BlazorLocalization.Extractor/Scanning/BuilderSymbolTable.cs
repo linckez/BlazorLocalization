@@ -41,7 +41,6 @@ public sealed class BuilderSymbolTable
 	// ── Method symbols: PluralBuilder ─────────────────────────────────
 
 	public IMethodSymbol PluralFor { get; }
-	public IMethodSymbol PluralOrdinal { get; }
 	public IMethodSymbol PluralExactly { get; }
 	public IMethodSymbol PluralZero { get; }
 	public IMethodSymbol PluralOne { get; }
@@ -68,7 +67,6 @@ public sealed class BuilderSymbolTable
 	public IMethodSymbol SelectPluralWhen { get; }
 	public IMethodSymbol SelectPluralOtherwise { get; }
 	public IMethodSymbol SelectPluralFor { get; }
-	public IMethodSymbol SelectPluralOrdinal { get; }
 	public IMethodSymbol SelectPluralExactly { get; }
 	public IMethodSymbol SelectPluralZero { get; }
 	public IMethodSymbol SelectPluralOne { get; }
@@ -129,6 +127,9 @@ public sealed class BuilderSymbolTable
 	/// <summary>Parameter name for "howMany" on plural Translate(key, howMany).</summary>
 	public string TranslateHowManyParam { get; }
 
+	/// <summary>Parameter name for "ordinal" on plural Translate(key, howMany, ordinal).</summary>
+	public string TranslateOrdinalParam { get; }
+
 	/// <summary>Parameter name for "select" on select Translate(key, select).</summary>
 	public string TranslateSelectParam { get; }
 
@@ -151,7 +152,6 @@ public sealed class BuilderSymbolTable
 
 		// ── PluralBuilder methods ─────────────────────────────────────
 		PluralFor = ResolveMethod(PluralBuilder, nameof(Extensions.Translation.PluralBuilder.For));
-		PluralOrdinal = ResolveMethod(PluralBuilder, nameof(Extensions.Translation.PluralBuilder.Ordinal));
 		PluralExactly = ResolveMethod(PluralBuilder, nameof(Extensions.Translation.PluralBuilder.Exactly));
 		PluralZero = ResolveMethod(PluralBuilder, nameof(Extensions.Translation.PluralBuilder.Zero));
 		PluralOne = ResolveMethod(PluralBuilder, nameof(Extensions.Translation.PluralBuilder.One));
@@ -177,7 +177,6 @@ public sealed class BuilderSymbolTable
 		SelectPluralWhen = ResolveMethod(SelectPluralBuilder, nameof(SelectPluralBuilder<DayOfWeek>.When));
 		SelectPluralOtherwise = ResolveMethod(SelectPluralBuilder, nameof(SelectPluralBuilder<DayOfWeek>.Otherwise));
 		SelectPluralFor = ResolveMethod(SelectPluralBuilder, nameof(SelectPluralBuilder<DayOfWeek>.For));
-		SelectPluralOrdinal = ResolveMethod(SelectPluralBuilder, nameof(SelectPluralBuilder<DayOfWeek>.Ordinal));
 		SelectPluralExactly = ResolveMethod(SelectPluralBuilder, nameof(SelectPluralBuilder<DayOfWeek>.Exactly));
 		SelectPluralZero = ResolveMethod(SelectPluralBuilder, nameof(SelectPluralBuilder<DayOfWeek>.Zero));
 		SelectPluralOne = ResolveMethod(SelectPluralBuilder, nameof(SelectPluralBuilder<DayOfWeek>.One));
@@ -218,12 +217,15 @@ public sealed class BuilderSymbolTable
 		TranslateKeyParam = simpleTranslate.GetParameters()[1].Name!;   // skip 'this' param at [0]
 		TranslateMessageParam = simpleTranslate.GetParameters()[2].Name!;
 
-		// The plural overload: Translate(this IStringLocalizer, string key, int howMany, object? replaceWith)
+		// The plural overload: Translate(this IStringLocalizer, string key, int howMany, bool ordinal, object? replaceWith)
 		var pluralTranslate = typeof(StringLocalizerExtensions).GetMethods()
 			.First(m => m.Name == nameof(StringLocalizerExtensions.Translation)
 			            && !m.IsGenericMethod
 			            && m.GetParameters().Any(p => p.ParameterType == typeof(int)));
 		TranslateHowManyParam = pluralTranslate.GetParameters()[2].Name!;
+
+		// The ordinal parameter on the plural overload: Translate(this IStringLocalizer, string key, int howMany, bool ordinal, object? replaceWith)
+		TranslateOrdinalParam = pluralTranslate.GetParameters()[3].Name!;
 
 		// The select overload — generic, no int param
 		var selectTranslate = typeof(StringLocalizerExtensions).GetMethods()
@@ -326,7 +328,6 @@ public sealed class BuilderSymbolTable
 		ValidateParams(PluralFor, typeof(Extensions.Translation.PluralBuilder), nameof(Extensions.Translation.PluralBuilder.For));
 		ValidateParams(PluralExactly, typeof(Extensions.Translation.PluralBuilder), nameof(Extensions.Translation.PluralBuilder.Exactly));
 		ValidateParams(PluralOne, typeof(Extensions.Translation.PluralBuilder), nameof(Extensions.Translation.PluralBuilder.One));
-		ValidateParams(PluralOrdinal, typeof(Extensions.Translation.PluralBuilder), nameof(Extensions.Translation.PluralBuilder.Ordinal));
 
 		ValidateParams(SimpleFor, typeof(Extensions.Translation.SimpleBuilder), nameof(Extensions.Translation.SimpleBuilder.For));
 

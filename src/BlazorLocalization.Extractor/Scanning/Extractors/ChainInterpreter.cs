@@ -58,9 +58,9 @@ internal static class ChainInterpreter
 		return builderKind switch
 		{
 			BuilderKind.Simple => InterpretSimpleChain(call, chain, key, source, symbols),
-			BuilderKind.Plural => InterpretPluralChain(chain, key, source, symbols),
+			BuilderKind.Plural => InterpretPluralChain(call, chain, key, source, symbols),
 			BuilderKind.Select => InterpretSelectChain(chain, key, source, symbols),
-			BuilderKind.SelectPlural => InterpretSelectPluralChain(chain, key, source, symbols),
+			BuilderKind.SelectPlural => InterpretSelectPluralChain(call, chain, key, source, symbols),
 			_ => null
 		};
 	}
@@ -97,6 +97,7 @@ internal static class ChainInterpreter
 	}
 
 	private static TranslationEntry InterpretPluralChain(
+		ExtractedCall call,
 		IReadOnlyList<ResolvedChainLink> chain,
 		string key,
 		SourceReference source,
@@ -104,7 +105,7 @@ internal static class ChainInterpreter
 	{
 		var categories = new Dictionary<string, string>();
 		var exactMatches = new Dictionary<int, string>();
-		var isOrdinal = false;
+		var isOrdinal = string.Equals(FindArgByParam(call.Arguments, symbols.TranslateOrdinalParam), "true", StringComparison.OrdinalIgnoreCase);
 		var forSections = new List<(string locale, List<ResolvedChainLink> calls)>();
 		string? currentLocale = null;
 		List<ResolvedChainLink>? currentForCalls = null;
@@ -119,12 +120,6 @@ internal static class ChainInterpreter
 					forSections.Add((currentLocale, currentForCalls));
 				currentLocale = FindArgByParam(link.Arguments, symbols.PluralForLocaleParam);
 				currentForCalls = [];
-				continue;
-			}
-
-			if (symbols.IsMethod(link.Symbol, symbols.PluralOrdinal))
-			{
-				isOrdinal = true;
 				continue;
 			}
 
@@ -224,13 +219,14 @@ internal static class ChainInterpreter
 	}
 
 	private static TranslationEntry InterpretSelectPluralChain(
+		ExtractedCall call,
 		IReadOnlyList<ResolvedChainLink> chain,
 		string key,
 		SourceReference source,
 		BuilderSymbolTable symbols)
 	{
 		var cases = new Dictionary<string, PluralText>();
-		var isOrdinal = false;
+		var isOrdinal = string.Equals(FindArgByParam(call.Arguments, symbols.TranslateOrdinalParam), "true", StringComparison.OrdinalIgnoreCase);
 		var forSections = new List<(string locale, List<ResolvedChainLink> calls)>();
 		string? currentLocale = null;
 		List<ResolvedChainLink>? currentForCalls = null;
@@ -269,12 +265,6 @@ internal static class ChainInterpreter
 			if (currentLocale is not null)
 			{
 				currentForCalls?.Add(link);
-				continue;
-			}
-
-			if (symbols.IsMethod(link.Symbol, symbols.SelectPluralOrdinal))
-			{
-				isOrdinal = true;
 				continue;
 			}
 

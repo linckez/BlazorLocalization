@@ -53,8 +53,7 @@
 
 <MudText Typo="Typo.h5" GutterBottom="true">Ordinal</MudText>
 <MudText>
-    @(Loc.Translation("Home.Position", howMany: 3, replaceWith: new { Position = 3 })
-        .Ordinal()
+    @(Loc.Translation("Home.Position", howMany: 3, ordinal: true, replaceWith: new { Position = 3 })
         .One("{Position}st place")
         .Two("{Position}nd place")
         .Few("{Position}rd place")

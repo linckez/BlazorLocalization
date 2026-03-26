@@ -5,7 +5,7 @@ namespace BlazorLocalization.Extensions.Translation;
 
 /// <summary>
 /// Resolves a translation that varies by both an enum value and a quantity.
-/// Created by <see cref="StringLocalizerExtensions.Translation{TSelect}(IStringLocalizer, string, TSelect, int, object?)"/>.
+/// Created by <see cref="StringLocalizerExtensions.Translation{TSelect}(IStringLocalizer, string, TSelect, int, bool, object?)"/>.
 /// </summary>
 /// <typeparam name="TSelect">An enum type whose members represent the variants.</typeparam>
 public sealed class SelectPluralBuilder<TSelect> where TSelect : Enum
@@ -22,17 +22,15 @@ public sealed class SelectPluralBuilder<TSelect> where TSelect : Enum
     private readonly Dictionary<(string? selectCase, string pluralSuffix), string> _sourceMessages = new();
     private readonly Dictionary<string, Dictionary<(string? selectCase, string pluralSuffix), string>> _inlineMessages = new();
 
-    internal SelectPluralBuilder(IStringLocalizer localizer, string key, TSelect selectValue, int howMany, object? replaceWith)
+    internal SelectPluralBuilder(IStringLocalizer localizer, string key, TSelect selectValue, int howMany, bool ordinal, object? replaceWith)
     {
         _localizer = localizer;
         _key = key;
         _selectValue = selectValue;
         _howMany = howMany;
+        _useOrdinal = ordinal;
         _replaceWith = replaceWith;
     }
-
-    /// <summary>Switches to ordinal rules (1st, 2nd, 3rd) instead of cardinal (1, 2, 3).</summary>
-    public SelectPluralBuilder<TSelect> Ordinal() { _useOrdinal = true; return this; }
 
     /// <summary>Opens a variant for the specified enum value. Chain <c>.One()</c>, <c>.Other()</c>, etc. after this.</summary>
     /// <param name="select">The enum value this variant applies to.</param>

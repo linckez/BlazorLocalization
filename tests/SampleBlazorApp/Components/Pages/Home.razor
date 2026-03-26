@@ -40,8 +40,7 @@
 <MudText Typo="Typo.h6" Class="mt-4">S04 — Plural Ordinal</MudText>
 <MudText>
     S04 Ordinal howMany=1, expect "1st":
-    @(Loc.Translation("S04", 1, new { Position = 1 })
-        .Ordinal()
+    @(Loc.Translation("S04", 1, ordinal: true, replaceWith: new { Position = 1 })
         .One("{Position}st")
         .Two("{Position}nd")
         .Few("{Position}rd")
@@ -52,7 +51,7 @@
 <MudText Typo="Typo.h6" Class="mt-4">S05 — Plural Exactly</MudText>
 <MudText>
     S05 Exactly howMany=0, expect "none at all":
-    @(Loc.Translation("S05", 0, new { ItemCount = 0 })
+    @(Loc.Translation("S05", 0, replaceWith: new { ItemCount = 0 })
         .Exactly(0, "none at all")
         .One("{ItemCount} item")
         .Other("{ItemCount} items"))
@@ -62,7 +61,7 @@
 <MudText Typo="Typo.h6" Class="mt-4">S06 — Plural + For()</MudText>
 <MudText>
     S06 Plural+For howMany=3 (source text fallback in en, inline .For() in da):
-    @(Loc.Translation("S06", 3, new { ItemCount = 3 })
+    @(Loc.Translation("S06", 3, replaceWith: new { ItemCount = 3 })
         .One("{ItemCount} item")
         .Other("{ItemCount} items")
         .For("da")
@@ -96,7 +95,7 @@
 <MudText Typo="Typo.h6" Class="mt-4">S09 — SelectPlural</MudText>
 <MudText>
     S09 SelectPlural Alpha howMany=1, expect "1 Alpha item":
-    @(Loc.Translation("S09", TestCategory.Alpha, 1, new { ItemCount = 1 })
+    @(Loc.Translation("S09", TestCategory.Alpha, 1, replaceWith: new { ItemCount = 1 })
         .When(TestCategory.Alpha)
         .One("{ItemCount} Alpha item")
         .Other("{ItemCount} Alpha items")
@@ -112,8 +111,7 @@
 <MudText Typo="Typo.h6" Class="mt-4">S10 — SelectPlural Ordinal + Exactly</MudText>
 <MudText>
     S10 SelectPlural+Ordinal+Exactly Alpha howMany=1, expect "1st Alpha":
-    @(Loc.Translation("S10", TestCategory.Alpha, 1, new { Position = 1 })
-        .Ordinal()
+    @(Loc.Translation("S10", TestCategory.Alpha, 1, ordinal: true, replaceWith: new { Position = 1 })
         .When(TestCategory.Alpha)
         .Exactly(1, "1st Alpha")
         .One("{Position}st Alpha")
@@ -127,7 +125,7 @@
 <MudText Typo="Typo.h6" Class="mt-4">S11 — SelectPlural + For()</MudText>
 <MudText>
     S11 SelectPlural+For Alpha howMany=1 (source text fallback in en, inline .For() in da):
-    @(Loc.Translation("S11", TestCategory.Alpha, 1, new { ItemCount = 1 })
+    @(Loc.Translation("S11", TestCategory.Alpha, 1, replaceWith: new { ItemCount = 1 })
         .When(TestCategory.Alpha)
         .One("{ItemCount} Alpha item")
         .Other("{ItemCount} Alpha items")

@@ -5,7 +5,7 @@ namespace BlazorLocalization.Extensions.Translation;
 
 /// <summary>
 /// Resolves a plural translation — picks the right wording for the quantity.
-/// Created by <see cref="StringLocalizerExtensions.Translation(IStringLocalizer, string, int, object?)"/>.
+/// Created by <see cref="StringLocalizerExtensions.Translation(IStringLocalizer, string, int, bool, object?)"/>.
 /// </summary>
 public sealed class PluralBuilder
 {
@@ -18,26 +18,14 @@ public sealed class PluralBuilder
     private readonly Dictionary<string, string> _sourceMessages = new();
     private readonly Dictionary<string, Dictionary<string, string>> _inlineMessages = new();
 
-    internal PluralBuilder(IStringLocalizer localizer, string key, int howMany, object? replaceWith)
+    internal PluralBuilder(IStringLocalizer localizer, string key, int howMany, bool ordinal, object? replaceWith)
     {
         _localizer = localizer;
         _key = key;
         _howMany = howMany;
+        _useOrdinal = ordinal;
         _replaceWith = replaceWith;
     }
-
-    /// <summary>
-    /// Switches to ordinal rules (1st, 2nd, 3rd) instead of cardinal (1, 2, 3):
-    /// <code>
-    /// Loc.Translation(key: "Race.Place", howMany: position, replaceWith: new { Position = position })
-    ///     .Ordinal()
-    ///     .One(message: "{Position}st place")
-    ///     .Two(message: "{Position}nd place")
-    ///     .Few(message: "{Position}rd place")
-    ///     .Other(message: "{Position}th place")
-    /// </code>
-    /// </summary>
-    public PluralBuilder Ordinal() { _useOrdinal = true; return this; }
 
     /// <summary>
     /// Message shown when <c>howMany</c> equals <paramref name="value"/> exactly.

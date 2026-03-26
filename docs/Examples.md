@@ -17,7 +17,7 @@ All examples assume an injected localizer:
 ## Simple
 
 ```razor
-<h1>@Loc.Translation("Home.Title", "Welcome to our app")</h1>
+<h1>@Loc.Translation(key: "Home.Title", message: "Welcome to our app")</h1>
 ```
 
 Your source text is always the fallback — users never see blank strings or raw keys.
@@ -27,9 +27,9 @@ Your source text is always the fallback — users never see blank strings or raw
 Named placeholders are resolved by [SmartFormat](https://github.com/axuno/SmartFormat). Pass any object — properties become placeholders.
 
 ```razor
-<p>@Loc.Translation("Home.Greeting", "Hello, {Name}!", new { Name = user.Name })</p>
+<p>@Loc.Translation(key: "Home.Greeting", message: "Hello, {Name}!", replaceWith: new { Name = user.Name })</p>
 
-<p>@Loc.Translation("Home.Stats", "Showing {Count} of {Total} items", new { Count = 5, Total = 100 })</p>
+<p>@Loc.Translation(key: "Home.Stats", message: "Showing {Count} of {Total} items", replaceWith: new { Count = 5, Total = 100 })</p>
 ```
 
 ## Plurals
@@ -37,9 +37,9 @@ Named placeholders are resolved by [SmartFormat](https://github.com/axuno/SmartF
 Chain `.One()`, `.Other()`, and any other [CLDR plural category](https://www.unicode.org/cldr/charts/46/supplemental/language_plural_rules.html) your target languages need. The correct form is chosen automatically based on the current culture.
 
 ```razor
-<p>@(Loc.Translation("Cart.Items", howMany: cartCount, replaceWith: new { ItemCount = cartCount })
-    .One("1 item in your cart")
-    .Other("{ItemCount} items in your cart"))</p>
+<p>@(Loc.Translation(key: "Cart.Items", howMany: cartCount, replaceWith: new { ItemCount = cartCount })
+    .One(message: "1 item in your cart")
+    .Other(message: "{ItemCount} items in your cart"))</p>
 ```
 
 `howMany` determines which form to pick. Pass it in `replaceWith` too if the message needs to display it.
@@ -47,13 +47,13 @@ Chain `.One()`, `.Other()`, and any other [CLDR plural category](https://www.uni
 **Most languages only need `.One()` and `.Other()`.** Some languages need additional categories — Arabic uses all six CLDR categories:
 
 ```razor
-<p>@(Loc.Translation("Items", howMany: itemCount, replaceWith: new { ItemCount = itemCount })
-    .Zero("لا عناصر")
-    .One("عنصر واحد")
-    .Two("عنصران")
-    .Few("{ItemCount} عناصر")
-    .Many("{ItemCount} عنصرًا")
-    .Other("{ItemCount} عنصر"))</p>
+<p>@(Loc.Translation(key: "Items", howMany: itemCount, replaceWith: new { ItemCount = itemCount })
+    .Zero(message: "لا عناصر")
+    .One(message: "عنصر واحد")
+    .Two(message: "عنصران")
+    .Few(message: "{ItemCount} عناصر")
+    .Many(message: "{ItemCount} عنصرًا")
+    .Other(message: "{ItemCount} عنصر"))</p>
 ```
 
 **Corresponding translation files:**
@@ -67,15 +67,14 @@ Chain `.One()`, `.Other()`, and any other [CLDR plural category](https://www.uni
 
 ## Ordinals
 
-Ordinal ranking (1st, 2nd, 3rd, …). Chain `.Ordinal()` before the category methods.
+Ordinal ranking (1st, 2nd, 3rd, …). Pass `ordinal: true` to use ordinal rules instead of cardinal.
 
 ```razor
-<p>@(Loc.Translation("Race.Place", howMany: position, replaceWith: new { Position = position })
-    .Ordinal()
-    .One("{Position}st place")
-    .Two("{Position}nd place")
-    .Few("{Position}rd place")
-    .Other("{Position}th place"))</p>
+<p>@(Loc.Translation(key: "Race.Place", howMany: position, ordinal: true, replaceWith: new { Position = position })
+    .One(message: "{Position}st place")
+    .Two(message: "{Position}nd place")
+    .Few(message: "{Position}rd place")
+    .Other(message: "{Position}th place"))</p>
 ```
 
 The categories above are for English. Other languages define their own ordinal rules in CLDR — for example, Swedish uses only `Other` for all ordinals. The correct form is chosen automatically based on the current culture.
@@ -85,10 +84,10 @@ The categories above are for English. Other languages define their own ordinal r
 Override a specific count with a precise message. Checked before CLDR category rules.
 
 ```razor
-<p>@(Loc.Translation("Cart.Items", howMany: cartCount)
-    .Exactly(0, "Your cart is empty")
-    .One("1 item in your cart")
-    .Other("Several items in your cart"))</p>
+<p>@(Loc.Translation(key: "Cart.Items", howMany: cartCount)
+    .Exactly(value: 0, message: "Your cart is empty")
+    .One(message: "1 item in your cart")
+    .Other(message: "Several items in your cart"))</p>
 ```
 
 ## Select
@@ -96,9 +95,9 @@ Override a specific count with a precise message. Checked before CLDR category r
 Branch on a categorical enum value — gender, role, formality, or any domain concept.
 
 ```razor
-<p>@(Loc.Translation("Greeting", select: userTier)
-    .When(Tier.Premium, "Welcome back, VIP!")
-    .Otherwise("Welcome!"))</p>
+<p>@(Loc.Translation(key: "Greeting", select: userTier)
+    .When(select: Tier.Premium, message: "Welcome back, VIP!")
+    .Otherwise(message: "Welcome!"))</p>
 ```
 
 ## Select + Plural
@@ -106,13 +105,13 @@ Branch on a categorical enum value — gender, role, formality, or any domain co
 Combine categorical branching with plural forms. Here a premium user gets a different message than a free user, and both vary by quantity:
 
 ```razor
-<p>@(Loc.Translation("Cart.Summary", select: userTier, howMany: itemCount, replaceWith: new { ItemCount = itemCount })
-    .When(Tier.Premium)
-    .One("1 item in your cart — free express shipping!")
-    .Other("{ItemCount} items in your cart — free express shipping!")
+<p>@(Loc.Translation(key: "Cart.Summary", select: userTier, howMany: itemCount, replaceWith: new { ItemCount = itemCount })
+    .When(select: Tier.Premium)
+    .One(message: "1 item in your cart — free express shipping!")
+    .Other(message: "{ItemCount} items in your cart — free express shipping!")
     .Otherwise()
-    .One("1 item in your cart")
-    .Other("{ItemCount} items in your cart"))</p>
+    .One(message: "1 item in your cart")
+    .Other(message: "{ItemCount} items in your cart"))</p>
 ```
 
 With `itemCount = 3` and `Tier.Premium`, this renders: **"3 items in your cart — free express shipping!"**.
@@ -122,18 +121,18 @@ With `itemCount = 3` and `Tier.Premium`, this renders: **"3 items in your cart �
 Already know the translation? Write it where you have the context — no need to switch to Crowdin and back:
 
 ```razor
-<h1>@(Loc.Translation("Home.Title", "Welcome!")
-    .For("da", "Velkommen!")
-    .For("es", "¡Bienvenido!"))</h1>
+<h1>@(Loc.Translation(key: "Home.Title", message: "Welcome!")
+    .For(locale: "da", message: "Velkommen!")
+    .For(locale: "es", message: "¡Bienvenido!"))</h1>
 ```
 
 Works on all builder types. Here's a plural with inline Danish translations:
 
 ```razor
-<p>@(Loc.Translation("Cart.Items", howMany: itemCount)
-    .One("1 item").Other("Several items")
-    .For("da")
-    .One("1 vare").Other("Flere varer"))</p>
+<p>@(Loc.Translation(key: "Cart.Items", howMany: itemCount)
+    .One(message: "1 item").Other(message: "Several items")
+    .For(locale: "da")
+    .One(message: "1 vare").Other(message: "Flere varer"))</p>
 ```
 
 The translation provider always wins when a translation exists. Inline per-locale source texts serve as a starting point for translators and a fallback when the provider hasn't delivered yet.

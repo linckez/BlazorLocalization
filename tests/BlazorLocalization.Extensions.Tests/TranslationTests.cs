@@ -89,10 +89,10 @@ public sealed class TranslationTests : IDisposable
         _cache.Set("locale_en_Cart.Items_one", "1 item");
         _cache.Set("locale_en_Cart.Items_other", "{ItemCount} items");
 
-        var singular = _localizer.Translation("Cart.Items", 1, new { ItemCount = 1 })
+        var singular = _localizer.Translation("Cart.Items", 1, replaceWith: new { ItemCount = 1 })
             .One("1 item").Other("{ItemCount} items").ToString();
 
-        var plural = _localizer.Translation("Cart.Items", 5, new { ItemCount = 5 })
+        var plural = _localizer.Translation("Cart.Items", 5, replaceWith: new { ItemCount = 5 })
             .One("1 item").Other("{ItemCount} items").ToString();
 
         singular.Should().Be("1 item");
@@ -133,7 +133,7 @@ public sealed class TranslationTests : IDisposable
         _cache.Set("locale_en_Inbox_Female_one", "She has {MessageCount} message");
         _cache.Set("locale_en_Inbox_Female_other", "She has {MessageCount} messages");
 
-        var result = _localizer.Translation("Inbox", Gender.Female, 3, new { MessageCount = 3 })
+        var result = _localizer.Translation("Inbox", Gender.Female, 3, replaceWith: new { MessageCount = 3 })
             .When(Gender.Female).One("She has {MessageCount} message").Other("She has {MessageCount} messages")
             .When(Gender.Male).One("He has {MessageCount} message").Other("He has {MessageCount} messages")
             .Otherwise().One("They have {MessageCount} message").Other("They have {MessageCount} messages")

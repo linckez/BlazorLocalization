@@ -56,12 +56,16 @@ public static class StringLocalizerExtensions
         /// (e.g. 1 → singular, 5 → plural). Only used for selection — pass it
         /// in <paramref name="replaceWith"/> too if the message needs to display it.
         /// </param>
+        /// <param name="ordinal">
+        /// Pass <c>true</c> to use ordinal rules (1st, 2nd, 3rd) instead of
+        /// cardinal (1, 2, 3). Defaults to <c>false</c>.
+        /// </param>
         /// <param name="replaceWith">
         /// Optional named values that fill <c>{placeholders}</c> in the message,
         /// e.g. <c>new { ItemCount = cart.Items.Count }</c> fills <c>{ItemCount}</c>.
         /// </param>
-        public PluralBuilder Translation(string key, int howMany, object? replaceWith = null)
-            => new(localizer, key, howMany, replaceWith);
+        public PluralBuilder Translation(string key, int howMany, bool ordinal = false, object? replaceWith = null)
+            => new(localizer, key, howMany, ordinal, replaceWith);
 
         /// <summary>
         /// Translates a message that varies by an enum value — for example, showing
@@ -103,14 +107,18 @@ public static class StringLocalizerExtensions
         /// (e.g. 1 → singular, 5 → plural). Only used for selection — pass it
         /// in <paramref name="replaceWith"/> too if the message needs to display it.
         /// </param>
+        /// <param name="ordinal">
+        /// Pass <c>true</c> to use ordinal rules (1st, 2nd, 3rd) instead of
+        /// cardinal (1, 2, 3). Defaults to <c>false</c>.
+        /// </param>
         /// <param name="replaceWith">
         /// Optional named values that fill <c>{placeholders}</c> in the message,
         /// e.g. <c>new { MessageCount = msgCount }</c> fills <c>{MessageCount}</c>.
         /// </param>
         /// <typeparam name="TSelect">An enum type whose members represent the variants.</typeparam>
-        public SelectPluralBuilder<TSelect> Translation<TSelect>(string key, TSelect select, int howMany, object? replaceWith = null)
+        public SelectPluralBuilder<TSelect> Translation<TSelect>(string key, TSelect select, int howMany, bool ordinal = false, object? replaceWith = null)
             where TSelect : Enum
-            => new(localizer, key, select, howMany, replaceWith);
+            => new(localizer, key, select, howMany, ordinal, replaceWith);
 
         /// <summary>
         /// Returns the localized display text for an enum member decorated with

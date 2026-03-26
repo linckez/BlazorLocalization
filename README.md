@@ -38,11 +38,11 @@ builder.Services.AddProviderBasedLocalization();
 ```razor
 @inject IStringLocalizer<Home> Loc
 
-<h1>@Loc.Translation("Home.Title", "Welcome to our app")</h1>
+<h1>@Loc.Translation(key: "Home.Title", message: "Welcome to our app")</h1>
 
-<p>@(Loc.Translation("Home.Greeting", "Hello, {Name}!", new { Name = user.Name })
-    .For("da", "Hej, {Name}!")
-    .For("de", "Hallo, {Name}!"))</p>
+<p>@(Loc.Translation(key: "Home.Greeting", message: "Hello, {Name}!", replaceWith: new { Name = user.Name })
+    .For(locale: "da", message: "Hej, {Name}!")
+    .For(locale: "de", message: "Hallo, {Name}!"))</p>
 ```
 
 Your source text is always the fallback — users never see blank strings or raw keys. `.For()` adds inline translations for other languages right where you write the text.
