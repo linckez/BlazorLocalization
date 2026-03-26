@@ -1,0 +1,61 @@
+###########################################################
+#                                                         #
+#   TL;DR: Only tests and verifies code. Nothing else.    #
+#   - Automatically triggered on PRs to main branch.      #
+#                                                         #
+###########################################################
+
+name: Continuous Integration | BlazorLocalization.Extractor Tool
+permissions:
+  contents: read
+
+on:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - src/BlazorLocalization.Extractor/**
+      - src/BlazorLocalization.Extensions/**
+
+jobs:
+  test:
+    name: .NET Test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Repository Checkout 📥
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
+
+      - name: Setup .NET 👨🏽‍💻
+        uses: actions/setup-dotnet@c2fa09f4bde5ebb9d1777cf28262a3eb3db3ced7 # v5
+        with:
+          dotnet-version: 10.x
+
+      - name: Get Released Version 🏷️
+        id: released
+        run: |
+          version=$(gh release list --json tagName --jq 'map(select(.tagName | startswith("extractor/"))) | first | .tagName // "" | ltrimstr("extractor/v") | split(".")[:-1] | join(".")' --limit 20)
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Get Package Version 📌
+        id: csproj
+        run: echo "version=$(dotnet msbuild src/BlazorLocalization.Extractor/BlazorLocalization.Extractor.csproj -getProperty:PackageVersion)" >> $GITHUB_OUTPUT
+
+      - name: Fail if version not bumped ❌
+        if: steps.released.outputs.version == steps.csproj.outputs.version
+        run: |
+          echo "::error::PackageVersion ${{ steps.csproj.outputs.version }} matches latest release. Bump <PackageVersion> in the csproj."
+          exit 1
+
+      - name: Build .NET Project 🚧
+        shell: bash
+        run: dotnet build src/BlazorLocalization.Extractor/BlazorLocalization.Extractor.csproj --verbosity normal --configuration Release
+
+      - name: Build .NET Tests 🧪
+        shell: bash
+        run: dotnet build tests/BlazorLocalization.Extractor.Tests/BlazorLocalization.Extractor.Tests.csproj --verbosity normal --configuration Release
+
+      - name: Test .NET Project 🐞
+        run: dotnet test tests/BlazorLocalization.Extractor.Tests/BlazorLocalization.Extractor.Tests.csproj --logger trx --results-directory "test-results" --no-build --verbosity normal --configuration Release
+        shell: bash

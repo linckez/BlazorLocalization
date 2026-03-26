@@ -1,0 +1,4 @@
+﻿{
+  "S02": "Hola",
+  "Enum.FlightStatus_Delayed": "Retrasado"
+}

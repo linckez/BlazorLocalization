@@ -1,0 +1,96 @@
+###########################################################
+#                                                         #
+#   TL;DR: Builds, tests, and publishes NuGet package.    #
+#   - Automatically triggered on pushes to main branch.   #
+#                                                         #
+###########################################################
+
+name: Continuous Deployment | GitHub | BlazorLocalization.Extensions Package
+permissions:
+  id-token: write
+  contents: read
+  packages: write
+
+on:
+  workflow_dispatch:
+    inputs:
+      git-commit:
+        description: 'Select by git commit SHA (e.g., a1b2c3d4) | (optional)'
+        required: false
+        type: string
+      git-tag:
+        description: 'Select by git tag (e.g., extensions/v0.1.0) | (optional)'
+        required: false
+        type: string
+      git-branch:
+        description: 'Select by git branch (e.g., foo/bar) | (optional)'
+        required: false
+        type: string
+
+  push:
+    branches:
+      - main
+    paths:
+      - src/BlazorLocalization.Extensions/**
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    name: .NET Test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code 📥
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
+        with:
+          ref: ${{ inputs.git-commit || inputs.git-tag || inputs.git-branch || github.ref }}
+
+      - name: Setup .NET 👨🏽‍💻
+        uses: actions/setup-dotnet@c2fa09f4bde5ebb9d1777cf28262a3eb3db3ced7 # v5
+        with:
+          dotnet-version: 10.x
+
+      - name: Build .NET Project 🚧
+        shell: bash
+        run: dotnet build src/BlazorLocalization.Extensions/BlazorLocalization.Extensions.csproj --verbosity normal --configuration Release
+
+      - name: Build .NET Tests 🧪
+        shell: bash
+        run: dotnet build tests/BlazorLocalization.Extensions.Tests/BlazorLocalization.Extensions.Tests.csproj --verbosity normal --configuration Release
+
+      - name: Test .NET Project 🐞
+        run: dotnet test tests/BlazorLocalization.Extensions.Tests/BlazorLocalization.Extensions.Tests.csproj --logger trx --results-directory "test-results" --no-build --verbosity normal --configuration Release
+        shell: bash
+
+      - name: Package .NET Project 📦
+        run: dotnet pack src/BlazorLocalization.Extensions/BlazorLocalization.Extensions.csproj --no-build --verbosity normal --configuration Release --output artifacts
+        shell: bash
+
+      - name: Upload Artifact 🚀
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: package
+          path: artifacts/**/*
+          include-hidden-files: true
+
+  release:
+    name: .NET Release
+    runs-on: ubuntu-latest
+    needs: test
+    steps:
+      - name: Setup .NET 👨🏽‍💻
+        uses: actions/setup-dotnet@c2fa09f4bde5ebb9d1777cf28262a3eb3db3ced7 # v5
+        with:
+          dotnet-version: 10.x
+
+      - name: Download Artifact 📥
+        uses: actions/download-artifact@018cc2cf5baa6db3ef3c5f8a56943fffe632ef53 # v6
+        with:
+          name: package
+          path: artifacts
+
+      - name: Publish .NET Package 🚀
+        run: dotnet nuget push artifacts/*.nupkg --source https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json --api-key ${{ secrets.GITHUB_TOKEN }} --skip-duplicate
+        shell: bash

@@ -1,0 +1,94 @@
+﻿[
+  {
+    "key": "App.Title",
+    "sourceText": {
+      "type": "singular",
+      "value": "Welcome"
+    },
+    "sources": [
+      {
+        "filePath": "Home.razor",
+        "line": 10,
+        "projectName": "MyApp"
+      }
+    ]
+  },
+  {
+    "key": "Cart.Items",
+    "sourceText": {
+      "type": "plural",
+      "other": "{ItemCount} items",
+      "zero": "No items",
+      "one": "{ItemCount} item",
+      "exactMatches": {
+        "42": "The answer"
+      }
+    },
+    "sources": [
+      {
+        "filePath": "Cart.razor",
+        "line": 20,
+        "projectName": "MyApp"
+      }
+    ]
+  },
+  {
+    "key": "Invite",
+    "sourceText": {
+      "type": "select",
+      "cases": {
+        "Female": "She invited you",
+        "Male": "He invited you"
+      },
+      "otherwise": "They invited you"
+    },
+    "sources": [
+      {
+        "filePath": "Invite.razor",
+        "line": 30,
+        "projectName": "MyApp"
+      }
+    ]
+  },
+  {
+    "key": "Inbox",
+    "sourceText": {
+      "type": "selectPlural",
+      "pluralCases": {
+        "Female": {
+          "type": "plural",
+          "other": "She has {MessageCount} messages",
+          "one": "She has {MessageCount} message"
+        },
+        "Male": {
+          "type": "plural",
+          "other": "He has {MessageCount} messages",
+          "one": "He has {MessageCount} message"
+        }
+      },
+      "otherwisePlural": {
+        "type": "plural",
+        "other": "They have {MessageCount} messages",
+        "one": "They have {MessageCount} message"
+      }
+    },
+    "sources": [
+      {
+        "filePath": "Inbox.razor",
+        "line": 40,
+        "projectName": "MyApp"
+      }
+    ]
+  },
+  {
+    "key": "Legacy.Key",
+    "sources": [
+      {
+        "filePath": "Old.cs",
+        "line": 50,
+        "projectName": "MyApp",
+        "context": "GetString call"
+      }
+    ]
+  }
+]

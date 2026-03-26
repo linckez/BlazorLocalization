@@ -1,0 +1,34 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net10.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+        <PackageVersion>10.0.0</PackageVersion>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <InternalsVisibleTo Include="BlazorLocalization.Extensions.Tests" />
+    </ItemGroup>
+
+    <PropertyGroup Label="Package Properties">
+        <Title>BlazorLocalization.Extensions</Title>
+        <Description>Drop-in IStringLocalizer replacement for ASP.NET Core. Pluggable translation providers, plural support, no .resx files.</Description>
+        <PackageId>BlazorLocalization.Extensions</PackageId>
+        <PackageTags>blazor;localization;i18n;internationalization;IStringLocalizer;CLDR;plurals;translation;aspnetcore;string-localizer;json;database;icu;resourcemanager;resx</PackageTags>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <None Include="../../README.md" Pack="true" PackagePath=""/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="10.0.3"/>
+        <PackageReference Include="Microsoft.Extensions.Localization.Abstractions" Version="10.0.3"/>
+        <PackageReference Include="Microsoft.Extensions.Logging.Configuration" Version="10.0.3"/>
+        <PackageReference Include="SmartFormat.NET" Version="3.*"/>
+        <PackageReference Include="ZiggyCreatures.FusionCache" Version="2.*"/>
+        <PackageReference Include="ZiggyCreatures.FusionCache.Serialization.SystemTextJson" Version="2.5.0"/>
+    </ItemGroup>
+
+</Project>

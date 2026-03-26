@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <string name="&quot;RC.Title&quot;" comment="-&gt; RC.Title">الاتصال مقطوع</string>
+  <string name="&quot;CB.Razor&quot;" comment="-&gt; CB.Razor">من جانب Razor</string>
+  <string name="S01" comment="-&gt; S01">مرحباً بالعالم</string>
+  <string name="S02" comment="-&gt; S02">أهلاً</string>
+  <string name="S03_zero" comment="-&gt; S03_zero">لا عناصر</string>
+  <string name="S03_one" comment="-&gt; S03_one">عنصر {}</string>
+  <string name="S03_two" comment="-&gt; S03_two">عنصران {}</string>
+  <string name="S03_few" comment="-&gt; S03_few">{} عناصر معدودة</string>
+  <string name="S03_many" comment="-&gt; S03_many">{} العديد من العناصر</string>
+  <string name="S03_other" comment="-&gt; S03_other">{} عناصر أخرى</string>
+  <string name="S04_one" comment="-&gt; S04_one">{}الأول</string>
+  <string name="S04_two" comment="-&gt; S04_two">{}الثاني</string>
+  <string name="S04_few" comment="-&gt; S04_few">{}الثالث</string>
+  <string name="S04_other" comment="-&gt; S04_other">{}forth</string>
+  <string name="S05_one" comment="-&gt; S05_one">{} عنصر</string>
+  <string name="S05_other" comment="-&gt; S05_other">{} عناصر</string>
+  <string name="S05_exactly_0" comment="-&gt; S05_exactly_0">لا شيء على الإطلاق</string>
+  <string name="S06_one" comment="-&gt; S06_one">{} عنصر</string>
+  <string name="S06_other" comment="-&gt; S06_other">{} عناصر</string>
+  <string name="S07_Alpha" comment="-&gt; S07_Alpha">مسار الفا</string>
+  <string name="S07_Beta" comment="-&gt; S07_Beta">مسار بيتا</string>
+  <string name="S07" comment="-&gt; S07">مسار آخر</string>
+  <string name="S08_Alpha" comment="-&gt; S08_Alpha">مسار الفا</string>
+  <string name="S08" comment="-&gt; S08">مسار آخر</string>
+  <string name="S09_Alpha_one" comment="-&gt; S09_Alpha_one">{} عنصر الفا</string>
+  <string name="S09_Alpha_other" comment="-&gt; S09_Alpha_other">{} عناصر الفا</string>
+  <string name="S09_Beta_one" comment="-&gt; S09_Beta_one">{} عنصر بيتا</string>
+  <string name="S09_Beta_other" comment="-&gt; S09_Beta_other">{} عناصر بيتا</string>
+  <string name="S09_one" comment="-&gt; S09_one">{} عنصر آخر</string>
+  <string name="S09_other" comment="-&gt; S09_other">{} عناصر أخرى</string>
+  <string name="S10_Alpha_one" comment="-&gt; S10_Alpha_one">{} الأول الفا</string>
+  <string name="S10_Alpha_other" comment="-&gt; S10_Alpha_other">{} أمام الفا</string>
+  <string name="S10_Alpha_exactly_1" comment="-&gt; S10_Alpha_exactly_1">1الأول الفا</string>
+  <string name="S10_one" comment="-&gt; S10_one">{} الأول الآخر</string>
+  <string name="S10_other" comment="-&gt; S10_other">{} الآخرين</string>
+  <string name="S11_Alpha_one" comment="-&gt; S11_Alpha_one">{} عنصر الفا</string>
+  <string name="S11_Alpha_other" comment="-&gt; S11_Alpha_other">{} عناصر الفا</string>
+  <string name="S11_one" comment="-&gt; S11_one">{} عنصر آخر</string>
+  <string name="S11_other" comment="-&gt; S11_other">{} عناصر أخرى</string>
+  <string name="S12" comment="-&gt; S12"></string>
+  <string name="_dynamicKey" comment="-&gt; _dynamicKey">رسالة ديناميكية</string>
+  <string name="&quot;Resx.Match&quot;" comment="-&gt; Resx.Match">مصدر النص المطابق</string>
+  <string name="&quot;Resx.Conflict&quot;" comment="-&gt; Resx.Conflict">كود يقول هذا</string>
+  <string name="&quot;S16.Attr&quot;" comment="-&gt; S16.Attr">بحث…</string>
+  <string name="&quot;S17.TernA&quot;" comment="-&gt; S17.TernA">تحرير</string>
+  <string name="&quot;S17.TernB&quot;" comment="-&gt; S17.TernB">إضافة</string>
+  <string name="&quot;S18.Cast&quot;" comment="-&gt; S18.Cast">نص مع &lt;strong&gt;غامق&lt;/strong&gt;</string>
+  <string name="&quot;S19.A&quot;" comment="-&gt; S19.A">الأول</string>
+  <string name="&quot;S19.B&quot;" comment="-&gt; S19.B">ثاني</string>
+  <string name="&quot;S20.TextBlock&quot;" comment="-&gt; S20.TextBlock">داخل النص</string>
+  <string name="&quot;S23.Placeholder&quot;" comment="-&gt; S23.Placeholder">زار {VisitCount} مرات</string>
+  <string name="&quot;S21.Verbatim&quot;" comment="-&gt; S21.Verbatim">السطر الأول
+السطر الثاني مع \"علامات تنصيص\"</string>
+  <string name="&quot;S21.Raw&quot;" comment="-&gt; S21.Raw">هذا يحتوي على \"علامات تنصيص خام\" داخله</string>
+  <string name="&quot;S21.Concat&quot;" comment="-&gt; S21.Concat">النصف الأول النصف الثاني</string>
+  <string name="&quot;S22.Nested&quot;" comment="-&gt; S22.Nested">القيمة الداخلية</string>
+  <string name="&quot;CB.CodeBehind&quot;" comment="-&gt; CB.CodeBehind">من كود-بيهايند</string>
+  <string name="&quot;Resx.Only&quot;" comment="-&gt; Resx.Only">فقط في resx، لا يوجد رمز مقابل</string>
+</resources>

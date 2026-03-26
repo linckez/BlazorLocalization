@@ -1,0 +1,42 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <OutputType>Exe</OutputType>
+        <TargetFramework>net10.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+        <PackAsTool>true</PackAsTool>
+        <ToolCommandName>blazor-loc</ToolCommandName>
+        <Version>10.0.0</Version>
+        <NoWarn>$(NoWarn);NU1510</NoWarn>
+    </PropertyGroup>
+
+    <PropertyGroup Label="Package Properties">
+        <Title>BlazorLocalization.Extractor</Title>
+        <Description>Scans .razor, .cs, and .resx files and exports translation strings as PO, i18next JSON, or generic JSON for Crowdin, Lokalise, or any platform.</Description>
+        <PackageId>BlazorLocalization.Extractor</PackageId>
+        <PackageTags>blazor;localization;i18n;extractor;dotnet-tool;translation;i18next;resx;po;gettext;cli;roslyn;json</PackageTags>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <None Include="../../README.md" Pack="true" PackagePath=""/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.14.0"/>
+        <PackageReference Include="Microsoft.AspNetCore.Razor.Language" Version="6.0.36"/>
+        <PackageReference Include="Microsoft.Extensions.Localization.Abstractions" Version="10.0.3"/>
+        <PackageReference Include="Spectre.Console" Version="0.49.1"/>
+        <PackageReference Include="Spectre.Console.Cli" Version="0.49.1"/>
+        <PackageReference Include="Basic.Reference.Assemblies.Net100" Version="1.*"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <FrameworkReference Include="Microsoft.AspNetCore.App"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\BlazorLocalization.Extensions\BlazorLocalization.Extensions.csproj"/>
+    </ItemGroup>
+
+</Project>

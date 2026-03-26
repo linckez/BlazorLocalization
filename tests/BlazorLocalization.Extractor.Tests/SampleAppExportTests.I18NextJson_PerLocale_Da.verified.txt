@@ -1,0 +1,12 @@
+﻿{
+  "S02": "Hej",
+  "S06_one": "{ItemCount} genstand",
+  "S06_other": "{ItemCount} genstande",
+  "S08_Alpha": "Alfa-sti",
+  "S08": "Anden sti",
+  "S11_Alpha_one": "{ItemCount} Alfa-genstand",
+  "S11_Alpha_other": "{ItemCount} Alfa-genstande",
+  "S11_one": "{ItemCount} anden genstand",
+  "S11_other": "{ItemCount} andre genstande",
+  "Enum.FlightStatus_Delayed": "Forsinket"
+}

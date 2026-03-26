@@ -1,0 +1,8 @@
+{
+  "Api.Greeting": "Hej fra API'et!",
+  "Api.Error.NotFound.Title": "Produkt ikke fundet",
+  "Api.Error.NotFound.Detail": "Der findes intet produkt med det angivne ID.",
+  "Api.Validation.Title": "Validering mislykkedes",
+  "Api.Validation.NameRequired": "Navn er påkrævet.",
+  "Api.Validation.PricePositive": "Prisen skal være større end nul."
+}

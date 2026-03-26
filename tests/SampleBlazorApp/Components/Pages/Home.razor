@@ -1,0 +1,223 @@
+﻿@page "/"
+@inject IStringLocalizer<Home> Loc
+
+<PageTitle>Extractor Test Matrix</PageTitle>
+
+<MudText Typo="Typo.h4" Class="mb-4">Extractor Test Matrix</MudText>
+<MudText Typo="Typo.body2" Class="mb-6">
+    32 test calls across 3 files (Home, EdgeCasePage, ReconnectModal) + 1 passive resx entry.
+    Each line states what it tests and what the rendered output should be.
+    If the text after the colon does not match the expectation, something is broken.
+</MudText>
+
+@* S01 — Simple *@
+<MudText Typo="Typo.h6" Class="mt-4">S01 — Simple</MudText>
+<MudText>S01 Simple, expect "Hello World": @Loc.Translation("S01", "Hello World")</MudText>
+
+@* S02 — Simple + For() *@
+<MudText Typo="Typo.h6" Class="mt-4">S02 — Simple + For()</MudText>
+<MudText>
+    S02 Simple+For (source text fallback in en, inline .For() in da/es-MX):
+    @(Loc.Translation("S02", "Hi")
+        .For("da", "Hej")
+        .For("es-MX", "Hola"))
+</MudText>
+
+@* S03 — Plural cardinal, all 6 CLDR categories *@
+<MudText Typo="Typo.h6" Class="mt-4">S03 — Plural Cardinal</MudText>
+<MudText>
+    S03 Plural howMany=1, expect "1 item":
+    @(Loc.Translation(key:"S03", howMany:1, replaceWith: new { ItemCount = 1 })
+        .Zero("no items")
+        .One("{ItemCount} item")
+        .Two("{ItemCount} items")
+        .Few("{ItemCount} items")
+        .Many("{ItemCount} items")
+        .Other("{ItemCount} items"))
+</MudText>
+
+@* S04 — Plural ordinal *@
+<MudText Typo="Typo.h6" Class="mt-4">S04 — Plural Ordinal</MudText>
+<MudText>
+    S04 Ordinal howMany=1, expect "1st":
+    @(Loc.Translation("S04", 1, ordinal: true, replaceWith: new { Position = 1 })
+        .One("{Position}st")
+        .Two("{Position}nd")
+        .Few("{Position}rd")
+        .Other("{Position}th"))
+</MudText>
+
+@* S05 — Plural Exactly *@
+<MudText Typo="Typo.h6" Class="mt-4">S05 — Plural Exactly</MudText>
+<MudText>
+    S05 Exactly howMany=0, expect "none at all":
+    @(Loc.Translation("S05", 0, replaceWith: new { ItemCount = 0 })
+        .Exactly(0, "none at all")
+        .One("{ItemCount} item")
+        .Other("{ItemCount} items"))
+</MudText>
+
+@* S06 — Plural + For() *@
+<MudText Typo="Typo.h6" Class="mt-4">S06 — Plural + For()</MudText>
+<MudText>
+    S06 Plural+For howMany=3 (source text fallback in en, inline .For() in da):
+    @(Loc.Translation("S06", 3, replaceWith: new { ItemCount = 3 })
+        .One("{ItemCount} item")
+        .Other("{ItemCount} items")
+        .For("da")
+        .One("{ItemCount} genstand")
+        .Other("{ItemCount} genstande"))
+</MudText>
+
+@* S07 — Select When + Otherwise *@
+<MudText Typo="Typo.h6" Class="mt-4">S07 — Select</MudText>
+<MudText>
+    S07 Select Alpha, expect "Alpha path":
+    @(Loc.Translation("S07", TestCategory.Alpha)
+        .When(TestCategory.Alpha, "Alpha path")
+        .When(TestCategory.Beta, "Beta path")
+        .Otherwise("Other path"))
+</MudText>
+
+@* S08 — Select + For() *@
+<MudText Typo="Typo.h6" Class="mt-4">S08 — Select + For()</MudText>
+<MudText>
+    S08 Select+For Alpha (source text fallback in en, inline .For() in da):
+    @(Loc.Translation("S08", TestCategory.Alpha)
+        .When(TestCategory.Alpha, "Alpha path")
+        .Otherwise("Other path")
+        .For("da")
+        .When(TestCategory.Alpha, "Alfa-sti")
+        .Otherwise("Anden sti"))
+</MudText>
+
+@* S09 — SelectPlural basic *@
+<MudText Typo="Typo.h6" Class="mt-4">S09 — SelectPlural</MudText>
+<MudText>
+    S09 SelectPlural Alpha howMany=1, expect "1 Alpha item":
+    @(Loc.Translation("S09", TestCategory.Alpha, 1, replaceWith: new { ItemCount = 1 })
+        .When(TestCategory.Alpha)
+        .One("{ItemCount} Alpha item")
+        .Other("{ItemCount} Alpha items")
+        .When(TestCategory.Beta)
+        .One("{ItemCount} Beta item")
+        .Other("{ItemCount} Beta items")
+        .Otherwise()
+        .One("{ItemCount} other item")
+        .Other("{ItemCount} other items"))
+</MudText>
+
+@* S10 — SelectPlural Ordinal + Exactly *@
+<MudText Typo="Typo.h6" Class="mt-4">S10 — SelectPlural Ordinal + Exactly</MudText>
+<MudText>
+    S10 SelectPlural+Ordinal+Exactly Alpha howMany=1, expect "1st Alpha":
+    @(Loc.Translation("S10", TestCategory.Alpha, 1, ordinal: true, replaceWith: new { Position = 1 })
+        .When(TestCategory.Alpha)
+        .Exactly(1, "1st Alpha")
+        .One("{Position}st Alpha")
+        .Other("{Position}th Alpha")
+        .Otherwise()
+        .One("{Position}st other")
+        .Other("{Position}th other"))
+</MudText>
+
+@* S11 — SelectPlural + For() *@
+<MudText Typo="Typo.h6" Class="mt-4">S11 — SelectPlural + For()</MudText>
+<MudText>
+    S11 SelectPlural+For Alpha howMany=1 (source text fallback in en, inline .For() in da):
+    @(Loc.Translation("S11", TestCategory.Alpha, 1, replaceWith: new { ItemCount = 1 })
+        .When(TestCategory.Alpha)
+        .One("{ItemCount} Alpha item")
+        .Other("{ItemCount} Alpha items")
+        .Otherwise()
+        .One("{ItemCount} other item")
+        .Other("{ItemCount} other items")
+        .For("da")
+        .When(TestCategory.Alpha)
+        .One("{ItemCount} Alfa-genstand")
+        .Other("{ItemCount} Alfa-genstande")
+        .Otherwise()
+        .One("{ItemCount} anden genstand")
+        .Other("{ItemCount} andre genstande"))
+</MudText>
+
+@* S12 — Indexer Loc["key"] *@
+<MudText Typo="Typo.h6" Class="mt-4">S12 — Indexer</MudText>
+<MudText>S12 Indexer, expect raw key fallback "S12": @Loc["S12"]</MudText>
+
+@* S13 — Non-literal (dynamic) key *@
+<MudText Typo="Typo.h6" Class="mt-4">S13 — Dynamic key</MudText>
+<MudText>S13 Dynamic key, expect key fallback: @Loc.Translation(_dynamicKey, "Dynamic message")</MudText>
+
+@* S14 — Resx match (same key + same text as Home.resx) *@
+<MudText Typo="Typo.h6" Class="mt-4">S14 — Resx match</MudText>
+<MudText>S14 Resx match, expect "Matching source text": @Loc.Translation("Resx.Match", "Matching source text")</MudText>
+
+@* S15 — Resx conflict (same key, different text from Home.resx) *@
+<MudText Typo="Typo.h6" Class="mt-4">S15 — Resx conflict</MudText>
+<MudText>S15 Resx conflict, expect "Code says this": @Loc.Translation("Resx.Conflict", "Code says this")</MudText>
+
+@* S16 — Component attribute value *@
+<MudText Typo="Typo.h6" Class="mt-4">S16 — Attribute value</MudText>
+<MudTextField T="string" Label="S16 Attr value, check placeholder" Placeholder="@(Loc.Translation("S16.Attr", "Search…").ToString())" />
+
+@* S17 — Ternary expression *@
+<MudText Typo="Typo.h6" Class="mt-4">S17 — Ternary</MudText>
+<MudText>S17 Ternary, expect "Edit": @(_flag ? Loc.Translation("S17.TernA", "Edit") : Loc.Translation("S17.TernB", "Add"))</MudText>
+
+@* S18 — Cast to MarkupString *@
+<MudText Typo="Typo.h6" Class="mt-4">S18 — Cast</MudText>
+<MudText>S18 Cast, expect "Text with <strong>bold</strong>": @((MarkupString)Loc.Translation("S18.Cast", "Text with <strong>bold</strong>").ToString())</MudText>
+
+@* S19 — Two calls on one line *@
+<MudText Typo="Typo.h6" Class="mt-4">S19 — Multi-call line</MudText>
+<MudText>S19/a expect "First" and S19/b expect "Second": @Loc.Translation("S19.A", "First") — @Loc.Translation("S19.B", "Second")</MudText>
+
+@* S20 — @if <text> block *@
+<MudText Typo="Typo.h6" Class="mt-4">S20 — Text block in control flow</MudText>
+@if (true) { <MudText>S20 Text block, expect "Inside text block": @Loc.Translation("S20.TextBlock", "Inside text block")</MudText> }
+
+@* S21 — Verbatim string literal *@
+<MudText Typo="Typo.h6" Class="mt-4">S21 — String literals (code-behind)</MudText>
+<MudText>S21 Verbatim/Raw/Concat tested in code-behind, last result: @_codeResult</MudText>
+
+@* S22 — Nested inside another method call *@
+<MudText Typo="Typo.h6" Class="mt-4">S22 — Nested call</MudText>
+<MudText>S22 Nested in method call, result: @_nestedResult</MudText>
+
+@* S23 — SmartFormat placeholder *@
+<MudText Typo="Typo.h6" Class="mt-4">S23 — SmartFormat placeholder</MudText>
+<MudText>S23 Placeholder, expect "Visited 42 times": @Loc.Translation("S23.Placeholder", "Visited {VisitCount} times", new { VisitCount = 42 })</MudText>
+
+@* S24 — Enum Display (standalone) *@
+<MudText Typo="Typo.h6" Class="mt-4">S24 — Enum Display</MudText>
+<MudText>S24 Display with [Translation] source text + locale texts (source text fallback in en, inline in da/es-MX): @Loc.Display(FlightStatus.Delayed)</MudText>
+
+@* S25 — Enum Display with custom Key override *@
+<MudText Typo="Typo.h6" Class="mt-4">S25 — Enum Display (custom key)</MudText>
+<MudText>S25 Display with custom Key override (Key = "Flight.Late"), expect "Arrived a bit late": @Loc.Display(FlightStatus.ArrivedABitLate)</MudText>
+
+@code {
+    private readonly string _dynamicKey = "S13.Dynamic";
+    private bool _flag = true;
+    private string? _codeResult;
+    private string? _nestedResult;
+
+    protected override void OnInitialized()
+    {
+        // S21: verbatim string
+        _codeResult = Loc.Translation("S21.Verbatim", @"Line one
+Line two with ""quotes""").ToString();
+
+        // S21: raw string literal
+        _codeResult = Loc.Translation("S21.Raw", """This has "raw quotes" inside""").ToString();
+
+        // S21: string concatenation
+        _codeResult = Loc.Translation("S21.Concat", "First half " + "second half").ToString();
+
+        // S22: Translation nested inside another method's argument list
+        _nestedResult = PassThrough(Loc.Translation("S22.Nested", "Nested value").ToString());
+    }
+
+    private static string PassThrough(string input) => input;
+}

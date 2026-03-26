@@ -1,0 +1,52 @@
+﻿msgid ""
+msgstr ""
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Crowdin-SourceKey: msgstr\n"
+
+#: Home.razor:10
+msgid "App.Title"
+msgstr "Welcome"
+
+#: Cart.razor:20
+msgid "Cart.Items"
+msgid_plural "Cart.Items"
+msgstr[0] "{ItemCount} item"
+msgstr[1] "{ItemCount} items"
+
+msgid "Cart.Items_exactly_42"
+msgstr "The answer"
+
+#: Invite.razor:30
+msgid "Invite_Female"
+msgstr "She invited you"
+
+msgid "Invite_Male"
+msgstr "He invited you"
+
+msgid "Invite"
+msgstr "They invited you"
+
+#: Inbox.razor:40
+msgid "Inbox_Female"
+msgid_plural "Inbox_Female"
+msgstr[0] "She has {MessageCount} message"
+msgstr[1] "She has {MessageCount} messages"
+
+msgid "Inbox_Male"
+msgid_plural "Inbox_Male"
+msgstr[0] "He has {MessageCount} message"
+msgstr[1] "He has {MessageCount} messages"
+
+msgid "Inbox"
+msgid_plural "Inbox"
+msgstr[0] "They have {MessageCount} message"
+msgstr[1] "They have {MessageCount} messages"
+
+#: Old.cs:50
+#. GetString call
+msgid "Legacy.Key"
+msgstr ""
+
