@@ -1,6 +1,6 @@
 <div align="center">
 
-![BlazorLocalization logo](src/icon.png)
+![BlazorLocalization logo](https://raw.githubusercontent.com/linckez/BlazorLocalization/main/src/icon.png)
 	
 # BlazorLocalization
 
@@ -113,9 +113,7 @@ Built on [Microsoft's `IStringLocalizer`](https://learn.microsoft.com/en-us/aspn
 
 Already using `IStringLocalizer`? The Extractor scans your `.razor`, `.cs`, and `.resx` files and exports every translation string — no matter which localization backend you use.
 
-<p align="center">
-<img src="docs/assets/blazor-loc.svg" alt="blazor-loc interactive wizard demo" width="750">
-</p>
+![blazor-loc interactive wizard demo](https://raw.githubusercontent.com/linckez/BlazorLocalization/main/docs/assets/blazor-loc.svg)
 
 ```bash
 dotnet tool install -g BlazorLocalization.Extractor

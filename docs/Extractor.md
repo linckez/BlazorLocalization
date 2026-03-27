@@ -22,9 +22,7 @@ dotnet tool update -g BlazorLocalization.Extractor
 
 Run with no arguments to launch the interactive wizard. It walks you through project selection, export format, and output destination:
 
-<p align="center">
-<img src="assets/blazor-loc.svg" alt="blazor-loc interactive wizard demo" width="750">
-</p>
+![blazor-loc interactive wizard demo](https://raw.githubusercontent.com/linckez/BlazorLocalization/main/docs/assets/blazor-loc.svg)
 
 ```bash
 blazor-loc
