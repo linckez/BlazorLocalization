@@ -111,24 +111,15 @@ public static class InteractiveWizard
 		args.Add("-f");
 		args.Add(format.ToString());
 
-		var outputMode = PromptWithDescriptions("Output [green]destination[/]:", new Dictionary<string, string>
-		{
-			["stdout"] = "Print source strings to console (pipeable, no per-locale .For() source texts)",
-			["directory"] = "Write translation files to a directory"
-		});
+		var outputDir = AnsiConsole.Prompt(
+			new TextPrompt<string>("Output [green]directory[/]:")
+				.DefaultValue("./output"));
+		args.Add("-o");
+		args.Add(outputDir);
 
-		if (outputMode == "directory")
-		{
-			var outputDir = AnsiConsole.Prompt(
-				new TextPrompt<string>("Output [green]directory[/]:")
-					.DefaultValue("./output"));
-			args.Add("-o");
-			args.Add(outputDir);
-
-			var ext = ExporterFactory.GetFileExtension(format);
-			if (!AnsiConsole.Confirm($"Include per-locale source texts from .For() calls? (e.g. MyApp.da[green]{ext}[/], MyApp.es-MX[green]{ext}[/])", true))
-				args.Add("--source-only");
-		}
+		var ext = ExporterFactory.GetFileExtension(format);
+		if (!AnsiConsole.Confirm($"Include per-locale source texts from .For() calls? (e.g. MyApp.da[green]{ext}[/], MyApp.es-MX[green]{ext}[/])", true))
+			args.Add("--source-only");
 
 		var onDuplicateKey = PromptEnum<ConflictStrategy>("Duplicate translation key [green]strategy[/]:");
 		if (onDuplicateKey is not ConflictStrategy.First)
