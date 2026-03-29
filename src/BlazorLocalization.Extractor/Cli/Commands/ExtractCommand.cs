@@ -14,7 +14,7 @@ namespace BlazorLocalization.Extractor.Cli.Commands;
 /// </summary>
 public sealed class ExtractCommand : Command<ExtractSettings>
 {
-	public override int Execute(CommandContext context, ExtractSettings settings)
+	public override int Execute(CommandContext context, ExtractSettings settings, CancellationToken cancellationToken)
 	{
 		// 1. Resolve paths
 		var (projectDirs, resolveErrors) = ProjectDiscovery.ResolveAll(settings.Paths);
