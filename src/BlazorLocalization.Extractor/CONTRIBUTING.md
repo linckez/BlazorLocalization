@@ -35,17 +35,22 @@ If you're adding a `using` that violates this table, the type is in the wrong la
 | You're adding... | Put it in... |
 |-----------------|-------------|
 | New export format | `Domain/ExportFormat.cs` (enum member) + `Exporters/` (exporter class) + `ExporterFactory` (mapping). The exhaustive `switch` in `ExporterFactory.Create()` produces a compiler warning if you forget. |
-| New source type (e.g. `.cshtml`) | `Scanning/Providers/` — implement `ISourceProvider.GetDocuments()` + wire in commands |
+| New source type (e.g. `.cshtml`) | `Scanning/Providers/` — implement `ISourceProvider.GetDocuments()` + wire in `ProjectScanner` |
 | New domain type | `Domain/` — must have zero external deps. Sealed record. |
 | New CLI option | `Cli/Commands/` (settings property) + `Cli/InteractiveWizard.cs` (wizard prompt) |
-| New CLI command | `Cli/Commands/` (command + settings classes) + `Program.cs` (registration) |
+| New CLI command | `Cli/Commands/` (command + settings classes) + `Domain/Requests/` (request value object) + `Program.cs` (registration) |
 | New domain enum | `Domain/` — with `[Description]` from `System.ComponentModel` if user-facing (read by both `--help` and the wizard automatically) |
+| New validation guard | `Domain/Requests/XxxRequest.Validate()` — pure, returns error list. Never in commands. |
+| Shared scanning logic | `Scanning/ProjectScanner.cs` — single pipeline for providers → scanner → resx → merge. |
+| Shared locale logic | `Domain/Entries/LocaleDiscovery.cs` — locale enumeration, filtering, per-locale entry rewriting. |
 
 ## Anti-Patterns
 
 - **Enums in `Cli/`** — If it defines *what* the tool does (not *how* the user interacts), it belongs in `Domain/`.
 - **Infrastructure in presentation** — Filesystem scanning, exporter instantiation, project discovery are not CLI concerns.
 - **Commands with business logic** — Commands orchestrate; domain types enforce rules (e.g. `MergedTranslationEntry.FromRaw()` owns conflict detection).
+- **Duplicated pure logic in commands** — Path relativization, locale discovery, project resolution, and validation belong in `Domain/` or `Scanning/`, not copy-pasted across commands.
+- **Validation in commands** — Guards and input validation belong in `Domain/Requests/XxxRequest.Validate()`. Commands only build the request and check the result.
 - **Manual validation of enum CLI options** — Spectre.Console.Cli validates enum-typed properties automatically. Don't add string checks.
 - **Inline dictionaries in wizard for enum options** — Use `PromptEnum<T>()` which reads `[Description]` attributes via reflection. Prevents wizard/enum drift.
 

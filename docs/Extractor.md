@@ -42,10 +42,28 @@ Extract to GNU Gettext PO (includes source file references for translator contex
 blazor-loc extract ./src -f po -o ./translations
 ```
 
-Extract to stdout (pipeable — useful for CI):
+Extract to stdout (pipeable — outputs in the requested format):
 
 ```bash
-blazor-loc extract ./src -f po
+blazer-loc extract ./src -f po
+```
+
+Extract a single locale's `.For()` translations to stdout:
+
+```bash
+blazer-loc extract ./src -f po -l da
+```
+
+Scan a specific `.csproj` file instead of a directory:
+
+```bash
+blazer-loc extract ./src/MyApp/MyApp.csproj -o ./translations
+```
+
+Scan multiple paths (directories or `.csproj` files):
+
+```bash
+blazer-loc extract ./src/WebApp ./src/Shared -o ./translations
 ```
 
 When output is a directory, inline `.For()` per-locale source texts are automatically written as separate files (e.g. `Project.da.i18next.json`):
@@ -100,6 +118,14 @@ Automate extraction in CI so translation files stay in sync with your code:
   with:
     upload_sources: true
     source: translations/*.i18next.json
+```
+
+For per-locale upload in a CI pipeline (one locale per invocation, following the gettext convention):
+
+```bash
+for lang in da es-MX; do
+  blazor-loc extract ./src -f po -l $lang | crowdin upload --language $lang
+done
 ```
 
 ## Duplicate Key Detection
