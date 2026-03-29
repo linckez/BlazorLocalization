@@ -120,14 +120,6 @@ Automate extraction in CI so translation files stay in sync with your code:
     source: translations/*.i18next.json
 ```
 
-For per-locale upload in a CI pipeline (one locale per invocation, following the gettext convention):
-
-```bash
-for lang in da es-MX; do
-  blazor-loc extract ./src -f po -l $lang | crowdin upload --language $lang
-done
-```
-
 ## Duplicate Key Detection
 
 When the same key appears with different source texts, the extractor flags it as a conflict:
