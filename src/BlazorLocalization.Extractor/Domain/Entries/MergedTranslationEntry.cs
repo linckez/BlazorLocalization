@@ -11,6 +11,12 @@ public sealed record MergedTranslationEntry(
 	IReadOnlyDictionary<string, TranslationSourceText>? InlineTranslations = null)
 {
 	/// <summary>
+	/// Returns a copy with all <see cref="Sources"/> file paths made relative to <paramref name="projectDir"/>.
+	/// </summary>
+	public MergedTranslationEntry RelativizeSources(string projectDir) =>
+		this with { Sources = Sources.Select(s => s.Relativize(projectDir)).ToList() };
+
+	/// <summary>
 	/// Merges raw <see cref="TranslationEntry"/> records into deduplicated entries.
 	/// Definitions (<see cref="TranslationSourceText"/> non-null) must agree on source text for the same key.
 	/// References (null source text) yield to definitions.

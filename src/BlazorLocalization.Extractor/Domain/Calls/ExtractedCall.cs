@@ -11,4 +11,11 @@ public sealed record ExtractedCall(
     SourceLocation Location,
     OverloadResolutionStatus OverloadResolution,
     IReadOnlyList<ResolvedArgument> Arguments,
-    IReadOnlyList<ChainedMethodCall>? FluentChain = null);
+    IReadOnlyList<ChainedMethodCall>? FluentChain = null)
+{
+    /// <summary>
+    /// Returns a copy with <see cref="Location"/> file path made relative to <paramref name="projectDir"/>.
+    /// </summary>
+    public ExtractedCall RelativizeLocation(string projectDir) =>
+        this with { Location = Location.Relativize(projectDir) };
+}

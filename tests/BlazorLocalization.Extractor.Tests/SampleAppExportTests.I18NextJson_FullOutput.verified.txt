@@ -42,7 +42,7 @@
   "_dynamicKey": "Dynamic message",
   "Resx.Match": "Matching source text",
   "Resx.Conflict": "Code says this",
-  "S16.Attr": "Search\u2026",
+  "S16.Attr": "Search…",
   "S17.TernA": "Edit",
   "S17.TernB": "Add",
   "S18.Cast": "Text with \u003Cstrong\u003Ebold\u003C/strong\u003E",

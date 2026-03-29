@@ -22,7 +22,7 @@ app.Configure(config =>
 	config.AddCommand<InspectCommand>("inspect")
 		.WithDescription("Show all detected IStringLocalizer calls and the resulting translation entries. Useful for debugging what the scanner sees before exporting.")
 		.WithExample("inspect", "./src")
-		.WithExample("inspect", "-p", "./src/MyApp", "-p", "./src/Shared");
+		.WithExample("inspect", "./src", "./lib/Shared");
 });
 
 if (args.Length == 0)

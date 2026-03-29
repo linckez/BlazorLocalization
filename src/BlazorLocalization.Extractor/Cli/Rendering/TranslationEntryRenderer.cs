@@ -69,7 +69,7 @@ public static class TranslationEntryRenderer
 		IReadOnlyList<MergedTranslationEntry> entries,
 		HashSet<string>? localeFilter)
 	{
-		var allLocales = DiscoverLocales(entries, localeFilter);
+		var allLocales = LocaleDiscovery.DiscoverLocales(entries, localeFilter);
 		if (allLocales.Count == 0) return;
 
 		var totalKeys = entries.Count;
@@ -96,7 +96,7 @@ public static class TranslationEntryRenderer
 		IReadOnlyList<MergedTranslationEntry> entries,
 		HashSet<string>? localeFilter)
 	{
-		var allLocales = DiscoverLocales(entries, localeFilter);
+		var allLocales = LocaleDiscovery.DiscoverLocales(entries, localeFilter);
 
 		foreach (var locale in allLocales)
 		{
@@ -207,23 +207,6 @@ public static class TranslationEntryRenderer
 			foreach (var (v, m) in p.ExactMatches)
 				parts.Add($"  exactly({v}): \"{Markup.Escape(m)}\"");
 		return string.Join("\n", parts);
-	}
-
-	private static IReadOnlyList<string> DiscoverLocales(
-		IReadOnlyList<MergedTranslationEntry> entries,
-		HashSet<string>? localeFilter)
-	{
-		var locales = entries
-			.Where(e => e.InlineTranslations is not null)
-			.SelectMany(e => e.InlineTranslations!.Keys)
-			.Distinct(StringComparer.OrdinalIgnoreCase)
-			.Order(StringComparer.OrdinalIgnoreCase)
-			.ToList();
-
-		if (localeFilter is not null)
-			locales = locales.Where(l => localeFilter.Contains(l)).ToList();
-
-		return locales;
 	}
 
 	private static string GetLocaleDisplayName(string locale)

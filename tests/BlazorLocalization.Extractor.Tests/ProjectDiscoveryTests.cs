@@ -52,4 +52,76 @@ public class ProjectDiscoveryTests : IDisposable
 		result.Should().Contain(d => d.EndsWith("ProjectA"));
 		result.Should().Contain(d => d.EndsWith("ProjectB"));
 	}
+
+	[Fact]
+	public void ResolveAll_CsprojFile_ReturnsParentDir()
+	{
+		Touch("src/WebApp/WebApp.csproj");
+
+		var (dirs, errors) = ProjectDiscovery.ResolveAll([Path.Combine(_root, "src/WebApp/WebApp.csproj")]);
+
+		errors.Should().BeEmpty();
+		dirs.Should().ContainSingle()
+			.Which.Should().EndWith(Path.Combine("src", "WebApp"));
+	}
+
+	[Fact]
+	public void ResolveAll_MissingCsproj_ReturnsError()
+	{
+		var (dirs, errors) = ProjectDiscovery.ResolveAll([Path.Combine(_root, "Missing.csproj")]);
+
+		dirs.Should().BeEmpty();
+		errors.Should().ContainSingle()
+			.Which.Should().Contain("File not found");
+	}
+
+	[Fact]
+	public void ResolveAll_MixedInputs_DirAndCsproj()
+	{
+		Touch("src/WebApp/WebApp.csproj");
+		Touch("other/Api/Api.csproj");
+
+		var (dirs, errors) = ProjectDiscovery.ResolveAll(
+		[
+			Path.Combine(_root, "src"),
+			Path.Combine(_root, "other/Api/Api.csproj")
+		]);
+
+		errors.Should().BeEmpty();
+		dirs.Should().HaveCount(2);
+	}
+
+	[Fact]
+	public void ResolveAll_DeduplicatesSameProject()
+	{
+		Touch("src/WebApp/WebApp.csproj");
+
+		var (dirs, _) = ProjectDiscovery.ResolveAll(
+		[
+			_root,
+			Path.Combine(_root, "src/WebApp/WebApp.csproj")
+		]);
+
+		dirs.Should().ContainSingle();
+	}
+
+	[Fact]
+	public void ResolveAll_NonExistentDir_ReturnsError()
+	{
+		var (dirs, errors) = ProjectDiscovery.ResolveAll(["/nonexistent/path"]);
+
+		dirs.Should().BeEmpty();
+		errors.Should().ContainSingle()
+			.Which.Should().Contain("Path not found");
+	}
+
+	[Fact]
+	public void ResolveAll_EmptyDir_ReturnsError()
+	{
+		var (dirs, errors) = ProjectDiscovery.ResolveAll([_root]);
+
+		dirs.Should().BeEmpty();
+		errors.Should().ContainSingle()
+			.Which.Should().Contain("No .csproj projects found");
+	}
 }

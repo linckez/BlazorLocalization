@@ -10,7 +10,11 @@ namespace BlazorLocalization.Extractor.Tests;
 /// Under dotnet test, <c>Console.IsOutputRedirected</c> is true — the CLI auto-switches
 /// to JSON stdout when no <c>--output</c> is set. File-output tests pass <c>--output</c>,
 /// which takes precedence over pipe detection.
+///
+/// Tests in this class must NOT run in parallel because <see cref="RunCapturingStdout"/>
+/// redirects <c>Console.Out</c>, which is global state.
 /// </summary>
+[Collection("CliSmokeTests")]
 public class CliSmokeTests : IDisposable
 {
 	private static readonly string SampleAppDir = ResolveSampleAppDir();
@@ -31,11 +35,14 @@ public class CliSmokeTests : IDisposable
 
 	/// <summary>
 	/// Captures stdout by temporarily redirecting Console.Out.
+	/// Note: the StringWriter is intentionally NOT disposed because Spectre.Console's
+	/// static AnsiConsole may cache a reference to it. Disposing would cause
+	/// ObjectDisposedException in later tests.
 	/// </summary>
 	private static (string Output, int ExitCode) RunCapturingStdout(string[] args)
 	{
 		var originalOut = Console.Out;
-		using var writer = new StringWriter();
+		var writer = new StringWriter();
 		Console.SetOut(writer);
 		try
 		{
@@ -131,6 +138,56 @@ public class CliSmokeTests : IDisposable
 			["extract", SampleAppDir, "-f", "i18next", "-o", _tempDir, "--source-only", "-l", "da"]);
 
 		exitCode.Should().Be(1);
+	}
+
+	[Fact]
+	public void Extract_ToStdout_Po_ProducesPoOutput()
+	{
+		var (output, exitCode) = RunCapturingStdout(["extract", SampleAppDir, "-f", "po"]);
+
+		exitCode.Should().Be(0);
+		output.Should().Contain("msgid ");
+		output.Should().Contain("msgstr ");
+	}
+
+	[Fact]
+	public void Extract_ToStdout_SingleLocale_ProducesLocaleData()
+	{
+		var (output, exitCode) = RunCapturingStdout(["extract", SampleAppDir, "-l", "da"]);
+
+		exitCode.Should().Be(0);
+		output.Should().NotBeNullOrWhiteSpace();
+		// i18next format: should be valid JSON with Danish translations
+		var action = () => JsonDocument.Parse(output);
+		action.Should().NotThrow();
+	}
+
+	[Fact]
+	public void Extract_ToStdout_MultipleLocales_ReturnsError()
+	{
+		var (_, exitCode) = RunCapturingStdout(["extract", SampleAppDir, "-l", "da", "-l", "es-MX"]);
+
+		exitCode.Should().Be(1);
+	}
+
+	[Fact]
+	public void Extract_CsprojPath_Works()
+	{
+		var csproj = Directory.GetFiles(SampleAppDir, "*.csproj").First();
+		var (output, exitCode) = RunCapturingStdout(["extract", csproj]);
+
+		exitCode.Should().Be(0);
+		output.Should().NotBeNullOrWhiteSpace();
+	}
+
+	[Fact]
+	public void Extract_MultiplePositionalPaths()
+	{
+		var exitCode = BuildApp().Run(["extract", SampleAppDir, SampleAppDir, "-o", _tempDir]);
+
+		exitCode.Should().Be(0);
+		// Same path deduplicated — should produce files for one project
+		Directory.GetFiles(_tempDir).Should().NotBeEmpty();
 	}
 
 	private static string ResolveSampleAppDir()

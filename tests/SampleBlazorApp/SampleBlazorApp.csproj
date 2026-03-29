@@ -10,7 +10,7 @@
 
   <ItemGroup>
 
-    <PackageReference Include="MudBlazor" Version="9.*" />
+    <PackageReference Include="MudBlazor" Version="9.2.*" />
 
     <PackageReference Include="NeoSmart.Caching.Sqlite.AspNetCore" Version="9.0.1" />
 
