@@ -13,7 +13,7 @@ namespace BlazorLocalization.Extractor.Cli.Commands;
 /// </summary>
 public sealed class InspectCommand : Command<InspectSettings>
 {
-	public override int Execute(CommandContext context, InspectSettings settings)
+	public override int Execute(CommandContext context, InspectSettings settings, CancellationToken cancellationToken)
 	{
 		// 1. Resolve paths
 		var (projectDirs, resolveErrors) = ProjectDiscovery.ResolveAll(settings.Paths);
