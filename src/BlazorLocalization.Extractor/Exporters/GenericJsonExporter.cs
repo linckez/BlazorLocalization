@@ -1,5 +1,7 @@
+using System.Text.Encodings.Web;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using System.Text.Unicode;
 using BlazorLocalization.Extractor.Domain;
 using BlazorLocalization.Extractor.Domain.Entries;
 
@@ -15,7 +17,8 @@ public sealed class GenericJsonExporter : ITranslationExporter
 	{
 		WriteIndented = true,
 		DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
-		PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+		PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+		Encoder = JavaScriptEncoder.Create(UnicodeRanges.All)
 	};
 
 	public string Export(IReadOnlyList<MergedTranslationEntry> entries)
