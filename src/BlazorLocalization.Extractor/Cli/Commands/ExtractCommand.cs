@@ -229,7 +229,7 @@ public sealed class ExtractCommand : Command<ExtractSettings>
 		foreach (var requested in request.LocaleFilter.Where(r =>
 			!discovered.Contains(r, StringComparer.OrdinalIgnoreCase)))
 		{
-			Console.Error.WriteLine($"Warning: locale '{requested}' not found in any .For() translation");
+				Console.Error.WriteLine($"Warning: locale '{requested}' not found in any translation");
 		}
 	}
 

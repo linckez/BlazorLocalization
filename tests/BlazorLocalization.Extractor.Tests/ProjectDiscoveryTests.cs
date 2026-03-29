@@ -112,7 +112,7 @@ public class ProjectDiscoveryTests : IDisposable
 
 		dirs.Should().BeEmpty();
 		errors.Should().ContainSingle()
-			.Which.Should().Contain("Not found");
+			.Which.Should().Contain("Path not found");
 	}
 
 	[Fact]
@@ -122,6 +122,6 @@ public class ProjectDiscoveryTests : IDisposable
 
 		dirs.Should().BeEmpty();
 		errors.Should().ContainSingle()
-			.Which.Should().Contain("No projects found");
+			.Which.Should().Contain("No .csproj projects found");
 	}
 }

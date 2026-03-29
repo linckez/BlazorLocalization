@@ -98,7 +98,7 @@ public static class InteractiveWizard
 		var paths = PromptEnum<PathStyle>("Path style in [green]output[/]:");
 		if (paths is not PathStyle.Relative)
 		{
-			args.Add("--paths");
+			args.Add("--path-style");
 			args.Add(paths.ToString());
 		}
 	}
@@ -107,7 +107,7 @@ public static class InteractiveWizard
 	{
 		var format = PromptEnum<ExportFormat>("Output [green]format[/]:");
 		if (format is ExportFormat.Po)
-			AnsiConsole.MarkupLine("[yellow]ℹ PO format cannot group exact matches (=0, =42) or ordinal plurals. Warnings will appear if affected entries are found.[/]");
+			AnsiConsole.MarkupLine("[yellow]ℹ PO format has limitations: it cannot represent exact value matches (e.g. 'exactly 0' or 'exactly 42') or ordinal forms (1st, 2nd, 3rd). Affected entries will be flagged below.[/]");
 		args.Add("-f");
 		args.Add(format.ToString());
 
@@ -118,7 +118,7 @@ public static class InteractiveWizard
 		args.Add(outputDir);
 
 		var ext = ExporterFactory.GetFileExtension(format);
-		if (!AnsiConsole.Confirm($"Include per-locale source texts from .For() calls? (e.g. MyApp.da[green]{ext}[/], MyApp.es-MX[green]{ext}[/])", true))
+		if (!AnsiConsole.Confirm($"Include per-locale translations? (e.g. MyApp.da[green]{ext}[/], MyApp.es-MX[green]{ext}[/])", true))
 			args.Add("--source-only");
 
 		var onDuplicateKey = PromptEnum<ConflictStrategy>("Duplicate translation key [green]strategy[/]:");

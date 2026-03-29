@@ -19,7 +19,7 @@ public sealed record InspectRequest(
 		var errors = new List<string>();
 
 		if (ProjectDirs.Count == 0)
-			errors.Add("No projects found.");
+			errors.Add("No .csproj projects found. Check that the path contains .NET projects.");
 
 		if (SourceOnly && LocaleFilter is not null)
 			errors.Add("--source-only and --locale cannot be used together.");

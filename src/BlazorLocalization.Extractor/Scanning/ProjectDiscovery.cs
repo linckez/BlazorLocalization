@@ -38,13 +38,13 @@ public static class ProjectDiscovery
 			{
 				var found = Discover(raw);
 				if (found.Count == 0)
-					errors.Add($"No projects found in: {raw}");
+					errors.Add($"No .csproj projects found in: {raw}");
 				else
 					dirs.AddRange(found);
 			}
 			else
 			{
-				errors.Add($"Not found: {raw}");
+				errors.Add($"Path not found: {raw}");
 			}
 		}
 

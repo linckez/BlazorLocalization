@@ -23,7 +23,7 @@ public sealed record ExtractRequest(
 		var errors = new List<string>();
 
 		if (ProjectDirs.Count == 0)
-			errors.Add("No projects found.");
+			errors.Add("No .csproj projects found. Check that the path contains .NET projects.");
 
 		if (SourceOnly && LocaleFilter is not null)
 			errors.Add("--source-only and --locale cannot be used together.");
@@ -34,7 +34,7 @@ public sealed record ExtractRequest(
 				errors.Add("Multiple projects found. Use -o, or specify a single .csproj.");
 
 			if (LocaleFilter is { Count: > 1 })
-				errors.Add("Multiple locales require -o.");
+				errors.Add("Stdout supports one locale at a time. Use -o <dir> for multiple locales.");
 		}
 
 		if (Output is OutputTarget.FileTarget && ProjectDirs.Count > 1)

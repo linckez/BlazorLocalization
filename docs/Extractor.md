@@ -45,34 +45,34 @@ blazor-loc extract ./src -f po -o ./translations
 Extract to stdout (pipeable — outputs in the requested format):
 
 ```bash
-blazer-loc extract ./src -f po
+blazor-loc extract ./src -f po
 ```
 
-Extract a single locale's `.For()` translations to stdout:
+Export translations for a single locale to stdout:
 
 ```bash
-blazer-loc extract ./src -f po -l da
+blazor-loc extract ./src -f po -l da
 ```
 
 Scan a specific `.csproj` file instead of a directory:
 
 ```bash
-blazer-loc extract ./src/MyApp/MyApp.csproj -o ./translations
+blazor-loc extract ./src/MyApp/MyApp.csproj -o ./translations
 ```
 
 Scan multiple paths (directories or `.csproj` files):
 
 ```bash
-blazer-loc extract ./src/WebApp ./src/Shared -o ./translations
+blazor-loc extract ./src/WebApp ./src/Shared -o ./translations
 ```
 
-When output is a directory, inline `.For()` per-locale source texts are automatically written as separate files (e.g. `Project.da.i18next.json`):
+When output is a directory, per-locale translations are automatically written as separate files (e.g. `Project.da.i18next.json`):
 
 ```bash
 blazor-loc extract ./src -f i18next -o ./translations
 ```
 
-To suppress per-locale files and export source strings only (useful when uploading to Crowdin — translators should provide translations, not your inline `.For()` text):
+To suppress per-locale files and export source strings only (useful when uploading to Crowdin — translators should provide translations, not your inline source texts):
 
 ```bash
 blazor-loc extract ./src -f i18next -o ./translations --source-only
@@ -88,6 +88,12 @@ Debug what the scanner detects (raw calls + merged entries):
 
 ```bash
 blazor-loc inspect ./src
+```
+
+Output as JSON (pipeable to other tools):
+
+```bash
+blazor-loc inspect ./src --json
 ```
 
 `inspect` dumps every detected `IStringLocalizer` call with its key, source text, plural forms, and file location — useful for verifying the scanner found what you expected.

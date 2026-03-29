@@ -14,7 +14,7 @@ public class SharedSettings : CommandSettings
 	public string[] Paths { get; init; } = ["."];
 
 	[Description("Path style for source references. 'relative' (default) emits paths relative to the project root. 'absolute' preserves full filesystem paths")]
-	[CommandOption("--paths")]
+	[CommandOption("--path-style")]
 	[DefaultValue(PathStyle.Relative)]
 	public PathStyle PathStyle { get; init; } = PathStyle.Relative;
 
@@ -22,7 +22,7 @@ public class SharedSettings : CommandSettings
 	[CommandOption("-l|--locale")]
 	public string[]? Locales { get; init; }
 
-	[Description("Suppress inline locale output (.For() per-locale source texts). Show source-language entries only")]
+	[Description("Export source-language entries only; skip per-locale translations")]
 	[CommandOption("--source-only")]
 	[DefaultValue(false)]
 	public bool SourceOnly { get; init; }

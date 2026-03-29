@@ -31,7 +31,7 @@ public class InspectRequestTests
 		var request = MakeRequest(projectDirs: []);
 
 		request.Validate().Should().ContainSingle()
-			.Which.Should().Contain("No projects found");
+			.Which.Should().Contain("No .csproj projects found");
 	}
 
 	[Fact]

@@ -36,7 +36,7 @@ public class ExtractRequestTests
 		var request = MakeRequest(projectDirs: []);
 
 		request.Validate().Should().ContainSingle()
-			.Which.Should().Contain("No projects found");
+			.Which.Should().Contain("No .csproj projects found");
 	}
 
 	[Fact]
@@ -66,7 +66,7 @@ public class ExtractRequestTests
 			localeFilter: new(StringComparer.OrdinalIgnoreCase) { "da", "es-MX" });
 
 		request.Validate().Should().ContainSingle()
-			.Which.Should().Contain("Multiple locales require -o");
+			.Which.Should().Contain("one locale at a time");
 	}
 
 	[Fact]
