@@ -78,7 +78,10 @@ public sealed class ExtractCommand : Command<ExtractSettings>
 		var exporter = ExporterFactory.Create(request.Format);
 		Console.Write(exporter.Export(entries));
 
-		ReportConflicts(scan.MergeResult.Conflicts, scan.ProjectName);
+		// Conflicts go to stderr in stdout mode (don't contaminate piped output)
+		foreach (var conflict in scan.MergeResult.Conflicts)
+			Console.Error.WriteLine($"Warning: duplicate key '{conflict.Key}' with {conflict.Values.Count} different values");
+
 		return request.ExitOnDuplicateKey && scan.MergeResult.Conflicts.Count > 0 ? 1 : 0;
 	}
 
