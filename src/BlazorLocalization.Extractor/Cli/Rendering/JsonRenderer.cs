@@ -3,8 +3,6 @@ using System.Text.Json.Serialization;
 using BlazorLocalization.Extractor.Domain;
 using BlazorLocalization.Extractor.Domain.Calls;
 using BlazorLocalization.Extractor.Domain.Entries;
-using BlazorLocalization.Extractor.Domain.Calls;
-using BlazorLocalization.Extractor.Domain.Entries;
 
 namespace BlazorLocalization.Extractor.Cli.Rendering;
 
@@ -28,7 +26,7 @@ public static class JsonRenderer
 		IReadOnlyList<PoLimitation> poLimitations,
 		HashSet<string>? localeFilter)
 	{
-		var allLocales = DiscoverLocales(entries, localeFilter);
+		var allLocales = LocaleDiscovery.DiscoverLocales(entries, localeFilter);
 		var totalKeys = entries.Count;
 
 		Console.WriteLine(JsonSerializer.Serialize(new
@@ -152,21 +150,4 @@ public static class JsonRenderer
 			sources = v.Sources.Select(MapSource)
 		})
 	};
-
-	private static IReadOnlyList<string> DiscoverLocales(
-		IReadOnlyList<MergedTranslationEntry> entries,
-		HashSet<string>? localeFilter)
-	{
-		var locales = entries
-			.Where(e => e.InlineTranslations is not null)
-			.SelectMany(e => e.InlineTranslations!.Keys)
-			.Distinct(StringComparer.OrdinalIgnoreCase)
-			.Order(StringComparer.OrdinalIgnoreCase)
-			.ToList();
-
-		if (localeFilter is not null)
-			locales = locales.Where(l => localeFilter.Contains(l)).ToList();
-
-		return locales;
-	}
 }
