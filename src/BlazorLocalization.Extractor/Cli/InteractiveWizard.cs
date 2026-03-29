@@ -39,10 +39,7 @@ public static class InteractiveWizard
 
 		var args = new List<string> { command };
 		foreach (var proj in selectedPaths)
-		{
-			args.Add("-p");
 			args.Add(proj);
-		}
 
 		AddSharedOptions(args);
 

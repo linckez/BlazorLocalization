@@ -22,18 +22,21 @@ public sealed class ExtractCommand : Command<ExtractSettings>
 			return 1;
 		}
 
-		// --output takes precedence over auto-detected JSON mode: when the user explicitly
-		// asks for file output, honour it even when stdout is piped.
-		var useJsonStdout = settings.Output is null && settings.ShouldOutputJson;
-
-		var projectDirs = ResolveProjectDirs(settings);
+		var (projectDirs, resolveErrors) = ProjectDiscovery.ResolveAll(settings.Paths);
+		if (resolveErrors.Count > 0)
+		{
+			foreach (var err in resolveErrors)
+				AnsiConsole.MarkupLine($"[red]{Markup.Escape(err)}[/]");
+		}
 		if (projectDirs.Count == 0)
 		{
-			if (!useJsonStdout)
+			if (resolveErrors.Count == 0)
 				AnsiConsole.MarkupLine("[red]No projects found.[/]");
 			return 1;
 		}
 
+		// When writing to stdout with JSON format, use the JSON renderer directly.
+		var useJsonStdout = settings.Output is null && settings.Format is ExportFormat.Json;
 		if (useJsonStdout)
 			return ExecuteJson(settings, projectDirs);
 
@@ -147,15 +150,9 @@ public sealed class ExtractCommand : Command<ExtractSettings>
 			entries = entries.Where(e => !conflictKeys.Contains(e.Key)).ToList();
 		}
 
-		if (settings.Paths is PathStyle.Relative)
+		if (settings.PathStyle is PathStyle.Relative)
 		{
-			entries = entries.Select(e => e with
-			{
-				Sources = e.Sources.Select(s => s with
-				{
-					FilePath = Path.GetRelativePath(projectDir, s.FilePath).Replace('\\', '/')
-				}).ToList()
-			}).ToList();
+			entries = entries.Select(e => e.RelativizeSources(projectDir)).ToList();
 		}
 
 		return new ProjectResult(projectName, entries, mergeResult.Conflicts, hasConflicts);
@@ -221,13 +218,7 @@ public sealed class ExtractCommand : Command<ExtractSettings>
 		return (output, null);
 	}
 
-	private static IReadOnlyList<string> ResolveProjectDirs(SharedSettings settings)
-	{
-		if (settings.Projects is { Length: > 0 })
-			return settings.Projects.Select(Path.GetFullPath).ToList();
 
-		return ProjectDiscovery.Discover(settings.Path);
-	}
 
 	/// <summary>
 	/// Writes per-locale translation files from inline <c>.For()</c> data.
