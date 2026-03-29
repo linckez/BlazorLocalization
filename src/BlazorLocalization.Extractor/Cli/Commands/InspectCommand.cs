@@ -19,6 +19,8 @@ public sealed class InspectCommand : Command<InspectSettings>
 		var (projectDirs, resolveErrors) = ProjectDiscovery.ResolveAll(settings.Paths);
 		foreach (var err in resolveErrors)
 			Console.Error.WriteLine(err);
+		if (resolveErrors.Count > 0)
+			return 1;
 
 		// 2. Build request
 		var localeFilter = settings.Locales is { Length: > 0 }

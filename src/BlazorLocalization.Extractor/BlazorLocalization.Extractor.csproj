@@ -28,7 +28,7 @@
         <PackageReference Include="Microsoft.Extensions.Localization.Abstractions" Version="10.0.5" />
         <PackageReference Include="Spectre.Console" Version="0.54.0" />
         <PackageReference Include="Spectre.Console.Cli" Version="0.53.1" />
-        <PackageReference Include="Basic.Reference.Assemblies.Net100" Version="1.*"/>
+        <PackageReference Include="Basic.Reference.Assemblies.Net100" Version="1.8.*"/>
     </ItemGroup>
 
     <ItemGroup>
