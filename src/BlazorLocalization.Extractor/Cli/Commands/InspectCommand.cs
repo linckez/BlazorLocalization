@@ -1,7 +1,7 @@
 using BlazorLocalization.Extractor.Cli.Rendering;
 using BlazorLocalization.Extractor.Domain;
-using BlazorLocalization.Extractor.Domain.Calls;
 using BlazorLocalization.Extractor.Domain.Entries;
+using BlazorLocalization.Extractor.Domain.Requests;
 using BlazorLocalization.Extractor.Scanning;
 using Spectre.Console;
 using Spectre.Console.Cli;
@@ -9,77 +9,80 @@ using Spectre.Console.Cli;
 namespace BlazorLocalization.Extractor.Cli.Commands;
 
 /// <summary>
-/// Debug command: shows raw <see cref="ExtractedCall"/> details and mapped <see cref="TranslationEntry"/> records.
+/// Debug command: shows raw call details and mapped translation entries.
 /// </summary>
 public sealed class InspectCommand : Command<InspectSettings>
 {
 	public override int Execute(CommandContext context, InspectSettings settings)
 	{
-		if (settings.SourceOnly && settings.Locales is { Length: > 0 })
-		{
-			AnsiConsole.MarkupLine("[red]--source-only and --locale cannot be used together.[/]");
-			return 1;
-		}
-
+		// 1. Resolve paths
 		var (projectDirs, resolveErrors) = ProjectDiscovery.ResolveAll(settings.Paths);
-		if (resolveErrors.Count > 0)
+		foreach (var err in resolveErrors)
+			Console.Error.WriteLine(err);
+
+		// 2. Build request
+		var localeFilter = settings.Locales is { Length: > 0 }
+			? new HashSet<string>(settings.Locales, StringComparer.OrdinalIgnoreCase)
+			: null;
+
+		var request = new InspectRequest(
+			ProjectDirs: projectDirs,
+			JsonOutput: settings.ShouldOutputJson,
+			LocaleFilter: localeFilter,
+			SourceOnly: settings.SourceOnly,
+			PathStyle: settings.PathStyle);
+
+		// 3. Validate
+		var errors = request.Validate();
+		if (errors.Count > 0)
 		{
-			foreach (var err in resolveErrors)
-				AnsiConsole.MarkupLine($"[red]{Markup.Escape(err)}[/]");
-		}
-		if (projectDirs.Count == 0)
-		{
-			if (resolveErrors.Count == 0 && !settings.ShouldOutputJson)
-				AnsiConsole.MarkupLine("[red]No projects found.[/]");
+			foreach (var error in errors)
+				Console.Error.WriteLine(error);
 			return 1;
 		}
 
-		foreach (var projectDir in projectDirs)
+		// 4. Execute
+		foreach (var projectDir in request.ProjectDirs)
 		{
-			var scanResult = ProjectScanner.Scan(projectDir);
-			var projectName = scanResult.ProjectName;
+			var scan = ProjectScanner.Scan(projectDir);
 
-			var calls = settings.PathStyle is PathStyle.Relative
-				? scanResult.Calls.Select(c => c.RelativizeLocation(projectDir)).ToList()
-				: scanResult.Calls;
+			var calls = request.PathStyle is PathStyle.Relative
+				? scan.Calls.Select(c => c.RelativizeLocation(projectDir)).ToList()
+				: scan.Calls;
 
-			var entries = scanResult.MergeResult.Entries;
-			if (settings.PathStyle is PathStyle.Relative)
-				entries = entries.Select(e => e.RelativizeSources(projectDir)).ToList();
+			var entries = request.PathStyle is PathStyle.Relative
+				? scan.MergeResult.Entries.Select(e => e.RelativizeSources(projectDir)).ToList()
+				: scan.MergeResult.Entries;
 
 			var poLimitations = PoLimitation.Detect(entries);
-			var localeFilter = settings.SourceOnly ? null
-				: settings.Locales is { Length: > 0 }
-					? new HashSet<string>(settings.Locales, StringComparer.OrdinalIgnoreCase)
-					: null;
 
-			if (localeFilter is not null)
+			if (request.LocaleFilter is not null)
 			{
-				var discoveredLocales = entries
-					.Where(e => e.InlineTranslations is not null)
-					.SelectMany(e => e.InlineTranslations!.Keys)
-					.ToHashSet(StringComparer.OrdinalIgnoreCase);
-
-				foreach (var requested in settings.Locales!.Where(r => !discoveredLocales.Contains(r)))
-					AnsiConsole.MarkupLine($"[yellow]Warning: locale '{Markup.Escape(requested)}' not found in any .For() translation[/]");
+				var discovered = LocaleDiscovery.DiscoverLocales(entries);
+				foreach (var requested in request.LocaleFilter.Where(r =>
+					!discovered.Contains(r, StringComparer.OrdinalIgnoreCase)))
+				{
+					Console.Error.WriteLine($"Warning: locale '{requested}' not found in any .For() translation");
+				}
 			}
 
-			if (settings.ShouldOutputJson)
+			if (request.JsonOutput)
 			{
-				JsonRenderer.RenderInspect(projectName, calls, entries, scanResult.MergeResult.Conflicts, poLimitations,
-					settings.SourceOnly ? new HashSet<string>(StringComparer.OrdinalIgnoreCase) : localeFilter);
+				JsonRenderer.RenderInspect(scan.ProjectName, calls, entries, scan.MergeResult.Conflicts,
+					poLimitations,
+					request.SourceOnly ? new HashSet<string>(StringComparer.OrdinalIgnoreCase) : request.LocaleFilter);
 			}
 			else
 			{
-				ExtractedCallRenderer.Render(calls, projectName);
-				TranslationEntryRenderer.Render(entries, projectName);
-				if (!settings.SourceOnly)
+				ExtractedCallRenderer.Render(calls, scan.ProjectName);
+				TranslationEntryRenderer.Render(entries, scan.ProjectName);
+				if (!request.SourceOnly)
 				{
-					TranslationEntryRenderer.RenderLocaleSummary(entries, localeFilter);
-					TranslationEntryRenderer.RenderLocales(entries, localeFilter);
+					TranslationEntryRenderer.RenderLocaleSummary(entries, request.LocaleFilter);
+					TranslationEntryRenderer.RenderLocales(entries, request.LocaleFilter);
 				}
-				ConflictRenderer.Render(scanResult.MergeResult.Conflicts, projectName);
-				PoLimitationRenderer.Render(poLimitations, projectName);
+				ConflictRenderer.Render(scan.MergeResult.Conflicts, scan.ProjectName);
+				PoLimitationRenderer.Render(poLimitations, scan.ProjectName);
 			}
 		}
 
