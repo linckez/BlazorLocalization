@@ -4,6 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Logging;
 using ZiggyCreatures.Caching.Fusion;
+using static BlazorLocalization.Extensions.Translations;
 
 namespace BlazorLocalization.Extensions.Tests;
 
@@ -47,7 +48,7 @@ public sealed class TranslationDefinitionTests : IDisposable
     // ── Simple ──────────────────────────────────────────────────────
 
     private static readonly Translation.Definitions.SimpleDefinitionBuilder SaveButton =
-        Translate.Simple("Common.Save", "Save")
+        Translate("Common.Save", "Save")
             .For("da", "Gem")
             .For("de", "Speichern");
 
@@ -82,7 +83,7 @@ public sealed class TranslationDefinitionTests : IDisposable
     [Fact]
     public void SimpleDefinition_WithPlaceholders_Resolved()
     {
-        var greeting = Translate.Simple("Greet", "Hello {Name}!");
+        var greeting = Translate("Greet", "Hello {Name}!");
 
         var result = _localizer.Translate(greeting, replaceWith: new { Name = "World" });
 
@@ -92,7 +93,7 @@ public sealed class TranslationDefinitionTests : IDisposable
     // ── Plural ──────────────────────────────────────────────────────
 
     private static readonly Translation.Definitions.PluralDefinitionBuilder CartItems =
-        Translate.Plural("Cart.Items")
+        Translate("Cart.Items")
             .One("1 item")
             .Other("{ItemCount} items")
             .For("da")
@@ -133,7 +134,7 @@ public sealed class TranslationDefinitionTests : IDisposable
     [Fact]
     public void PluralDefinition_ExactMatchTakesPriority()
     {
-        var withExact = Translate.Plural("Cart.Exact")
+        var withExact = Translate("Cart.Exact")
             .Exactly(0, "Your cart is empty")
             .One("1 item")
             .Other("Several items");
@@ -146,7 +147,7 @@ public sealed class TranslationDefinitionTests : IDisposable
     // ── Select ──────────────────────────────────────────────────────
 
     private static readonly Translation.Definitions.SelectDefinitionBuilder<Gender> GreetingDef =
-        Translate.Select<Gender>("Invite")
+        Translate<Gender>("Invite")
             .When(Gender.Female, "{Name} invited you to her party")
             .When(Gender.Male, "{Name} invited you to his party")
             .Otherwise("{Name} invited you to their party");
@@ -174,7 +175,7 @@ public sealed class TranslationDefinitionTests : IDisposable
     {
         CultureInfo.CurrentUICulture = new CultureInfo("da");
 
-        var def = Translate.Select<Gender>("Greet.Select")
+        var def = Translate<Gender>("Greet.Select")
             .When(Gender.Female, "Welcome, ma'am!")
             .Otherwise("Welcome!")
             .For("da")
@@ -194,7 +195,7 @@ public sealed class TranslationDefinitionTests : IDisposable
         _cache.Set("locale_en_Inbox_Female_one", "She has {MessageCount} message");
         _cache.Set("locale_en_Inbox_Female_other", "She has {MessageCount} messages");
 
-        var def = Translate.SelectPlural<Gender>("Inbox")
+        var def = Translate<Gender>("Inbox", howMany: 0)
             .When(Gender.Female).One("She has {MessageCount} message").Other("She has {MessageCount} messages")
             .When(Gender.Male).One("He has {MessageCount} message").Other("He has {MessageCount} messages")
             .Otherwise().One("They have {MessageCount} message").Other("They have {MessageCount} messages");
@@ -207,7 +208,7 @@ public sealed class TranslationDefinitionTests : IDisposable
     [Fact]
     public void SelectPluralDefinition_SourceTextFallback()
     {
-        var def = Translate.SelectPlural<Gender>("Inbox.Def")
+        var def = Translate<Gender>("Inbox.Def", howMany: 0)
             .When(Gender.Female).One("She has {N} message").Other("She has {N} messages")
             .Otherwise().One("They have {N} message").Other("They have {N} messages");
 
@@ -221,7 +222,7 @@ public sealed class TranslationDefinitionTests : IDisposable
     [Fact]
     public void Definitions_AreReusable_MultipleCallsSameResult()
     {
-        var def = Translate.Simple("Reuse.Test", "Hello!");
+        var def = Translate("Reuse.Test", "Hello!");
 
         var result1 = _localizer.Translate(def);
         var result2 = _localizer.Translate(def);
