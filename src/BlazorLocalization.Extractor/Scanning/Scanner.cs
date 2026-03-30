@@ -54,7 +54,8 @@ public sealed class Scanner
 				(ExtractedCall Call, TranslationEntry? Entry)? result = node switch
 				{
 					InvocationExpressionSyntax invocation
-						=> LocalizerCallExtractor.TryExtractInvocation(invocation, semanticModel, doc.Origin, symbols),
+						=> LocalizerCallExtractor.TryExtractInvocation(invocation, semanticModel, doc.Origin, symbols)
+						   ?? LocalizerCallExtractor.TryExtractDefinition(invocation, semanticModel, doc.Origin, symbols),
 					ElementAccessExpressionSyntax elementAccess
 						=> LocalizerCallExtractor.TryExtractIndexer(elementAccess, semanticModel, doc.Origin),
 					EnumMemberDeclarationSyntax enumMember

@@ -65,6 +65,46 @@ internal static class ChainInterpreter
 		};
 	}
 
+	/// <summary>
+	/// Interprets a <c>Translate.Simple/Plural/Select/SelectPlural()</c> definition factory call
+	/// and its fluent chain into a <see cref="TranslationEntry"/>.
+	/// </summary>
+	public static TranslationEntry? InterpretDefinitionCall(
+		ExtractedCall call,
+		IMethodSymbol factoryMethodSymbol,
+		IReadOnlyList<ResolvedChainLink>? chain,
+		BuilderSymbolTable symbols)
+	{
+		var source = MakeSource(call);
+
+		var key = FindArgByParam(call.Arguments, symbols.DefKeyParam);
+		if (key is null)
+			return null;
+
+		var builderKind = symbols.ClassifyReturnType(factoryMethodSymbol.ReturnType);
+
+		if (chain is not { Count: > 0 })
+		{
+			if (builderKind is BuilderKind.Simple)
+			{
+				var message = FindArgByParam(call.Arguments, symbols.DefSimpleMessageParam);
+				var sourceText = message is not null ? new SingularText(message) : null;
+				return new TranslationEntry(key, sourceText, source);
+			}
+
+			return new TranslationEntry(key, null, source);
+		}
+
+		return builderKind switch
+		{
+			BuilderKind.Simple => InterpretSimpleChain(call, chain, key, source, symbols),
+			BuilderKind.Plural => InterpretPluralChain(call, chain, key, source, symbols),
+			BuilderKind.Select => InterpretSelectChain(chain, key, source, symbols),
+			BuilderKind.SelectPlural => InterpretSelectPluralChain(call, chain, key, source, symbols),
+			_ => null
+		};
+	}
+
 	private static TranslationEntry InterpretSimpleChain(
 		ExtractedCall call,
 		IReadOnlyList<ResolvedChainLink> chain,
@@ -81,7 +121,7 @@ internal static class ChainInterpreter
 		{
 			if (link.Symbol is null) continue;
 
-			if (symbols.IsMethod(link.Symbol, symbols.SimpleFor))
+			if (symbols.IsSimpleFor(link.Symbol))
 			{
 				var locale = FindArgByParam(link.Arguments, symbols.SimpleForLocaleParam);
 				var msg = FindLiteralByParam(link.Arguments, symbols.SimpleForMessageParam);
@@ -114,7 +154,7 @@ internal static class ChainInterpreter
 		{
 			if (link.Symbol is null) continue;
 
-			if (symbols.IsMethod(link.Symbol, symbols.PluralFor))
+			if (symbols.IsPluralFor(link.Symbol))
 			{
 				if (currentLocale is not null && currentForCalls is not null)
 					forSections.Add((currentLocale, currentForCalls));
@@ -129,7 +169,7 @@ internal static class ChainInterpreter
 				continue;
 			}
 
-			if (symbols.IsMethod(link.Symbol, symbols.PluralExactly))
+			if (symbols.IsPluralExactly(link.Symbol))
 			{
 				var valueStr = FindArgByParam(link.Arguments, symbols.ExactlyValueParam);
 				var msg = FindLiteralByParam(link.Arguments, symbols.ExactlyMessageParam);
@@ -138,7 +178,7 @@ internal static class ChainInterpreter
 				continue;
 			}
 
-			if (symbols.PluralCategoryMethods.Contains(link.Symbol.OriginalDefinition))
+			if (symbols.AllPluralCategoryMethods.Contains(link.Symbol.OriginalDefinition))
 			{
 				var msg = FindLiteralByParam(link.Arguments, symbols.CategoryMessageParam);
 				if (msg is not null)
@@ -176,7 +216,7 @@ internal static class ChainInterpreter
 		{
 			if (link.Symbol is null) continue;
 
-			if (symbols.IsMethod(link.Symbol, symbols.SelectFor))
+			if (symbols.IsSelectFor(link.Symbol))
 			{
 				if (currentLocale is not null && currentForCalls is not null)
 					forSections.Add((currentLocale, currentForCalls));
@@ -191,14 +231,14 @@ internal static class ChainInterpreter
 				continue;
 			}
 
-			if (symbols.IsMethod(link.Symbol, symbols.SelectWhen))
+			if (symbols.IsSelectWhen(link.Symbol))
 			{
 				var selectValue = StripEnumPrefix(FindArgByParam(link.Arguments, symbols.SelectWhenSelectParam));
 				var msg = FindLiteralByParam(link.Arguments, symbols.SelectWhenMessageParam);
 				if (selectValue is not null && msg is not null)
 					cases[selectValue] = msg;
 			}
-			else if (symbols.IsMethod(link.Symbol, symbols.SelectOtherwise))
+			else if (symbols.IsSelectOtherwise(link.Symbol))
 			{
 				otherwise = FindLiteralByParam(link.Arguments, symbols.SelectOtherwiseMessageParam);
 			}
@@ -249,7 +289,7 @@ internal static class ChainInterpreter
 		{
 			if (link.Symbol is null) continue;
 
-			if (symbols.IsMethod(link.Symbol, symbols.SelectPluralFor))
+			if (symbols.IsSelectPluralFor(link.Symbol))
 			{
 				FlushSelectCase();
 				if (selectCaseStarted && currentSelectCase is null && (currentCategories.Count > 0 || currentExact.Count > 0))
@@ -268,7 +308,7 @@ internal static class ChainInterpreter
 				continue;
 			}
 
-			if (symbols.IsMethod(link.Symbol, symbols.SelectPluralWhen))
+			if (symbols.IsSelectPluralWhen(link.Symbol))
 			{
 				FlushSelectCase();
 				currentSelectCase = StripEnumPrefix(FindArgByParam(link.Arguments, symbols.SelectPluralWhenSelectParam));
@@ -278,7 +318,7 @@ internal static class ChainInterpreter
 				continue;
 			}
 
-			if (symbols.IsMethod(link.Symbol, symbols.SelectPluralOtherwise) && link.Arguments.Count == 0)
+			if (symbols.IsSelectPluralOtherwise(link.Symbol) && link.Arguments.Count == 0)
 			{
 				FlushSelectCase();
 				currentSelectCase = null;
@@ -288,7 +328,7 @@ internal static class ChainInterpreter
 				continue;
 			}
 
-			if (symbols.IsMethod(link.Symbol, symbols.SelectPluralExactly))
+			if (symbols.IsSelectPluralExactly(link.Symbol))
 			{
 				selectCaseStarted = true;
 				var valueStr = FindArgByParam(link.Arguments, symbols.ExactlyValueParam);
@@ -298,7 +338,7 @@ internal static class ChainInterpreter
 				continue;
 			}
 
-			if (symbols.SelectPluralCategoryMethods.Contains(link.Symbol.OriginalDefinition))
+			if (symbols.AllSelectPluralCategoryMethods.Contains(link.Symbol.OriginalDefinition))
 			{
 				selectCaseStarted = true;
 				var msg = FindLiteralByParam(link.Arguments, symbols.CategoryMessageParam);
@@ -356,14 +396,14 @@ internal static class ChainInterpreter
 			{
 				if (link.Symbol is null) continue;
 
-				if (symbols.IsMethod(link.Symbol, symbols.PluralExactly))
+				if (symbols.IsPluralExactly(link.Symbol))
 				{
 					var valueStr = FindArgByParam(link.Arguments, symbols.ExactlyValueParam);
 					var msg = FindLiteralByParam(link.Arguments, symbols.ExactlyMessageParam);
 					if (valueStr is not null && int.TryParse(valueStr, out var exactValue) && msg is not null)
 						exactMatches[exactValue] = msg;
 				}
-				else if (symbols.PluralCategoryMethods.Contains(link.Symbol.OriginalDefinition))
+				else if (symbols.AllPluralCategoryMethods.Contains(link.Symbol.OriginalDefinition))
 				{
 					var msg = FindLiteralByParam(link.Arguments, symbols.CategoryMessageParam);
 					if (msg is not null)
@@ -393,14 +433,14 @@ internal static class ChainInterpreter
 			{
 				if (link.Symbol is null) continue;
 
-				if (symbols.IsMethod(link.Symbol, symbols.SelectWhen))
+				if (symbols.IsSelectWhen(link.Symbol))
 				{
 					var selectValue = StripEnumPrefix(FindArgByParam(link.Arguments, symbols.SelectWhenSelectParam));
 					var msg = FindLiteralByParam(link.Arguments, symbols.SelectWhenMessageParam);
 					if (selectValue is not null && msg is not null)
 						cases[selectValue] = msg;
 				}
-				else if (symbols.IsMethod(link.Symbol, symbols.SelectOtherwise))
+				else if (symbols.IsSelectOtherwise(link.Symbol))
 				{
 					otherwise = FindLiteralByParam(link.Arguments, symbols.SelectOtherwiseMessageParam);
 				}
@@ -441,7 +481,7 @@ internal static class ChainInterpreter
 			{
 				if (link.Symbol is null) continue;
 
-				if (symbols.IsMethod(link.Symbol, symbols.SelectPluralWhen))
+				if (symbols.IsSelectPluralWhen(link.Symbol))
 				{
 					Flush();
 					currentSelectCase = StripEnumPrefix(FindArgByParam(link.Arguments, symbols.SelectPluralWhenSelectParam));
@@ -449,7 +489,7 @@ internal static class ChainInterpreter
 					currentExact = new Dictionary<int, string>();
 					selectCaseStarted = true;
 				}
-				else if (symbols.IsMethod(link.Symbol, symbols.SelectPluralOtherwise) && link.Arguments.Count == 0)
+				else if (symbols.IsSelectPluralOtherwise(link.Symbol) && link.Arguments.Count == 0)
 				{
 					Flush();
 					currentSelectCase = null;
@@ -457,7 +497,7 @@ internal static class ChainInterpreter
 					currentExact = new Dictionary<int, string>();
 					selectCaseStarted = true;
 				}
-				else if (symbols.IsMethod(link.Symbol, symbols.SelectPluralExactly))
+				else if (symbols.IsSelectPluralExactly(link.Symbol))
 				{
 					selectCaseStarted = true;
 					var valueStr = FindArgByParam(link.Arguments, symbols.ExactlyValueParam);
@@ -465,7 +505,7 @@ internal static class ChainInterpreter
 					if (valueStr is not null && int.TryParse(valueStr, out var exactValue) && msg is not null)
 						currentExact[exactValue] = msg;
 				}
-				else if (symbols.SelectPluralCategoryMethods.Contains(link.Symbol.OriginalDefinition))
+				else if (symbols.AllSelectPluralCategoryMethods.Contains(link.Symbol.OriginalDefinition))
 				{
 					selectCaseStarted = true;
 					var msg = FindLiteralByParam(link.Arguments, symbols.CategoryMessageParam);

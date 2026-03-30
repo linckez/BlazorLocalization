@@ -1,5 +1,6 @@
 using System.Reflection;
 using BlazorLocalization.Extensions.Translation;
+using BlazorLocalization.Extensions.Translation.Definitions;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using StringLocalizerExtensions = BlazorLocalization.Extensions.StringLocalizerExtensions;
@@ -24,6 +25,17 @@ public sealed class BuilderSymbolTable
 	public INamedTypeSymbol PluralBuilder { get; }
 	public INamedTypeSymbol SelectBuilder { get; }
 	public INamedTypeSymbol SelectPluralBuilder { get; }
+
+	// ── Definition builder type symbols ──────────────────────────────
+
+	public INamedTypeSymbol SimpleDefinitionBuilder { get; }
+	public INamedTypeSymbol PluralDefinitionBuilder { get; }
+	public INamedTypeSymbol SelectDefinitionBuilder { get; }
+	public INamedTypeSymbol SelectPluralDefinitionBuilder { get; }
+
+	// ── Translate factory class ──────────────────────────────────────
+
+	public INamedTypeSymbol TranslateClass { get; }
 
 	// ── Attribute type symbol ─────────────────────────────────────────
 
@@ -52,9 +64,27 @@ public sealed class BuilderSymbolTable
 	/// <summary>All CLDR category methods on PluralBuilder: Zero, One, Two, Few, Many, Other.</summary>
 	public HashSet<IMethodSymbol> PluralCategoryMethods { get; }
 
+	// ── Method symbols: PluralDefinitionBuilder ──────────────────────
+
+	public IMethodSymbol PluralDefFor { get; }
+	public IMethodSymbol PluralDefExactly { get; }
+	public IMethodSymbol PluralDefZero { get; }
+	public IMethodSymbol PluralDefOne { get; }
+	public IMethodSymbol PluralDefTwo { get; }
+	public IMethodSymbol PluralDefFew { get; }
+	public IMethodSymbol PluralDefMany { get; }
+	public IMethodSymbol PluralDefOther { get; }
+
+	/// <summary>All CLDR category methods on PluralDefinitionBuilder: Zero, One, Two, Few, Many, Other.</summary>
+	public HashSet<IMethodSymbol> PluralDefCategoryMethods { get; }
+
 	// ── Method symbols: SimpleBuilder ─────────────────────────────────
 
 	public IMethodSymbol SimpleFor { get; }
+
+	// ── Method symbols: SimpleDefinitionBuilder ──────────────────────
+
+	public IMethodSymbol SimpleDefFor { get; }
 
 	// ── Method symbols: SelectBuilder<> ───────────────────────────────
 
@@ -77,6 +107,43 @@ public sealed class BuilderSymbolTable
 
 	/// <summary>All CLDR category methods on SelectPluralBuilder: Zero, One, Two, Few, Many, Other.</summary>
 	public HashSet<IMethodSymbol> SelectPluralCategoryMethods { get; }
+
+	// ── Method symbols: SelectDefinitionBuilder<> ────────────────────
+
+	public IMethodSymbol SelectDefWhen { get; }
+	public IMethodSymbol SelectDefOtherwise { get; }
+	public IMethodSymbol SelectDefFor { get; }
+
+	// ── Method symbols: SelectPluralDefinitionBuilder<> ──────────────
+
+	public IMethodSymbol SelectPluralDefWhen { get; }
+	public IMethodSymbol SelectPluralDefOtherwise { get; }
+	public IMethodSymbol SelectPluralDefFor { get; }
+	public IMethodSymbol SelectPluralDefExactly { get; }
+	public IMethodSymbol SelectPluralDefZero { get; }
+	public IMethodSymbol SelectPluralDefOne { get; }
+	public IMethodSymbol SelectPluralDefTwo { get; }
+	public IMethodSymbol SelectPluralDefFew { get; }
+	public IMethodSymbol SelectPluralDefMany { get; }
+	public IMethodSymbol SelectPluralDefOther { get; }
+
+	/// <summary>All CLDR category methods on SelectPluralDefinitionBuilder: Zero, One, Two, Few, Many, Other.</summary>
+	public HashSet<IMethodSymbol> SelectPluralDefCategoryMethods { get; }
+
+	// ── Combined category sets (Builder + DefinitionBuilder) ─────────
+
+	/// <summary>All CLDR category methods on PluralBuilder and PluralDefinitionBuilder.</summary>
+	public HashSet<IMethodSymbol> AllPluralCategoryMethods { get; }
+
+	/// <summary>All CLDR category methods on SelectPluralBuilder and SelectPluralDefinitionBuilder.</summary>
+	public HashSet<IMethodSymbol> AllSelectPluralCategoryMethods { get; }
+
+	// ── Translate factory method symbols ─────────────────────────────
+
+	public IMethodSymbol TranslateSimple { get; }
+	public IMethodSymbol TranslatePlural { get; }
+	public IMethodSymbol TranslateSelect { get; }
+	public IMethodSymbol TranslateSelectPlural { get; }
 
 	// ── Reflection-derived parameter names ────────────────────────────
 
@@ -133,6 +200,14 @@ public sealed class BuilderSymbolTable
 	/// <summary>Parameter name for "select" on select Translate(key, select).</summary>
 	public string TranslateSelectParam { get; }
 
+	// ── Translate.XXX() factory parameter names ──────────────────────
+
+	/// <summary>Parameter name for "key" on <c>Translate.Simple(string key, string message)</c>.</summary>
+	public string DefKeyParam { get; }
+
+	/// <summary>Parameter name for "message" on <c>Translate.Simple(string key, string message)</c>.</summary>
+	public string DefSimpleMessageParam { get; }
+
 	// ── Sentinel values ───────────────────────────────────────────────
 
 	/// <summary>The internal sentinel used by <c>SelectBuilder</c> for the otherwise case.</summary>
@@ -149,6 +224,12 @@ public sealed class BuilderSymbolTable
 		SelectBuilder = ResolveType(compilation, typeof(SelectBuilder<>));
 		SelectPluralBuilder = ResolveType(compilation, typeof(SelectPluralBuilder<>));
 		TranslationAttribute = ResolveType<Extensions.TranslationAttribute>(compilation);
+
+		SimpleDefinitionBuilder = ResolveType<Extensions.Translation.Definitions.SimpleDefinitionBuilder>(compilation);
+		PluralDefinitionBuilder = ResolveType<Extensions.Translation.Definitions.PluralDefinitionBuilder>(compilation);
+		SelectDefinitionBuilder = ResolveType(compilation, typeof(SelectDefinitionBuilder<>));
+		SelectPluralDefinitionBuilder = ResolveType(compilation, typeof(SelectPluralDefinitionBuilder<>));
+		TranslateClass = ResolveType(compilation, typeof(Extensions.Translate));
 
 		// ── PluralBuilder methods ─────────────────────────────────────
 		PluralFor = ResolveMethod(PluralBuilder, nameof(Extensions.Translation.PluralBuilder.For));
@@ -190,6 +271,60 @@ public sealed class BuilderSymbolTable
 			SelectPluralZero, SelectPluralOne, SelectPluralTwo,
 			SelectPluralFew, SelectPluralMany, SelectPluralOther
 		};
+
+		// ── PluralDefinitionBuilder methods ───────────────────────────
+		PluralDefFor = ResolveMethod(PluralDefinitionBuilder, nameof(Extensions.Translation.Definitions.PluralDefinitionBuilder.For));
+		PluralDefExactly = ResolveMethod(PluralDefinitionBuilder, nameof(Extensions.Translation.Definitions.PluralDefinitionBuilder.Exactly));
+		PluralDefZero = ResolveMethod(PluralDefinitionBuilder, nameof(Extensions.Translation.Definitions.PluralDefinitionBuilder.Zero));
+		PluralDefOne = ResolveMethod(PluralDefinitionBuilder, nameof(Extensions.Translation.Definitions.PluralDefinitionBuilder.One));
+		PluralDefTwo = ResolveMethod(PluralDefinitionBuilder, nameof(Extensions.Translation.Definitions.PluralDefinitionBuilder.Two));
+		PluralDefFew = ResolveMethod(PluralDefinitionBuilder, nameof(Extensions.Translation.Definitions.PluralDefinitionBuilder.Few));
+		PluralDefMany = ResolveMethod(PluralDefinitionBuilder, nameof(Extensions.Translation.Definitions.PluralDefinitionBuilder.Many));
+		PluralDefOther = ResolveMethod(PluralDefinitionBuilder, nameof(Extensions.Translation.Definitions.PluralDefinitionBuilder.Other));
+
+		PluralDefCategoryMethods = new(SymbolEqualityComparer.Default)
+		{
+			PluralDefZero, PluralDefOne, PluralDefTwo, PluralDefFew, PluralDefMany, PluralDefOther
+		};
+
+		// ── SimpleDefinitionBuilder methods ───────────────────────────
+		SimpleDefFor = ResolveMethod(SimpleDefinitionBuilder, nameof(Extensions.Translation.Definitions.SimpleDefinitionBuilder.For));
+
+		// ── SelectDefinitionBuilder<> methods ─────────────────────────
+		SelectDefWhen = ResolveMethod(SelectDefinitionBuilder, nameof(SelectDefinitionBuilder<DayOfWeek>.When));
+		SelectDefOtherwise = ResolveMethod(SelectDefinitionBuilder, nameof(SelectDefinitionBuilder<DayOfWeek>.Otherwise));
+		SelectDefFor = ResolveMethod(SelectDefinitionBuilder, nameof(SelectDefinitionBuilder<DayOfWeek>.For));
+
+		// ── SelectPluralDefinitionBuilder<> methods ───────────────────
+		SelectPluralDefWhen = ResolveMethod(SelectPluralDefinitionBuilder, nameof(SelectPluralDefinitionBuilder<DayOfWeek>.When));
+		SelectPluralDefOtherwise = ResolveMethod(SelectPluralDefinitionBuilder, nameof(SelectPluralDefinitionBuilder<DayOfWeek>.Otherwise));
+		SelectPluralDefFor = ResolveMethod(SelectPluralDefinitionBuilder, nameof(SelectPluralDefinitionBuilder<DayOfWeek>.For));
+		SelectPluralDefExactly = ResolveMethod(SelectPluralDefinitionBuilder, nameof(SelectPluralDefinitionBuilder<DayOfWeek>.Exactly));
+		SelectPluralDefZero = ResolveMethod(SelectPluralDefinitionBuilder, nameof(SelectPluralDefinitionBuilder<DayOfWeek>.Zero));
+		SelectPluralDefOne = ResolveMethod(SelectPluralDefinitionBuilder, nameof(SelectPluralDefinitionBuilder<DayOfWeek>.One));
+		SelectPluralDefTwo = ResolveMethod(SelectPluralDefinitionBuilder, nameof(SelectPluralDefinitionBuilder<DayOfWeek>.Two));
+		SelectPluralDefFew = ResolveMethod(SelectPluralDefinitionBuilder, nameof(SelectPluralDefinitionBuilder<DayOfWeek>.Few));
+		SelectPluralDefMany = ResolveMethod(SelectPluralDefinitionBuilder, nameof(SelectPluralDefinitionBuilder<DayOfWeek>.Many));
+		SelectPluralDefOther = ResolveMethod(SelectPluralDefinitionBuilder, nameof(SelectPluralDefinitionBuilder<DayOfWeek>.Other));
+
+		SelectPluralDefCategoryMethods = new(SymbolEqualityComparer.Default)
+		{
+			SelectPluralDefZero, SelectPluralDefOne, SelectPluralDefTwo,
+			SelectPluralDefFew, SelectPluralDefMany, SelectPluralDefOther
+		};
+
+		// ── Combined category sets ────────────────────────────────────
+		AllPluralCategoryMethods = new(PluralCategoryMethods, SymbolEqualityComparer.Default);
+		AllPluralCategoryMethods.UnionWith(PluralDefCategoryMethods);
+
+		AllSelectPluralCategoryMethods = new(SelectPluralCategoryMethods, SymbolEqualityComparer.Default);
+		AllSelectPluralCategoryMethods.UnionWith(SelectPluralDefCategoryMethods);
+
+		// ── Translate factory methods ─────────────────────────────────
+		TranslateSimple = ResolveMethod(TranslateClass, nameof(Extensions.Translate.Simple));
+		TranslatePlural = ResolveMethod(TranslateClass, nameof(Extensions.Translate.Plural));
+		TranslateSelect = ResolveMethod(TranslateClass, nameof(Extensions.Translate.Select));
+		TranslateSelectPlural = ResolveMethod(TranslateClass, nameof(Extensions.Translate.SelectPlural));
 
 		// ── Reflection-derived parameter names ────────────────────────
 		CategoryMessageParam = ReflectParam<Extensions.Translation.PluralBuilder>(nameof(Extensions.Translation.PluralBuilder.One), 0);
@@ -234,6 +369,11 @@ public sealed class BuilderSymbolTable
 			            && !m.GetParameters().Any(p => p.ParameterType == typeof(int)));
 		TranslateSelectParam = selectTranslate.GetParameters()[2].Name!;
 
+		// ── Translate.XXX() factory parameter names ───────────────────
+		var translateSimpleReflect = typeof(Extensions.Translate).GetMethod(nameof(Extensions.Translate.Simple))!;
+		DefKeyParam = translateSimpleReflect.GetParameters()[0].Name!;
+		DefSimpleMessageParam = translateSimpleReflect.GetParameters()[1].Name!;
+
 		// ── Sentinel values ───────────────────────────────────────────
 		OtherwiseSentinel = (string)typeof(SelectBuilder<>)
 			.GetField("OtherwiseSentinel", BindingFlags.NonPublic | BindingFlags.Static)!
@@ -242,6 +382,8 @@ public sealed class BuilderSymbolTable
 		// ── Cross-validation ──────────────────────────────────────────
 		CrossValidate();
 		CrossValidateTranslationAttribute();
+		CrossValidateDefinitionBuilders();
+		CrossValidateFactoryParams();
 	}
 
 	/// <summary>
@@ -259,6 +401,15 @@ public sealed class BuilderSymbolTable
 		if (SymbolEqualityComparer.Default.Equals(original, SelectBuilder))
 			return BuilderKind.Select;
 		if (SymbolEqualityComparer.Default.Equals(original, SelectPluralBuilder))
+			return BuilderKind.SelectPlural;
+
+		if (SymbolEqualityComparer.Default.Equals(original, SimpleDefinitionBuilder))
+			return BuilderKind.Simple;
+		if (SymbolEqualityComparer.Default.Equals(original, PluralDefinitionBuilder))
+			return BuilderKind.Plural;
+		if (SymbolEqualityComparer.Default.Equals(original, SelectDefinitionBuilder))
+			return BuilderKind.Select;
+		if (SymbolEqualityComparer.Default.Equals(original, SelectPluralDefinitionBuilder))
 			return BuilderKind.SelectPlural;
 
 		return null;
@@ -285,6 +436,45 @@ public sealed class BuilderSymbolTable
 	/// </summary>
 	public bool IsTranslationAttribute(INamedTypeSymbol? attributeClass) =>
 		SymbolEqualityComparer.Default.Equals(attributeClass, TranslationAttribute);
+
+	// ── Combined matchers (Builder + DefinitionBuilder) ──────────────
+
+	public bool IsSimpleFor(IMethodSymbol symbol) =>
+		IsMethod(symbol, SimpleFor) || IsMethod(symbol, SimpleDefFor);
+
+	public bool IsPluralFor(IMethodSymbol symbol) =>
+		IsMethod(symbol, PluralFor) || IsMethod(symbol, PluralDefFor);
+
+	public bool IsPluralExactly(IMethodSymbol symbol) =>
+		IsMethod(symbol, PluralExactly) || IsMethod(symbol, PluralDefExactly);
+
+	public bool IsSelectWhen(IMethodSymbol symbol) =>
+		IsMethod(symbol, SelectWhen) || IsMethod(symbol, SelectDefWhen);
+
+	public bool IsSelectOtherwise(IMethodSymbol symbol) =>
+		IsMethod(symbol, SelectOtherwise) || IsMethod(symbol, SelectDefOtherwise);
+
+	public bool IsSelectFor(IMethodSymbol symbol) =>
+		IsMethod(symbol, SelectFor) || IsMethod(symbol, SelectDefFor);
+
+	public bool IsSelectPluralWhen(IMethodSymbol symbol) =>
+		IsMethod(symbol, SelectPluralWhen) || IsMethod(symbol, SelectPluralDefWhen);
+
+	public bool IsSelectPluralOtherwise(IMethodSymbol symbol) =>
+		IsMethod(symbol, SelectPluralOtherwise) || IsMethod(symbol, SelectPluralDefOtherwise);
+
+	public bool IsSelectPluralFor(IMethodSymbol symbol) =>
+		IsMethod(symbol, SelectPluralFor) || IsMethod(symbol, SelectPluralDefFor);
+
+	public bool IsSelectPluralExactly(IMethodSymbol symbol) =>
+		IsMethod(symbol, SelectPluralExactly) || IsMethod(symbol, SelectPluralDefExactly);
+
+	/// <summary>
+	/// Checks whether a method symbol is one of the <c>Translate.XXX()</c> factory methods.
+	/// </summary>
+	public bool IsTranslateFactory(IMethodSymbol symbol) =>
+		IsMethod(symbol, TranslateSimple) || IsMethod(symbol, TranslatePlural)
+		|| IsMethod(symbol, TranslateSelect) || IsMethod(symbol, TranslateSelectPlural);
 
 	// ── Private helpers ───────────────────────────────────────────────
 
@@ -392,6 +582,47 @@ public sealed class BuilderSymbolTable
 				throw new InvalidOperationException(
 					$"Roslyn cannot find property '{name}' on {TranslationAttribute.ToDisplayString()}.");
 		}
+	}
+
+	/// <summary>
+	/// Cross-validates definition builder Roslyn symbols against .NET reflection.
+	/// </summary>
+	private void CrossValidateDefinitionBuilders()
+	{
+		ValidateParams(SimpleDefFor, typeof(Extensions.Translation.Definitions.SimpleDefinitionBuilder), nameof(Extensions.Translation.Definitions.SimpleDefinitionBuilder.For));
+
+		ValidateParams(PluralDefFor, typeof(Extensions.Translation.Definitions.PluralDefinitionBuilder), nameof(Extensions.Translation.Definitions.PluralDefinitionBuilder.For));
+		ValidateParams(PluralDefExactly, typeof(Extensions.Translation.Definitions.PluralDefinitionBuilder), nameof(Extensions.Translation.Definitions.PluralDefinitionBuilder.Exactly));
+		ValidateParams(PluralDefOne, typeof(Extensions.Translation.Definitions.PluralDefinitionBuilder), nameof(Extensions.Translation.Definitions.PluralDefinitionBuilder.One));
+
+		ValidateParams(SelectDefWhen, typeof(SelectDefinitionBuilder<>), nameof(SelectDefinitionBuilder<DayOfWeek>.When));
+		ValidateParams(SelectDefOtherwise, typeof(SelectDefinitionBuilder<>), nameof(SelectDefinitionBuilder<DayOfWeek>.Otherwise));
+		ValidateParams(SelectDefFor, typeof(SelectDefinitionBuilder<>), nameof(SelectDefinitionBuilder<DayOfWeek>.For));
+
+		ValidateParams(SelectPluralDefWhen, typeof(SelectPluralDefinitionBuilder<>), nameof(SelectPluralDefinitionBuilder<DayOfWeek>.When));
+		ValidateParams(SelectPluralDefOtherwise, typeof(SelectPluralDefinitionBuilder<>), nameof(SelectPluralDefinitionBuilder<DayOfWeek>.Otherwise));
+		ValidateParams(SelectPluralDefFor, typeof(SelectPluralDefinitionBuilder<>), nameof(SelectPluralDefinitionBuilder<DayOfWeek>.For));
+		ValidateParams(SelectPluralDefExactly, typeof(SelectPluralDefinitionBuilder<>), nameof(SelectPluralDefinitionBuilder<DayOfWeek>.Exactly));
+		ValidateParams(SelectPluralDefOne, typeof(SelectPluralDefinitionBuilder<>), nameof(SelectPluralDefinitionBuilder<DayOfWeek>.One));
+
+		ValidateParams(TranslateSimple, typeof(Extensions.Translate), nameof(Extensions.Translate.Simple));
+		ValidateParams(TranslatePlural, typeof(Extensions.Translate), nameof(Extensions.Translate.Plural));
+	}
+
+	/// <summary>
+	/// Verifies that Translate.Simple factory param names match StringLocalizerExtensions.Translation
+	/// param names, so shared chain interpretation logic works for both code paths.
+	/// </summary>
+	private void CrossValidateFactoryParams()
+	{
+		if (DefKeyParam != TranslateKeyParam)
+			throw new InvalidOperationException(
+				$"Translate.Simple 'key' param '{DefKeyParam}' doesn't match " +
+				$"StringLocalizerExtensions.Translation 'key' param '{TranslateKeyParam}'.");
+		if (DefSimpleMessageParam != TranslateMessageParam)
+			throw new InvalidOperationException(
+				$"Translate.Simple 'message' param '{DefSimpleMessageParam}' doesn't match " +
+				$"StringLocalizerExtensions.Translation 'message' param '{TranslateMessageParam}'.");
 	}
 }
 

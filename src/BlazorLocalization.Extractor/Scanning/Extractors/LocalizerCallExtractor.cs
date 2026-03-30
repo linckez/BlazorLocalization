@@ -64,6 +64,41 @@ internal static class LocalizerCallExtractor
 		return (call, entry);
 	}
 
+	/// <summary>
+	/// Detects <c>Translate.Simple()</c>, <c>Translate.Plural()</c>, <c>Translate.Select()</c>,
+	/// and <c>Translate.SelectPlural()</c> static factory calls, producing both an
+	/// <see cref="ExtractedCall"/> and an optional <see cref="TranslationEntry"/>.
+	/// </summary>
+	public static (ExtractedCall Call, TranslationEntry? Entry)? TryExtractDefinition(
+		InvocationExpressionSyntax invocation,
+		SemanticModel semanticModel,
+		SourceOrigin origin,
+		BuilderSymbolTable symbols)
+	{
+		var symbolInfo = semanticModel.GetSymbolInfo(invocation);
+		var methodSymbol = symbolInfo.Symbol as IMethodSymbol;
+		if (methodSymbol is null)
+			return null;
+
+		if (!symbols.IsTranslateFactory(methodSymbol))
+			return null;
+
+		var fluentChain = CollectFluentChain(invocation, semanticModel);
+
+		var call = new ExtractedCall(
+			methodSymbol.ContainingType.Name,
+			methodSymbol.Name,
+			CallKind.MethodInvocation,
+			origin.ResolveLocation(invocation),
+			ResolveOverloadStatus(symbolInfo),
+			ExtractArguments(invocation.ArgumentList.Arguments, methodSymbol.Parameters, semanticModel),
+			fluentChain?.Select(c => new ChainedMethodCall(c.MethodName, c.Arguments)).ToList());
+
+		var entry = ChainInterpreter.InterpretDefinitionCall(call, methodSymbol, fluentChain, symbols);
+
+		return (call, entry);
+	}
+
 	public static (ExtractedCall Call, TranslationEntry? Entry)? TryExtractIndexer(
 		ElementAccessExpressionSyntax elementAccess,
 		SemanticModel semanticModel,
