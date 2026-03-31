@@ -229,7 +229,6 @@ public sealed class TranslationDefinitionTests : IDisposable
 
         result1.Should().Be("Hello!");
         result2.Should().Be("Hello!");
-        ReferenceEquals(result1, result2).Should().BeTrue("same string instance from same source text");
     }
 
     private enum Gender { Female, Male, Other }

@@ -18,8 +18,8 @@ builder.Services.AddProviderBasedLocalization(builder.Configuration);
 // Stub providers — uncomment one pair at a time to test different architectures.
 // DictionaryTranslationProvider: per-key lookup, simulates a plain SQL database.
 // JsonFanoutTranslationProvider: sentinel+fan-out with JSON, simulates a Crowdin-like CDN.
-builder.Services.AddSingleton<ITranslationProvider, DictionaryTranslationProvider>();
-builder.Services.AddSingleton<ITranslationProvider, JsonFanoutTranslationProvider>();
+// builder.Services.AddSingleton<ITranslationProvider, DictionaryTranslationProvider>();
+// builder.Services.AddSingleton<ITranslationProvider, JsonFanoutTranslationProvider>();
 
 // Real Crowdin OTA provider — uncomment (and comment stubs above) to use a live distribution.
 // builder.Services.AddProviderBasedLocalization(builder.Configuration)
