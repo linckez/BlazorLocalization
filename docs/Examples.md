@@ -24,7 +24,7 @@ Your source text is always the fallback — users never see blank strings or raw
 
 ## Placeholders
 
-Named placeholders are resolved by [SmartFormat](https://github.com/axuno/SmartFormat). Pass any object — properties become placeholders.
+[SmartFormat](https://github.com/axuno/SmartFormat) replaces your named placeholders with actual values. Pass any object — properties become placeholders.
 
 ```razor
 <p>@Loc.Translation(key: "Home.Greeting", message: "Hello, {Name}!", replaceWith: new { Name = user.Name })</p>
@@ -139,7 +139,7 @@ The translation provider always wins when a translation exists. Inline per-local
 
 ## Enums
 
-Mark enum members with `[Translation]`, resolve with `Display()`.
+Mark enum members with `[Translation]`, display with `Display()`.
 
 ```csharp
 public enum FlightStatus

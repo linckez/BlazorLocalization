@@ -31,7 +31,7 @@ builder.Services.AddProviderBasedLocalization(builder.Configuration)
 }
 ```
 
-One file per culture in your configured `TranslationsPath`. Any culture without a file falls back through the culture chain (see [Configuration](../Configuration.md#culture--request-pipeline)).
+One file per culture in your configured `TranslationsPath`. Any culture without a file automatically falls back to parent cultures (see [Configuration](../Configuration.md#culture--request-pipeline)).
 
 ```
 Translations/
@@ -90,7 +90,7 @@ Flat `"key": "value"` objects. Non-string values are ignored.
 
 This is the same flat format that Crowdin exports when configured for Crowdin i18next JSON output.
 
-> **Tip:** You can download translations from Crowdin during CI and serve them from disk at runtime — no need for the Crowdin provider if you prefer file-based deployments.
+> **Tip:** You can download translations from Crowdin during CI and have your app read them from disk — no need for the Crowdin provider if you prefer file-based deployments.
 
 ## Multiple Providers
 
@@ -110,14 +110,14 @@ Providers are tried in registration order — first non-null result wins.
 
 Each culture's JSON file is loaded once per cache duration (default 1 hour — see [Configuration](../Configuration.md#cache-options)). After loading, individual key lookups are fast with zero disk I/O until the next refresh.
 
-Missing files are not an error — the localizer walks the culture fallback chain (`es-MX` → `es` → source text) automatically. This means you only need to provide files for cultures you've actually translated.
+Missing files are not an error — your app automatically tries parent cultures (`es-MX` → `es`), then source text. You only need to provide files for cultures you've actually translated.
 
 ## Error Handling
 
 | Situation | What happens |
 |---|---|
-| File doesn't exist | No translations for this culture — falls back through the culture chain. |
-| File not valid JSON | Warning logged. Retries on next cache refresh. Stale translations served if available. |
+| File doesn't exist | No translations for this culture — your app tries parent cultures, then source text. |
+| File not valid JSON | Warning logged. Retries on next cache refresh. Your app keeps using previous translations if available. |
 | I/O error (permissions, disk) | Warning logged. Same retry behavior. |
 
 Errors never propagate to your application code.

@@ -2,7 +2,7 @@
 
 # Crowdin
 
-`BlazorLocalization.TranslationProvider.Crowdin` fetches translations from [Crowdin](https://crowdin.com/) at runtime — no redeployment needed when translators update strings.
+`BlazorLocalization.TranslationProvider.Crowdin` fetches translations from [Crowdin](https://crowdin.com/) — your app picks them up automatically, no redeployment needed when translators update strings.
 
 This provider uses Crowdin's CDN Distributions (Over-The-Air Content Delivery). [API Exported File Bundles](https://support.crowdin.com/bundles/) are not yet supported.
 
@@ -25,7 +25,7 @@ builder.Services.AddProviderBasedLocalization()
 }
 ```
 
-Options bind from `Localization:TranslationProviders:Crowdin` automatically. See [Configuration](../Configuration.md) for cache settings, custom sections, and L2 setup.
+Options come from `Localization:TranslationProviders:Crowdin` automatically. See [Configuration](../Configuration.md) for cache settings, custom sections, and L2 setup.
 
 > For all available options, explore `CrowdinTranslationProviderOptions` in your IDE — XML docs describe each property.
 
@@ -43,24 +43,24 @@ Crowdin's Android XML exporter has three settings. The recommended configuration
 | Setting | Recommended | Why |
 |---|---|---|
 | **Placeholder conversion** | Leave default | Your placeholders (`{count}`) will work as-is. |
-| **CDATA** | Either | Both work — no difference at runtime. |
+| **CDATA** | Either | Both work the same. |
 | **Line break conversion** | **OFF** | If enabled, `\n` becomes literal backslash-n in your UI. |
 
 ## Uploading Source Strings
 
-**Use PO format.** It gives translators file locations and context comments directly in the Crowdin editor — the single biggest quality improvement you can give them.
+**Use PO format.** It gives translators file locations and context comments directly in the Crowdin editor.
 
 ```bash
 blazor-loc extract ./src --format po --output ./translations
 ```
 
-> **Key insight:** Upload format and download format are independent — **PO for upload** (rich translator context), **Android XML for download** (lightweight runtime).
+Upload format and download format are independent — you can upload PO (rich translator context) and download Android XML.
 
 ## How It Works
 
 Translations are fetched from the Crowdin CDN once per culture, then cached. After the cache expires (default 1 hour — see [Configuration](../Configuration.md#cache-options)), a background refresh fetches updated translations without blocking your app.
 
-If Crowdin is unreachable, the last known good translations are served until Crowdin comes back.
+If Crowdin is unreachable, your app keeps working with the last translations it fetched.
 
 ## Multiple Crowdin Distributions
 
@@ -69,7 +69,7 @@ Register multiple with unique names. Each name maps to a `TranslationProviders:{
 ```csharp
 builder.Services.AddProviderBasedLocalization()
     .AddCrowdinTranslationProvider()                  // "Crowdin" (default name)
-    .AddCrowdinTranslationProvider("InternalDocs");   // resolves from TranslationProviders:InternalDocs
+    .AddCrowdinTranslationProvider("InternalDocs");   // reads config from TranslationProviders:InternalDocs
 ```
 
 Providers are tried in registration order — first non-null result wins.
@@ -78,10 +78,10 @@ Providers are tried in registration order — first non-null result wins.
 
 | Situation | What you see | What to do |
 |---|---|---|
-| Crowdin is down, network issue, timeout | Nothing — last known good translations are served silently | Wait it out. Self-heals when connectivity returns. |
+| Crowdin is down, network issue, timeout | Nothing — your app keeps working with the last translations it fetched | Wait it out. Self-heals when connectivity returns. |
 | Wrong distribution hash, bad config | Warning in logs immediately | Fix your `DistributionHash` in `appsettings.json`. |
 
-Your app never shows broken strings — stale translations are served until the issue resolves or you fix the config.
+Your app never shows broken strings — stale translations keep working until the issue is fixed or you update the config.
 
 ## FAQ
 

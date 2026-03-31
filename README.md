@@ -57,7 +57,7 @@ See [Examples](docs/Examples.md) for plurals, ordinals, enum display names, and 
 
 | Package | Version | Install |
 |---------|:-------:|--------:|
-| [**BlazorLocalization.Extensions**](https://www.nuget.org/packages/BlazorLocalization.Extensions) <br/> Runtime library — cache-backed `IStringLocalizer` with plural support and pluggable translation providers | [![NuGet](https://img.shields.io/nuget/v/BlazorLocalization.Extensions.svg)](https://www.nuget.org/packages/BlazorLocalization.Extensions) | `dotnet add package BlazorLocalization.Extensions` |
+| [**BlazorLocalization.Extensions**](https://www.nuget.org/packages/BlazorLocalization.Extensions) <br/> Caches translations, supports plurals and inline translations, pluggable translation providers | [![NuGet](https://img.shields.io/nuget/v/BlazorLocalization.Extensions.svg)](https://www.nuget.org/packages/BlazorLocalization.Extensions) | `dotnet add package BlazorLocalization.Extensions` |
 | [**BlazorLocalization.Extractor**](https://www.nuget.org/packages/BlazorLocalization.Extractor) <br/> CLI tool (`blazor-loc`) — Roslyn-based scanner that extracts source strings from `.razor`, `.cs`, and `.resx` files | [![NuGet](https://img.shields.io/nuget/v/BlazorLocalization.Extractor.svg)](https://www.nuget.org/packages/BlazorLocalization.Extractor) | `dotnet tool install -g BlazorLocalization.Extractor` |
 
 Translation providers:
@@ -87,7 +87,7 @@ builder.Services.AddProviderBasedLocalization()
     .AddCrowdinTranslationProvider();
 ```
 
-The provider always wins when it has a translation. Inline `.For()` translations serve as a starting point for translators and a runtime fallback.
+The provider always wins when it has a translation. Inline `.For()` translations serve as a starting point for translators and a fallback.
 
 See [Providers](docs/Configuration.md#translation-providers) for all available providers and their setup.
 
@@ -101,7 +101,7 @@ See [Providers](docs/Configuration.md#translation-providers) for all available p
 - **Source text fallback** — if translations haven't loaded yet, users see your source text, never blank strings or keys
 - **CLDR plural support** — plural categories, ordinals, gender/select. ICU concepts, C# ergonomics
 - **Distributed caching** — L1 memory out of the box, optional L2 via any `IDistributedCache` (Redis, SQLite, etc.)
-- **Pluggable providers** — load translations from JSON files, Crowdin, a database, or any custom source. Stack multiple providers with fallback chains
+- **Pluggable providers** — load translations from JSON files, Crowdin, a database, or any custom source. Stack multiple providers — first one with a translation wins
 
 **What you're leaving behind:** `.resx` merge conflicts, rebuild-and-redeploy for every text change, no plural support, no distributed caching.
 
