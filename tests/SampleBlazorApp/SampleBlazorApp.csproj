@@ -10,11 +10,13 @@
 
   <ItemGroup>
 
+    <PackageReference Include="Microsoft.AspNetCore.App.Internal.Assets" Version="10.0.5" />
+
     <PackageReference Include="MudBlazor" Version="9.2.*" />
 
     <PackageReference Include="NeoSmart.Caching.Sqlite.AspNetCore" Version="9.0.1" />
 
-    <PackageReference Include="System.Resources.Extensions" Version="10.0.0-preview.1.25080.5" />
+    <PackageReference Include="System.Resources.Extensions" Version="10.0.5" />
 
   </ItemGroup>
 
