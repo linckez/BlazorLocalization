@@ -1,5 +1,5 @@
 using BlazorLocalization.Extensions.Translation.Definitions;
-using static BlazorLocalization.Extensions.Translations;
+using static BlazorLocalization.Extensions.Translation.Definitions.TranslationDefinitions;
 
 namespace SampleBlazorApp;
 

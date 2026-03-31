@@ -3,7 +3,7 @@ namespace BlazorLocalization.Extensions.Translation.Definitions;
 /// <summary>
 /// Captures a reusable simple translation definition — key, source text, and optional
 /// inline translations — without requiring an <see cref="Microsoft.Extensions.Localization.IStringLocalizer"/> at definition time.
-/// Created by <see cref="Translations.DefineSimple"/>.
+/// Created by <see cref="TranslationDefinitions.DefineSimple"/>.
 /// </summary>
 /// <remarks>
 /// Define once as a static field, use everywhere via <c>Loc.Translation(definition)</c>:

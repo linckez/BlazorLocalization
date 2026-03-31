@@ -3,7 +3,7 @@ namespace BlazorLocalization.Extensions.Translation.Definitions;
 /// <summary>
 /// Captures a reusable select + plural translation definition — key, enum-based variants,
 /// and plural forms per variant — without requiring an <see cref="Microsoft.Extensions.Localization.IStringLocalizer"/> at definition time.
-/// Created by <see cref="Translations.DefineSelectPlural{TSelect}"/>.
+/// Created by <see cref="TranslationDefinitions.DefineSelectPlural{TSelect}"/>.
 /// </summary>
 /// <remarks>
 /// Define once as a static field, use everywhere via <c>Loc.Translation(definition, select, howMany)</c>:

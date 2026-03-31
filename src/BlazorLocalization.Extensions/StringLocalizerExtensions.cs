@@ -181,7 +181,7 @@ public static class StringLocalizerExtensions
         /// Loc.Translation(CommonTranslations.SaveButton)
         /// </code>
         /// </summary>
-        /// <param name="definition">A reusable translation definition created by <see cref="Translations.DefineSimple"/>.</param>
+        /// <param name="definition">A reusable translation definition created by <see cref="TranslationDefinitions.DefineSimple"/>.</param>
         /// <param name="replaceWith">
         /// Optional named values that fill <c>{placeholders}</c> in the message,
         /// e.g. <c>new { Name = user.FirstName }</c> fills <c>{Name}</c>.
@@ -201,7 +201,7 @@ public static class StringLocalizerExtensions
         /// Loc.Translation(CommonTranslations.CartItems, howMany: count, replaceWith: new { ItemCount = count })
         /// </code>
         /// </summary>
-        /// <param name="definition">A reusable translation definition created by <see cref="Translations.DefinePlural"/>.</param>
+        /// <param name="definition">A reusable translation definition created by <see cref="TranslationDefinitions.DefinePlural"/>.</param>
         /// <param name="howMany">The quantity that determines which plural form to use.</param>
         /// <param name="ordinal">Pass <c>true</c> for ordinal rules (1st, 2nd). Defaults to <c>false</c>.</param>
         /// <param name="replaceWith">Optional named values that fill <c>{placeholders}</c> in the message.</param>
@@ -220,7 +220,7 @@ public static class StringLocalizerExtensions
         /// Loc.Translation(CommonTranslations.Greeting, selectedTitle)
         /// </code>
         /// </summary>
-        /// <param name="definition">A reusable translation definition created by <see cref="Translations.DefineSelect{TSelect}"/>.</param>
+        /// <param name="definition">A reusable translation definition created by <see cref="TranslationDefinitions.DefineSelect{TSelect}"/>.</param>
         /// <param name="select">The enum value that picks which variant to show.</param>
         /// <param name="replaceWith">Optional named values that fill <c>{placeholders}</c> in the message.</param>
         /// <typeparam name="TSelect">An enum type whose members represent the variants.</typeparam>
@@ -241,7 +241,7 @@ public static class StringLocalizerExtensions
         /// Loc.Translation(CommonTranslations.InboxMessage, user.Gender, count, replaceWith: new { N = count })
         /// </code>
         /// </summary>
-        /// <param name="definition">A reusable translation definition created by <see cref="Translations.DefineSelectPlural{TSelect}"/>.</param>
+        /// <param name="definition">A reusable translation definition created by <see cref="TranslationDefinitions.DefineSelectPlural{TSelect}"/>.</param>
         /// <param name="select">The enum value that picks which variant to show.</param>
         /// <param name="howMany">The quantity that determines which plural form to use.</param>
         /// <param name="ordinal">Pass <c>true</c> for ordinal rules (1st, 2nd). Defaults to <c>false</c>.</param>

@@ -3,7 +3,7 @@ namespace BlazorLocalization.Extensions.Translation.Definitions;
 /// <summary>
 /// Captures a reusable plural translation definition — key and plural forms —
 /// without requiring an <see cref="Microsoft.Extensions.Localization.IStringLocalizer"/> at definition time.
-/// Created by <see cref="Translations.DefinePlural"/>.
+/// Created by <see cref="TranslationDefinitions.DefinePlural"/>.
 /// </summary>
 /// <remarks>
 /// Define once as a static field, use everywhere via <c>Loc.Translation(definition, howMany)</c>:

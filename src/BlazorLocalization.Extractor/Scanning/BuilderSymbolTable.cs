@@ -35,7 +35,7 @@ public sealed class BuilderSymbolTable
 
 	// ── Definition factory class ─────────────────────────────────
 
-	public INamedTypeSymbol TranslateClass { get; }
+	public INamedTypeSymbol DefinitionFactoryClass { get; }
 
 	// ── Attribute type symbol ─────────────────────────────────────────
 
@@ -202,10 +202,10 @@ public sealed class BuilderSymbolTable
 
 	// ── DefineXxx() factory parameter names ─────────────────────
 
-	/// <summary>Parameter name for "key" on <c>Translations.DefineSimple(string key, string message)</c>.</summary>
+	/// <summary>Parameter name for "key" on <c>TranslationDefinitions.DefineSimple(string key, string message)</c>.</summary>
 	public string DefKeyParam { get; }
 
-	/// <summary>Parameter name for "message" on <c>Translations.DefineSimple(string key, string message)</c>.</summary>
+	/// <summary>Parameter name for "message" on <c>TranslationDefinitions.DefineSimple(string key, string message)</c>.</summary>
 	public string DefSimpleMessageParam { get; }
 
 	// ── Sentinel values ───────────────────────────────────────────────
@@ -229,7 +229,7 @@ public sealed class BuilderSymbolTable
 		PluralDefinition = ResolveType<Extensions.Translation.Definitions.PluralDefinition>(compilation);
 		SelectDefinition = ResolveType(compilation, typeof(SelectDefinition<>));
 		SelectPluralDefinition = ResolveType(compilation, typeof(SelectPluralDefinition<>));
-		TranslateClass = ResolveType(compilation, typeof(Extensions.Translations));
+		DefinitionFactoryClass = ResolveType(compilation, typeof(Extensions.Translation.Definitions.TranslationDefinitions));
 
 		// ── PluralBuilder methods ─────────────────────────────────────
 		PluralFor = ResolveMethod(PluralBuilder, nameof(Extensions.Translation.PluralBuilder.For));
@@ -321,10 +321,10 @@ public sealed class BuilderSymbolTable
 		AllSelectPluralCategoryMethods.UnionWith(SelectPluralDefCategoryMethods);
 
 		// ── Definition factory methods (each has a unique name) ──────
-		DefineSimple = ResolveMethod(TranslateClass, nameof(Extensions.Translations.DefineSimple));
-		DefinePlural = ResolveMethod(TranslateClass, nameof(Extensions.Translations.DefinePlural));
-		DefineSelect = ResolveMethod(TranslateClass, nameof(Extensions.Translations.DefineSelect));
-		DefineSelectPlural = ResolveMethod(TranslateClass, nameof(Extensions.Translations.DefineSelectPlural));
+		DefineSimple = ResolveMethod(DefinitionFactoryClass, nameof(Extensions.Translation.Definitions.TranslationDefinitions.DefineSimple));
+		DefinePlural = ResolveMethod(DefinitionFactoryClass, nameof(Extensions.Translation.Definitions.TranslationDefinitions.DefinePlural));
+		DefineSelect = ResolveMethod(DefinitionFactoryClass, nameof(Extensions.Translation.Definitions.TranslationDefinitions.DefineSelect));
+		DefineSelectPlural = ResolveMethod(DefinitionFactoryClass, nameof(Extensions.Translation.Definitions.TranslationDefinitions.DefineSelectPlural));
 
 		// ── Reflection-derived parameter names ────────────────────────
 		CategoryMessageParam = ReflectParam<Extensions.Translation.PluralBuilder>(nameof(Extensions.Translation.PluralBuilder.One), 0);
@@ -369,8 +369,8 @@ public sealed class BuilderSymbolTable
 			            && !m.GetParameters().Any(p => p.ParameterType == typeof(int)));
 		TranslateSelectParam = selectTranslate.GetParameters()[2].Name!;
 
-		// ── DefineXxx() factory parameter names (via reflection on Translations) ──
-		var defineSimpleReflect = typeof(Extensions.Translations).GetMethod(nameof(Extensions.Translations.DefineSimple))!;
+		// ── DefineXxx() factory parameter names (via reflection on TranslationDefinitions) ──
+		var defineSimpleReflect = typeof(Extensions.Translation.Definitions.TranslationDefinitions).GetMethod(nameof(Extensions.Translation.Definitions.TranslationDefinitions.DefineSimple))!;
 		DefKeyParam = defineSimpleReflect.GetParameters()[0].Name!;
 		DefSimpleMessageParam = defineSimpleReflect.GetParameters()[1].Name!;
 
@@ -470,7 +470,7 @@ public sealed class BuilderSymbolTable
 		IsMethod(symbol, SelectPluralExactly) || IsMethod(symbol, SelectPluralDefExactly);
 
 	/// <summary>
-	/// Checks whether a method symbol is one of the <c>Translations.DefineXxx()</c> factory methods.
+	/// Checks whether a method symbol is one of the <c>TranslationDefinitions.DefineXxx()</c> factory methods.
 	/// </summary>
 	public bool IsDefinitionFactory(IMethodSymbol symbol) =>
 		IsMethod(symbol, DefineSimple) || IsMethod(symbol, DefinePlural)
@@ -632,23 +632,23 @@ public sealed class BuilderSymbolTable
 		ValidateParams(SelectPluralDefExactly, typeof(SelectPluralDefinition<>), nameof(SelectPluralDefinition<DayOfWeek>.Exactly));
 		ValidateParams(SelectPluralDefOne, typeof(SelectPluralDefinition<>), nameof(SelectPluralDefinition<DayOfWeek>.One));
 
-		ValidateParams(DefineSimple, typeof(Extensions.Translations), nameof(Extensions.Translations.DefineSimple));
-		ValidateParams(DefinePlural, typeof(Extensions.Translations), nameof(Extensions.Translations.DefinePlural));
+		ValidateParams(DefineSimple, typeof(Extensions.Translation.Definitions.TranslationDefinitions), nameof(Extensions.Translation.Definitions.TranslationDefinitions.DefineSimple));
+		ValidateParams(DefinePlural, typeof(Extensions.Translation.Definitions.TranslationDefinitions), nameof(Extensions.Translation.Definitions.TranslationDefinitions.DefinePlural));
 	}
 
 	/// <summary>
-	/// Verifies that Translations.DefineSimple factory param names match StringLocalizerExtensions.Translation
+	/// Verifies that TranslationDefinitions.DefineSimple factory param names match StringLocalizerExtensions.Translation
 	/// param names, so shared chain interpretation logic works for both code paths.
 	/// </summary>
 	private void CrossValidateFactoryParams()
 	{
 		if (DefKeyParam != TranslateKeyParam)
 			throw new InvalidOperationException(
-				$"Translations.DefineSimple 'key' param '{DefKeyParam}' doesn't match " +
+				$"TranslationDefinitions.DefineSimple 'key' param '{DefKeyParam}' doesn't match " +
 				$"StringLocalizerExtensions.Translation 'key' param '{TranslateKeyParam}'.");
 		if (DefSimpleMessageParam != TranslateMessageParam)
 			throw new InvalidOperationException(
-				$"Translations.DefineSimple 'message' param '{DefSimpleMessageParam}' doesn't match " +
+				$"TranslationDefinitions.DefineSimple 'message' param '{DefSimpleMessageParam}' doesn't match " +
 				$"StringLocalizerExtensions.Translation 'message' param '{TranslateMessageParam}'.");
 	}
 }

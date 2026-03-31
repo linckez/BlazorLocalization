@@ -208,19 +208,19 @@ msgid "S22.Nested"
 msgstr "Nested value"
 
 #: tests/SampleBlazorApp/CommonDefinitions.cs:15
-#. Translations.DefineSimple
+#. TranslationDefinitions.DefineSimple
 msgid "Def.Save"
 msgstr "Save"
 
 #: tests/SampleBlazorApp/CommonDefinitions.cs:22
-#. Translations.DefinePlural
+#. TranslationDefinitions.DefinePlural
 msgid "Def.Cart"
 msgid_plural "Def.Cart"
 msgstr[0] "{ItemCount} item"
 msgstr[1] "{ItemCount} items"
 
 #: tests/SampleBlazorApp/CommonDefinitions.cs:32
-#. Translations.DefineSelect
+#. TranslationDefinitions.DefineSelect
 msgid "Def.Greeting_Alpha"
 msgstr "Hello Alpha"
 
@@ -231,7 +231,7 @@ msgid "Def.Greeting"
 msgstr "Hello friend"
 
 #: tests/SampleBlazorApp/CommonDefinitions.cs:44
-#. Translations.DefineSelectPlural
+#. TranslationDefinitions.DefineSelectPlural
 msgid "Def.Inbox_Alpha"
 msgid_plural "Def.Inbox_Alpha"
 msgstr[0] "{ItemCount} Alpha message"

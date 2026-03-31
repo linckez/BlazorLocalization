@@ -1,16 +1,14 @@
-using BlazorLocalization.Extensions.Translation.Definitions;
-
-namespace BlazorLocalization.Extensions;
+namespace BlazorLocalization.Extensions.Translation.Definitions;
 
 /// <summary>
 /// Static factory for reusable translation definitions. Define translations once,
 /// use everywhere via <c>Loc.Translation(definition)</c>.
 /// </summary>
 /// <remarks>
-/// Add <c>using static BlazorLocalization.Extensions.Translations;</c> to call
+/// Add <c>using static BlazorLocalization.Extensions.Translation.Definitions.TranslationDefinitions;</c> to call
 /// factory methods directly:
 /// <code>
-/// using static BlazorLocalization.Extensions.Translations;
+/// using static BlazorLocalization.Extensions.Translation.Definitions.TranslationDefinitions;
 ///
 /// public static class CommonTranslations
 /// {
@@ -33,7 +31,7 @@ namespace BlazorLocalization.Extensions;
 /// }
 /// </code>
 /// </remarks>
-public static class Translations
+public static class TranslationDefinitions
 {
     /// <summary>
     /// Creates a simple translation definition with a key and source text.

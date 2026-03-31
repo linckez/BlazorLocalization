@@ -4,7 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Logging;
 using ZiggyCreatures.Caching.Fusion;
-using static BlazorLocalization.Extensions.Translations;
+using static BlazorLocalization.Extensions.Translation.Definitions.TranslationDefinitions;
 
 namespace BlazorLocalization.Extensions.Tests;
 

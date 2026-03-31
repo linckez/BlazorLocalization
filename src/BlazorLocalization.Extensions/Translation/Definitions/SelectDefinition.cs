@@ -3,7 +3,7 @@ namespace BlazorLocalization.Extensions.Translation.Definitions;
 /// <summary>
 /// Captures a reusable select translation definition — key and enum-based variants —
 /// without requiring an <see cref="Microsoft.Extensions.Localization.IStringLocalizer"/> at definition time.
-/// Created by <see cref="Translations.DefineSelect{TSelect}"/>.
+/// Created by <see cref="TranslationDefinitions.DefineSelect{TSelect}"/>.
 /// </summary>
 /// <remarks>
 /// Define once as a static field, use everywhere via <c>Loc.Translation(definition, select)</c>:

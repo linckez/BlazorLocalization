@@ -177,7 +177,7 @@ Some translations live across your whole app — "Save", "Cancel", validation me
 
 ```csharp
 using BlazorLocalization.Extensions.Translation.Definitions;
-using static BlazorLocalization.Extensions.Translations;
+using static BlazorLocalization.Extensions.Translation.Definitions.TranslationDefinitions;
 
 public static class CommonTranslations
 {
@@ -219,7 +219,7 @@ public static class CommonTranslations
 }
 ```
 
-`using static Translations` lets you write `DefineSimple()`, `DefinePlural()`, etc. without a prefix.
+`using static TranslationDefinitions` lets you write `DefineSimple()`, `DefinePlural()`, etc. without a prefix.
 
 **Step 2 — Use** the definitions anywhere via `Loc.Translation(definition)`:
 
