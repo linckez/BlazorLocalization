@@ -8,30 +8,34 @@ namespace BlazorLocalization.Extractor.Scanning;
 
 /// <summary>
 /// Imports translation entries from .resx files by parsing XML directly into <see cref="TranslationEntry"/> records.
-/// Only imports the neutral (culture-invariant) .resx file — culture-specific files like <c>Home.da-DK.resx</c> are skipped.
+/// Groups neutral and culture-specific .resx files by base name (e.g. <c>Home.resx</c>, <c>Home.da.resx</c>,
+/// <c>Home.es-MX.resx</c>) and produces entries with <see cref="TranslationEntry.InlineTranslations"/> populated
+/// from the culture-specific files.
 /// </summary>
 public static class ResxImporter
 {
 	/// <summary>
-	/// Imports all neutral .resx files from a project directory.
+	/// Imports all .resx files from a project directory, grouping neutral and culture-specific files by base name.
+	/// Culture-specific values are mapped into <see cref="TranslationEntry.InlineTranslations"/>.
 	/// </summary>
 	public static IReadOnlyList<TranslationEntry> ImportFromProject(string projectDir)
 	{
 		var projectName = Path.GetFileName(projectDir);
-		return EnumerateResxFiles(projectDir)
-			.Where(IsNeutralResx)
-			.SelectMany(path => Import(path, projectName))
+		var groups = GroupResxFilesByBaseName(EnumerateResxFiles(projectDir));
+		return groups
+			.OrderBy(g => g.Key, StringComparer.Ordinal)
+			.SelectMany(g => ImportGroup(g.Value, projectName))
 			.ToList();
 	}
 
 	/// <summary>
-	/// Parses a single .resx file into <see cref="TranslationEntry"/> records.
+	/// Parses a single .resx file into a dictionary of key → (value, comment, line).
 	/// Filters out non-string resource entries (embedded files, images, etc.).
 	/// </summary>
-	public static IReadOnlyList<TranslationEntry> Import(string resxFilePath, string projectName)
+	public static IReadOnlyDictionary<string, (string Value, string? Comment, int Line)> ParseResx(string resxFilePath)
 	{
 		var doc = XDocument.Load(resxFilePath, LoadOptions.SetLineInfo);
-		var entries = new List<TranslationEntry>();
+		var entries = new Dictionary<string, (string Value, string? Comment, int Line)>();
 
 		foreach (var data in doc.Descendants("data"))
 		{
@@ -49,34 +53,133 @@ public static class ResxImporter
 			var comment = data.Element("comment")?.Value;
 			var line = (data as IXmlLineInfo)?.LineNumber ?? 0;
 
-			var source = new SourceReference(resxFilePath, line, projectName, comment);
-			entries.Add(new TranslationEntry(key, new SingularText(value), source));
+			entries[key] = (value, comment, line);
 		}
 
 		return entries;
 	}
 
 	/// <summary>
-	/// Returns true if the .resx file is culture-neutral (e.g. <c>Home.resx</c>),
-	/// false for culture-specific files (e.g. <c>Home.da-DK.resx</c>).
+	/// Imports a group of .resx files sharing a base name into <see cref="TranslationEntry"/> records.
+	/// The neutral file provides <see cref="TranslationEntry.SourceText"/>; culture-specific files
+	/// provide <see cref="TranslationEntry.InlineTranslations"/>.
 	/// </summary>
-	private static bool IsNeutralResx(string path)
+	private static IEnumerable<TranslationEntry> ImportGroup(
+		ResxFileGroup group,
+		string projectName)
 	{
-		var fileName = Path.GetFileNameWithoutExtension(path);
-		var lastDot = fileName.LastIndexOf('.');
-		if (lastDot < 0)
-			return true;
+		var neutralEntries = group.NeutralPath is not null
+			? ParseResx(group.NeutralPath)
+			: new Dictionary<string, (string Value, string? Comment, int Line)>();
 
-		var suffix = fileName[(lastDot + 1)..];
+		var cultureEntries = new Dictionary<string, IReadOnlyDictionary<string, (string Value, string? Comment, int Line)>>();
+		foreach (var (culture, path) in group.CulturePaths)
+			cultureEntries[culture] = ParseResx(path);
+
+		// Collect all keys across neutral and all culture files
+		var allKeys = new HashSet<string>(neutralEntries.Keys);
+		foreach (var entries in cultureEntries.Values)
+			allKeys.UnionWith(entries.Keys);
+
+		foreach (var key in allKeys.Order(StringComparer.Ordinal))
+		{
+			// Neutral → SourceText
+			TranslationSourceText? sourceText = null;
+			string? sourceFile = null;
+			var sourceLine = 0;
+			string? comment = null;
+
+			if (neutralEntries.TryGetValue(key, out var neutral))
+			{
+				sourceText = new SingularText(neutral.Value);
+				sourceFile = group.NeutralPath;
+				sourceLine = neutral.Line;
+				comment = neutral.Comment;
+			}
+
+			// Culture files → InlineTranslations
+			Dictionary<string, TranslationSourceText>? inlineTranslations = null;
+			foreach (var (culture, entries) in cultureEntries)
+			{
+				if (entries.TryGetValue(key, out var cultureEntry))
+				{
+					inlineTranslations ??= new Dictionary<string, TranslationSourceText>();
+					inlineTranslations[culture] = new SingularText(cultureEntry.Value);
+				}
+			}
+
+			// For culture-only keys, use the first culture file that has the key as the source reference
+			if (sourceFile is null && inlineTranslations is not null)
+			{
+				var firstCulture = inlineTranslations.Keys.Order(StringComparer.Ordinal).First();
+				sourceFile = group.CulturePaths[firstCulture];
+				var firstEntries = cultureEntries[firstCulture];
+				if (firstEntries.TryGetValue(key, out var firstEntry))
+				{
+					sourceLine = firstEntry.Line;
+					comment = firstEntry.Comment;
+				}
+			}
+
+			var source = new SourceReference(sourceFile!, sourceLine, projectName, comment);
+			yield return new TranslationEntry(key, sourceText, source, inlineTranslations);
+		}
+	}
+
+	/// <summary>
+	/// Groups .resx file paths by base name. For example, <c>Home.resx</c>, <c>Home.da.resx</c>,
+	/// and <c>Home.es-MX.resx</c> all share the base name <c>Home</c>.
+	/// </summary>
+	private static Dictionary<string, ResxFileGroup> GroupResxFilesByBaseName(IEnumerable<string> paths)
+	{
+		var groups = new Dictionary<string, ResxFileGroup>();
+
+		foreach (var path in paths)
+		{
+			var (baseName, culture) = ParseResxFileName(path);
+			if (!groups.TryGetValue(baseName, out var group))
+			{
+				group = new ResxFileGroup();
+				groups[baseName] = group;
+			}
+
+			if (culture is null)
+				group.NeutralPath = path;
+			else
+				group.CulturePaths[culture] = path;
+		}
+
+		return groups;
+	}
+
+	/// <summary>
+	/// Parses a .resx file path into its base name (full path without culture suffix and extension)
+	/// and optional culture code. For example:
+	/// <c>/path/Home.resx</c> → (<c>/path/Home</c>, <c>null</c>)
+	/// <c>/path/Home.da.resx</c> → (<c>/path/Home</c>, <c>"da"</c>)
+	/// <c>/path/Home.es-MX.resx</c> → (<c>/path/Home</c>, <c>"es-MX"</c>)
+	/// </summary>
+	private static (string BaseName, string? Culture) ParseResxFileName(string path)
+	{
+		var dir = Path.GetDirectoryName(path);
+		var fileNameNoResx = Path.GetFileNameWithoutExtension(path); // strips .resx
+		var lastDot = fileNameNoResx.LastIndexOf('.');
+		if (lastDot < 0)
+			return (Combine(dir, fileNameNoResx), null);
+
+		var suffix = fileNameNoResx[(lastDot + 1)..];
 		try
 		{
-			CultureInfo.GetCultureInfo(suffix);
-			return false;
+			CultureInfo.GetCultureInfo(suffix, predefinedOnly: true);
+			return (Combine(dir, fileNameNoResx[..lastDot]), suffix);
 		}
-		catch (CultureNotFoundException)
+		catch
 		{
-			return true;
+			return (Combine(dir, fileNameNoResx), null);
 		}
+
+		static string Combine(string? dir, string name) =>
+			dir is null ? name : Path.Combine(dir, name);
 	}
 
 	/// <summary>
@@ -91,4 +194,13 @@ public static class ResxImporter
 			.Where(path => !path.Contains($"{Path.DirectorySeparatorChar}obj{Path.DirectorySeparatorChar}")
 						&& !path.Contains($"{Path.DirectorySeparatorChar}bin{Path.DirectorySeparatorChar}"))
 			.Order();
+
+	/// <summary>
+	/// Mutable accumulator for grouping neutral and culture-specific .resx files by base name.
+	/// </summary>
+	private sealed class ResxFileGroup
+	{
+		public string? NeutralPath { get; set; }
+		public Dictionary<string, string> CulturePaths { get; } = new();
+	}
 }

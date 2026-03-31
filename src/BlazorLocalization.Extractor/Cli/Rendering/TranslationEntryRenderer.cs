@@ -213,10 +213,10 @@ public static class TranslationEntryRenderer
 	{
 		try
 		{
-			var culture = CultureInfo.GetCultureInfo(locale);
+			var culture = CultureInfo.GetCultureInfo(locale, predefinedOnly: true);
 			return culture.EnglishName != locale ? $"{culture.EnglishName} ({locale})" : locale;
 		}
-		catch (CultureNotFoundException)
+		catch
 		{
 			return locale;
 		}

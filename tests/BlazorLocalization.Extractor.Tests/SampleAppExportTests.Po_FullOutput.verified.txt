@@ -255,6 +255,11 @@ msgstr "Delayed"
 msgid "Flight.Late"
 msgstr "Arrived a bit late"
 
+#: tests/SampleBlazorApp/Resources/Home.da.resx:32
+#. Key only present in culture-specific file, not in neutral
+msgid "Resx.CultureOnly"
+msgstr ""
+
 #: tests/SampleBlazorApp/Resources/Home.resx:30
 #. Passive entry — no Translation() call references this key
 msgid "Resx.Only"

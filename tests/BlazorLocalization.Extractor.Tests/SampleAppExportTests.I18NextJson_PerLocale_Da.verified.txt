@@ -8,6 +8,8 @@
   "S11_Alpha_other": "{ItemCount} Alfa-genstande",
   "S11_one": "{ItemCount} anden genstand",
   "S11_other": "{ItemCount} andre genstande",
+  "Resx.Match": "Matchende kildetekst",
+  "Resx.Conflict": "Resx siger dette",
   "Def.Save": "Gem",
   "Def.Cart_one": "{ItemCount} vare",
   "Def.Cart_other": "{ItemCount} varer",
@@ -18,5 +20,7 @@
   "Def.Inbox_Alpha_other": "{ItemCount} Alfa-beskeder",
   "Def.Inbox_one": "{ItemCount} besked",
   "Def.Inbox_other": "{ItemCount} beskeder",
-  "Enum.FlightStatus_Delayed": "Forsinket"
+  "Enum.FlightStatus_Delayed": "Forsinket",
+  "Resx.CultureOnly": "Kun i dansk, ikke i neutral",
+  "Resx.Only": "Kun i resx, ingen kode-modpart"
 }

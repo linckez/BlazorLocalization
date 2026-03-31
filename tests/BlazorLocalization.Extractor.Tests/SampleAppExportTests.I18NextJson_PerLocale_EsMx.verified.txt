@@ -1,5 +1,8 @@
 ﻿{
   "S02": "Hola",
+  "Resx.Match": "Texto fuente coincidente",
+  "Resx.Conflict": "Resx dice esto",
   "Def.Save": "Guardar",
-  "Enum.FlightStatus_Delayed": "Retrasado"
+  "Enum.FlightStatus_Delayed": "Retrasado",
+  "Resx.Only": "Solo en resx, sin contraparte de código"
 }
