@@ -142,7 +142,7 @@ See [Extractor CLI](docs/Extractor.md) for recipes, CI integration, and export f
 | External provider support | ✗ | ✗ | ✓ — pluggable |
 | Merge-conflict-free | ✗ — XML | ✗ — PO files | ✓ — with OTA providers. File-based providers are opt-in |
 | Automated string extraction | Manual | Manual | Roslyn-based CLI |
-| Reusable definitions | ✗ | ✗ | ✓ — define once, resolve anywhere |
+| Reusable definitions | ✗ | ✗ | ✓ — define once, use anywhere |
 | Standard `IStringLocalizer` | ✓ | ✓ | ✓ |
 | Battle-tested | ✓ — 20+ years | ✓ | Production use, actively maintained |
 

@@ -160,7 +160,7 @@ public enum FlightStatus
 
 The auto-generated key is `Enum.{TypeName}_{MemberName}` (e.g. `Enum.FlightStatus_Delayed`).
 
-Same fallback chain as `Translation()`: translation provider → inline per-locale source text → source text → member name.
+Your translation provider wins when it has a translation. The `[Translation]` text is the fallback, or the member name if no attribute is set.
 
 Override the auto-generated key with `Key`:
 
@@ -219,7 +219,7 @@ public static class CommonTranslations
 }
 ```
 
-`using static Translations` lets you call `DefineSimple()`, `DefinePlural()`, etc. directly. Resolve definitions with `Loc.Translation(definition)` — the same method name as the runtime API.
+`using static Translations` lets you write `DefineSimple()`, `DefinePlural()`, etc. without a prefix.
 
 **Step 2 — Use** the definitions anywhere via `Loc.Translation(definition)`:
 
@@ -233,7 +233,7 @@ public static class CommonTranslations
 <p>@Loc.Translation(CommonTranslations.TitleInbox, selectedTitle, msgCount, replaceWith: new { Count = msgCount })</p>
 ```
 
-Same fallback chain as inline `Translation()`: translation provider → inline `.For()` text → source text → raw key.
+Your translation provider still wins when it has a translation — the text in your definitions is the starting point for translators and the fallback.
 
 ---
 
