@@ -255,6 +255,10 @@ msgstr "Delayed"
 msgid "Flight.Late"
 msgstr "Arrived a bit late"
 
+#: tests/SampleBlazorApp/Resources/Home.resx:0
+msgid "Resx.CultureOnly"
+msgstr ""
+
 #: tests/SampleBlazorApp/Resources/Home.resx:30
 #. Passive entry — no Translation() call references this key
 msgid "Resx.Only"

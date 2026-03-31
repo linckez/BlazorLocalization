@@ -67,5 +67,6 @@
   "CB.CodeBehind": "From code-behind",
   "Enum.FlightStatus_Delayed": "Delayed",
   "Flight.Late": "Arrived a bit late",
+  "Resx.CultureOnly": "",
   "Resx.Only": "Only in resx, no code counterpart"
 }

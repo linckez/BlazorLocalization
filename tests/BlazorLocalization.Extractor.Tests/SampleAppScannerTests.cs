@@ -32,7 +32,7 @@ public class SampleAppScannerTests(SampleAppFixture fixture) : IClassFixture<Sam
 			// Indexer
 			"S12",
 			// Resx
-			"Resx.Match", "Resx.Conflict", "Resx.Only",
+			"Resx.Match", "Resx.Conflict", "Resx.Only", "Resx.CultureOnly",
 			// Attribute, ternary, cast, multi-call, text block
 			"S16.Attr", "S17.TernA", "S17.TernB", "S18.Cast", "S19.A", "S19.B", "S20.TextBlock",
 			// Code-behind string literals
@@ -133,6 +133,33 @@ public class SampleAppScannerTests(SampleAppFixture fixture) : IClassFixture<Sam
 	{
 		Entry("Resx.Only").SourceText.Should().BeOfType<SingularText>()
 			.Which.Value.Should().Be("Only in resx, no code counterpart");
+	}
+
+	[Fact]
+	public void ResxEntry_HasCultureInlineTranslations()
+	{
+		var entry = Entry("Resx.Match");
+		entry.InlineTranslations.Should().NotBeNull();
+		entry.InlineTranslations!.Should().ContainKey("da");
+		entry.InlineTranslations!.Should().ContainKey("es-MX");
+
+		entry.InlineTranslations["da"].Should().BeOfType<SingularText>()
+			.Which.Value.Should().Be("Matchende kildetekst");
+		entry.InlineTranslations["es-MX"].Should().BeOfType<SingularText>()
+			.Which.Value.Should().Be("Texto fuente coincidente");
+	}
+
+	[Fact]
+	public void ResxCultureOnlyEntry_NullSourceTextWithInlineTranslations()
+	{
+		var entry = Entry("Resx.CultureOnly");
+		entry.SourceText.Should().BeNull();
+		entry.InlineTranslations.Should().NotBeNull();
+		entry.InlineTranslations!.Should().ContainKey("da");
+		entry.InlineTranslations!["da"].Should().BeOfType<SingularText>()
+			.Which.Value.Should().Be("Kun i dansk, ikke i neutral");
+		// es-MX does not have this key
+		entry.InlineTranslations!.Should().NotContainKey("es-MX");
 	}
 
 	[Fact]
