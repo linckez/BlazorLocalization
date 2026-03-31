@@ -20,8 +20,6 @@ on:
       - src/BlazorLocalization.Extensions/ProviderBasedLocalizationBuilder.cs
       - src/BlazorLocalization.Extensions/ProviderBasedLocalizationOptions.cs
       - src/BlazorLocalization.Extensions/Exceptions/**
-      - src/BlazorLocalization.Extensions/BlazorLocalization.Extensions.csproj
-
 
 jobs:
   release:
