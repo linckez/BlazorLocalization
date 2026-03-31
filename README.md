@@ -14,7 +14,7 @@ No `.resx` files. No rebuild to update a translation.
 
 </div>
 
-Inline translations · Pluggable providers · Plurals & ordinals · Over-the-air updates · Distributed caching
+Inline translations · Pluggable providers · Plurals & ordinals · Over-the-air updates · Distributed caching · Reusable definitions
 
 ---
 
@@ -57,7 +57,7 @@ See [Examples](docs/Examples.md) for plurals, ordinals, enum display names, and 
 
 | Package | Version | Install |
 |---------|:-------:|--------:|
-| [**BlazorLocalization.Extensions**](https://www.nuget.org/packages/BlazorLocalization.Extensions) <br/> Runtime library — cache-backed `IStringLocalizer` with plural support and pluggable translation providers | [![NuGet](https://img.shields.io/nuget/v/BlazorLocalization.Extensions.svg)](https://www.nuget.org/packages/BlazorLocalization.Extensions) | `dotnet add package BlazorLocalization.Extensions` |
+| [**BlazorLocalization.Extensions**](https://www.nuget.org/packages/BlazorLocalization.Extensions) <br/> Caches translations, supports plurals and inline translations, pluggable translation providers | [![NuGet](https://img.shields.io/nuget/v/BlazorLocalization.Extensions.svg)](https://www.nuget.org/packages/BlazorLocalization.Extensions) | `dotnet add package BlazorLocalization.Extensions` |
 | [**BlazorLocalization.Extractor**](https://www.nuget.org/packages/BlazorLocalization.Extractor) <br/> CLI tool (`blazor-loc`) — Roslyn-based scanner that extracts source strings from `.razor`, `.cs`, and `.resx` files | [![NuGet](https://img.shields.io/nuget/v/BlazorLocalization.Extractor.svg)](https://www.nuget.org/packages/BlazorLocalization.Extractor) | `dotnet tool install -g BlazorLocalization.Extractor` |
 
 Translation providers:
@@ -87,7 +87,7 @@ builder.Services.AddProviderBasedLocalization()
     .AddCrowdinTranslationProvider();
 ```
 
-The provider always wins when it has a translation. Inline `.For()` translations serve as a starting point for translators and a runtime fallback.
+The provider always wins when it has a translation. Inline `.For()` translations serve as a starting point for translators and a fallback.
 
 See [Providers](docs/Configuration.md#translation-providers) for all available providers and their setup.
 
@@ -101,7 +101,7 @@ See [Providers](docs/Configuration.md#translation-providers) for all available p
 - **Source text fallback** — if translations haven't loaded yet, users see your source text, never blank strings or keys
 - **CLDR plural support** — plural categories, ordinals, gender/select. ICU concepts, C# ergonomics
 - **Distributed caching** — L1 memory out of the box, optional L2 via any `IDistributedCache` (Redis, SQLite, etc.)
-- **Pluggable providers** — load translations from JSON files, Crowdin, a database, or any custom source. Stack multiple providers with fallback chains
+- **Pluggable providers** — load translations from JSON files, Crowdin, a database, or any custom source. Stack multiple providers — first one with a translation wins
 
 **What you're leaving behind:** `.resx` merge conflicts, rebuild-and-redeploy for every text change, no plural support, no distributed caching.
 
@@ -142,6 +142,7 @@ See [Extractor CLI](docs/Extractor.md) for recipes, CI integration, and export f
 | External provider support | ✗ | ✗ | ✓ — pluggable |
 | Merge-conflict-free | ✗ — XML | ✗ — PO files | ✓ — with OTA providers. File-based providers are opt-in |
 | Automated string extraction | Manual | Manual | Roslyn-based CLI |
+| Reusable definitions | ✗ | ✗ | ✓ — define once, use anywhere |
 | Standard `IStringLocalizer` | ✓ | ✓ | ✓ |
 | Battle-tested | ✓ — 20+ years | ✓ | Production use, actively maintained |
 
@@ -153,7 +154,7 @@ See [Extractor CLI](docs/Extractor.md) for recipes, CI integration, and export f
 
 | Topic | Description |
 |-------|-------------|
-| [Examples](docs/Examples.md) | `Translation()` usage — simple, placeholders, plurals, ordinals, select, inline translations |
+| [Examples](docs/Examples.md) | `Translation()` usage — simple, placeholders, plurals, ordinals, select, inline translations, reusable definitions |
 | [Extractor CLI](docs/Extractor.md) | Install, interactive wizard, common recipes, CI integration, export formats |
 | [Configuration](docs/Configuration.md) | Cache settings, `appsettings.json` binding, multiple providers, code-only config |
 | [Crowdin Provider](docs/Providers/Crowdin.md) | Over-the-air translations from Crowdin — distribution hash, export formats, error handling |

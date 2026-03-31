@@ -1,5 +1,6 @@
 using System.Reflection;
 using BlazorLocalization.Extensions.Translation;
+using BlazorLocalization.Extensions.Translation.Definitions;
 using Microsoft.Extensions.Localization;
 
 namespace BlazorLocalization.Extensions;
@@ -166,5 +167,88 @@ public static class StringLocalizerExtensions
                 ?? sourceText
                 ?? memberName;
         }
+
+        // ── Reusable translation definitions ─────────────────────────
+
+        /// <summary>
+        /// Resolves a reusable simple translation definition.
+        /// <code>
+        /// // Define once:
+        /// public static readonly SimpleDefinition SaveButton =
+        ///     DefineSimple("Common.Save", "Save").For("da", "Gem");
+        ///
+        /// // Use everywhere:
+        /// Loc.Translation(CommonTranslations.SaveButton)
+        /// </code>
+        /// </summary>
+        /// <param name="definition">A reusable translation definition created by <see cref="TranslationDefinitions.DefineSimple"/>.</param>
+        /// <param name="replaceWith">
+        /// Optional named values that fill <c>{placeholders}</c> in the message,
+        /// e.g. <c>new { Name = user.FirstName }</c> fills <c>{Name}</c>.
+        /// </param>
+        public string Translation(SimpleDefinition definition, object? replaceWith = null)
+            => new SimpleBuilder(localizer, definition.Key, definition.Message, definition.InlineMessages, replaceWith).ToString();
+
+        /// <summary>
+        /// Resolves a reusable plural translation definition.
+        /// <code>
+        /// // Define once:
+        /// public static readonly PluralDefinition CartItems =
+        ///     DefinePlural("Cart.Items")
+        ///         .One("{ItemCount} item").Other("{ItemCount} items");
+        ///
+        /// // Use everywhere:
+        /// Loc.Translation(CommonTranslations.CartItems, howMany: count, replaceWith: new { ItemCount = count })
+        /// </code>
+        /// </summary>
+        /// <param name="definition">A reusable translation definition created by <see cref="TranslationDefinitions.DefinePlural"/>.</param>
+        /// <param name="howMany">The quantity that determines which plural form to use.</param>
+        /// <param name="ordinal">Pass <c>true</c> for ordinal rules (1st, 2nd). Defaults to <c>false</c>.</param>
+        /// <param name="replaceWith">Optional named values that fill <c>{placeholders}</c> in the message.</param>
+        public string Translation(PluralDefinition definition, int howMany, bool ordinal = false, object? replaceWith = null)
+            => new PluralBuilder(localizer, definition.Key, howMany, ordinal, definition.SourceMessages, definition.InlineMessages, replaceWith).ToString();
+
+        /// <summary>
+        /// Resolves a reusable select translation definition.
+        /// <code>
+        /// // Define once:
+        /// public static readonly SelectDefinition&lt;UserTitle&gt; Greeting =
+        ///     DefineSelect&lt;UserTitle&gt;("Home.Greeting")
+        ///         .When(UserTitle.Mr, "Dear Mr. Smith").Otherwise("Dear customer");
+        ///
+        /// // Use everywhere:
+        /// Loc.Translation(CommonTranslations.Greeting, selectedTitle)
+        /// </code>
+        /// </summary>
+        /// <param name="definition">A reusable translation definition created by <see cref="TranslationDefinitions.DefineSelect{TSelect}"/>.</param>
+        /// <param name="select">The enum value that picks which variant to show.</param>
+        /// <param name="replaceWith">Optional named values that fill <c>{placeholders}</c> in the message.</param>
+        /// <typeparam name="TSelect">An enum type whose members represent the variants.</typeparam>
+        public string Translation<TSelect>(SelectDefinition<TSelect> definition, TSelect select, object? replaceWith = null)
+            where TSelect : Enum
+            => new SelectBuilder<TSelect>(localizer, definition.Key, select, definition.SourceMessages, definition.InlineMessages, replaceWith).ToString();
+
+        /// <summary>
+        /// Resolves a reusable select + plural translation definition.
+        /// <code>
+        /// // Define once:
+        /// public static readonly SelectPluralDefinition&lt;Gender&gt; InboxMessage =
+        ///     DefineSelectPlural&lt;Gender&gt;("Inbox")
+        ///         .When(Gender.Female).One("She has {N} message").Other("She has {N} messages")
+        ///         .Otherwise().One("They have {N} message").Other("They have {N} messages");
+        ///
+        /// // Use everywhere:
+        /// Loc.Translation(CommonTranslations.InboxMessage, user.Gender, count, replaceWith: new { N = count })
+        /// </code>
+        /// </summary>
+        /// <param name="definition">A reusable translation definition created by <see cref="TranslationDefinitions.DefineSelectPlural{TSelect}"/>.</param>
+        /// <param name="select">The enum value that picks which variant to show.</param>
+        /// <param name="howMany">The quantity that determines which plural form to use.</param>
+        /// <param name="ordinal">Pass <c>true</c> for ordinal rules (1st, 2nd). Defaults to <c>false</c>.</param>
+        /// <param name="replaceWith">Optional named values that fill <c>{placeholders}</c> in the message.</param>
+        /// <typeparam name="TSelect">An enum type whose members represent the variants.</typeparam>
+        public string Translation<TSelect>(SelectPluralDefinition<TSelect> definition, TSelect select, int howMany, bool ordinal = false, object? replaceWith = null)
+            where TSelect : Enum
+            => new SelectPluralBuilder<TSelect>(localizer, definition.Key, select, howMany, ordinal, definition.SourceMessages, definition.InlineMessages, replaceWith).ToString();
     }
 }

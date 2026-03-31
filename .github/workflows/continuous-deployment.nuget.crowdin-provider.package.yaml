@@ -31,7 +31,10 @@ on:
       - main
     paths:
       - src/BlazorLocalization.TranslationProvider.Crowdin/**
-      - src/BlazorLocalization.Extensions/**
+      - src/BlazorLocalization.Extensions/ITranslationProvider.cs
+      - src/BlazorLocalization.Extensions/ProviderBasedLocalizationBuilder.cs
+      - src/BlazorLocalization.Extensions/ProviderBasedLocalizationOptions.cs
+      - src/BlazorLocalization.Extensions/Exceptions/**
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}

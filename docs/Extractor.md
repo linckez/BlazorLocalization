@@ -152,4 +152,4 @@ blazor-loc inspect --help
 
 ---
 
-**See also:** [Examples](Examples.md) for `Translation()` API usage · [Configuration](Configuration.md) for runtime setup
+**See also:** [Examples](Examples.md) for `Translation()` usage · [Configuration](Configuration.md) for setup

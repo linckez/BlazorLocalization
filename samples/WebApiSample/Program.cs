@@ -5,6 +5,8 @@ using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Localization;
 
+using WebApiSample;
+
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddOpenApi();
@@ -76,7 +78,7 @@ app.MapPost("/products",
     if (errors.Count > 0)
         return TypedResults.ValidationProblem(
             errors,
-            title: loc.Translation("Api.Validation.Title", "Validation failed").ToString());
+            title: loc.Translation(CommonTranslations.ValidationFailed));
 
     var product = new ProductResponse(1, request.Name!, request.Price);
     return TypedResults.Created($"/products/{product.Id}", product);
@@ -85,10 +87,24 @@ app.MapPost("/products",
 .Produces<ProductResponse>(StatusCodes.Status201Created, MediaTypeNames.Application.Json)
 .Produces<HttpValidationProblemDetails>(StatusCodes.Status400BadRequest, MediaTypeNames.Application.ProblemJson);
 
+// ── Reusable translation definitions ──
+
+app.MapGet("/notifications",
+    (IStringLocalizer<Program> loc, CustomerType type = CustomerType.Regular, int count = 5) =>
+{
+    return TypedResults.Ok(new NotificationResponse(
+        Greeting: loc.Translation(CommonTranslations.CustomerGreeting, type),
+        ResultCount: loc.Translation(CommonTranslations.ResultCount, count, replaceWith: new { Count = count }),
+        Summary: loc.Translation(CommonTranslations.NotificationSummary, type, count, replaceWith: new { Count = count })));
+})
+.WithName("GetNotifications")
+.Produces<NotificationResponse>(StatusCodes.Status200OK, MediaTypeNames.Application.Json);
+
 app.Run();
 
 public record GreetingResponse(string Greeting);
 public record ProductResponse(int Id, string Name, decimal Price);
 public record CreateProductRequest(string? Name, decimal Price);
+public record NotificationResponse(string Greeting, string ResultCount, string Summary);
 
 public partial class Program;

@@ -32,6 +32,19 @@ public sealed class SelectPluralBuilder<TSelect> where TSelect : Enum
         _replaceWith = replaceWith;
     }
 
+    /// <summary>Replay constructor: builds from a definition's pre-populated state.</summary>
+    internal SelectPluralBuilder(IStringLocalizer localizer, string key, TSelect selectValue, int howMany, bool ordinal,
+        Dictionary<(string? selectCase, string pluralSuffix), string> sourceMessages,
+        Dictionary<string, Dictionary<(string? selectCase, string pluralSuffix), string>> inlineMessages,
+        object? replaceWith)
+        : this(localizer, key, selectValue, howMany, ordinal, replaceWith)
+    {
+        foreach (var (k, msg) in sourceMessages)
+            _sourceMessages[k] = msg;
+        foreach (var (locale, dict) in inlineMessages)
+            _inlineMessages[locale] = new Dictionary<(string? selectCase, string pluralSuffix), string>(dict);
+    }
+
     /// <summary>Opens a variant for the specified enum value. Chain <c>.One()</c>, <c>.Other()</c>, etc. after this.</summary>
     /// <param name="select">The enum value this variant applies to.</param>
     public SelectPluralBuilder<TSelect> When(TSelect select) { _currentSelectCase = select.ToString(); return this; }

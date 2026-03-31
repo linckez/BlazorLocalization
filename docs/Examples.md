@@ -10,7 +10,7 @@ All examples assume an injected localizer:
 @inject IStringLocalizer<Home> Loc
 ```
 
-**On this page:** [Simple](#simple) · [Placeholders](#placeholders) · [Plurals](#plurals) · [Ordinals](#ordinals) · [Exact Counts](#exact-counts) · [Select](#select) · [Select + Plural](#select--plural) · [Inline Translations](#inline-translations) · [Enums](#enums) · [Standard IStringLocalizer](#standard-istringlocalizer)
+**On this page:** [Simple](#simple) · [Placeholders](#placeholders) · [Plurals](#plurals) · [Ordinals](#ordinals) · [Exact Counts](#exact-counts) · [Select](#select) · [Select + Plural](#select--plural) · [Inline Translations](#inline-translations) · [Enums](#enums) · [Reusable Definitions](#reusable-definitions) · [Standard IStringLocalizer](#standard-istringlocalizer)
 
 ---
 
@@ -24,7 +24,7 @@ Your source text is always the fallback — users never see blank strings or raw
 
 ## Placeholders
 
-Named placeholders are resolved by [SmartFormat](https://github.com/axuno/SmartFormat). Pass any object — properties become placeholders.
+[SmartFormat](https://github.com/axuno/SmartFormat) replaces your named placeholders with actual values. Pass any object — properties become placeholders.
 
 ```razor
 <p>@Loc.Translation(key: "Home.Greeting", message: "Hello, {Name}!", replaceWith: new { Name = user.Name })</p>
@@ -139,7 +139,7 @@ The translation provider always wins when a translation exists. Inline per-local
 
 ## Enums
 
-Mark enum members with `[Translation]`, resolve with `Display()`.
+Mark enum members with `[Translation]`, display with `Display()`.
 
 ```csharp
 public enum FlightStatus
@@ -160,7 +160,7 @@ public enum FlightStatus
 
 The auto-generated key is `Enum.{TypeName}_{MemberName}` (e.g. `Enum.FlightStatus_Delayed`).
 
-Same fallback chain as `Translation()`: translation provider → inline per-locale source text → source text → member name.
+Your translation provider wins when it has a translation. The `[Translation]` text is the fallback, or the member name if no attribute is set.
 
 Override the auto-generated key with `Key`:
 
@@ -168,6 +168,72 @@ Override the auto-generated key with `Key`:
 [Translation("Arrived a bit late", Key = "Flight.Late")]
 ArrivedABitLate
 ```
+
+## Reusable Definitions
+
+Some translations live across your whole app — "Save", "Cancel", validation messages. They don't belong to any one component. Others are complex plurals or selects with inline translations in multiple languages that you don't want to repeat. Definitions give both a single home, with full IntelliSense when you use them.
+
+**Step 1 — Define** a static class with your shared translations:
+
+```csharp
+using BlazorLocalization.Extensions.Translation.Definitions;
+using static BlazorLocalization.Extensions.Translation.Definitions.TranslationDefinitions;
+
+public static class CommonTranslations
+{
+    // Simple
+    public static readonly SimpleDefinition SaveButton =
+        DefineSimple("Common.Save", "Save")
+            .For("da", "Gem")
+            .For("es-MX", "Guardar");
+
+    // Plural
+    public static readonly PluralDefinition CartItems =
+        DefinePlural("Common.CartItems")
+            .One("{Count} item in your cart")
+            .Other("{Count} items in your cart")
+            .For("da")
+            .One("{Count} vare i din kurv")
+            .Other("{Count} varer i din kurv");
+
+    // Select
+    public static readonly SelectDefinition<UserTitle> TitleGreeting =
+        DefineSelect<UserTitle>("Common.TitleGreeting")
+            .When(UserTitle.Mr, "Dear Mr. Smith")
+            .When(UserTitle.Mrs, "Dear Mrs. Smith")
+            .Otherwise("Dear customer")
+            .For("da")
+            .When(UserTitle.Mr, "Kære hr. Smith")
+            .When(UserTitle.Mrs, "Kære fru Smith")
+            .Otherwise("Kære kunde");
+
+    // Select + Plural
+    public static readonly SelectPluralDefinition<UserTitle> TitleInbox =
+        DefineSelectPlural<UserTitle>("Common.TitleInbox")
+            .When(UserTitle.Mr)
+            .One("Mr. Smith has {Count} message")
+            .Other("Mr. Smith has {Count} messages")
+            .Otherwise()
+            .One("{Count} message")
+            .Other("{Count} messages");
+}
+```
+
+`using static TranslationDefinitions` lets you write `DefineSimple()`, `DefinePlural()`, etc. without a prefix.
+
+**Step 2 — Use** the definitions anywhere via `Loc.Translation(definition)`:
+
+```razor
+<button>@Loc.Translation(CommonTranslations.SaveButton)</button>
+
+<p>@Loc.Translation(CommonTranslations.CartItems, itemCount, replaceWith: new { Count = itemCount })</p>
+
+<p>@Loc.Translation(CommonTranslations.TitleGreeting, selectedTitle)</p>
+
+<p>@Loc.Translation(CommonTranslations.TitleInbox, selectedTitle, msgCount, replaceWith: new { Count = msgCount })</p>
+```
+
+Your translation provider still wins when it has a translation — the text in your definitions is the starting point for translators and the fallback.
 
 ---
 

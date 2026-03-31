@@ -4,7 +4,7 @@
 
 `AddProviderBasedLocalization()` replaces `AddLocalization()`. Do not call both — both register `IStringLocalizerFactory`, the last one wins, and behavior becomes unpredictable.
 
-> **Note:** You still need ASP.NET Core's `UseRequestLocalization()` middleware for culture detection. BlazorLocalization resolves translations for the current culture — but determining *which* culture applies to a request is the framework's job.
+> **Note:** You still need ASP.NET Core's `UseRequestLocalization()` middleware for culture detection. BlazorLocalization looks up translations for the current culture — but determining *which* culture applies to a request is the framework's job.
 
 **On this page:** [Culture & Request Pipeline](#culture--request-pipeline) · [Minimal Setup](#minimal-setup) · [Cache Options](#cache-options) · [Custom Configuration Section](#custom-configuration-section) · [Multiple Providers](#multiple-providers) · [L2 Distributed Cache](#l2-distributed-cache) · [Code-Only Configuration](#code-only-configuration) · [Full Example](#full-example) · [Translation Providers](#translation-providers) · [How It Works](#how-it-works)
 
@@ -20,9 +20,9 @@ app.UseRequestLocalization(new RequestLocalizationOptions()
     .AddSupportedUICultures(supportedCultures));
 ```
 
-The middleware evaluates culture providers in order: **query string → cookie → `Accept-Language` header → default culture**. On a first visit (no cookie), the browser's `Accept-Language` header auto-detects culture — the same mechanism that drives Web APIs.
+The middleware evaluates culture providers in order: **query string → cookie → `Accept-Language` header → default culture**. On a first visit (no cookie), the browser's `Accept-Language` header auto-detects culture — just like Web APIs.
 
-When the requested culture isn't available from any provider, BlazorLocalization walks the culture fallback chain automatically: `es-MX` → `es` → source text. Your default culture's source text is always the last resort — users never see blank strings or raw keys.
+When the exact culture isn't available, your app automatically tries the parent culture: `es-MX` → `es` → source text. Your default culture's source text is always the last resort — users never see blank strings or raw keys.
 
 For **Blazor Server**, persist the detected culture into a cookie so subsequent requests stay consistent.
 
@@ -59,7 +59,7 @@ builder.Services.AddProviderBasedLocalization()
 }
 ```
 
-`AddProviderBasedLocalization()` looks for a `"Localization"` section by default. Provider options bind from `Localization:TranslationProviders:{ProviderName}`.
+`AddProviderBasedLocalization()` looks for a `"Localization"` section by default. Provider options come from `Localization:TranslationProviders:{ProviderName}`.
 
 See [Providers/](Providers/) for provider-specific setup and available options.
 
@@ -81,7 +81,7 @@ All cache options live directly under the `"Localization"` section:
 | Property | Type | Default | Description |
 |---|---|---|---|
 | `TranslationDuration` | TimeSpan | `01:00:00` (1 h) | How long a translation is fresh. After expiry, FusionCache refreshes in the background. |
-| `FailSafeMaxDuration` | TimeSpan | 365 days | How long a stale translation can be served when providers are down. |
+| `FailSafeMaxDuration` | TimeSpan | 365 days | How long your app keeps using stale translations when providers are down. |
 | `CacheName` | string | `"BlazorLocalization"` | FusionCache instance name. Change only to avoid collisions with your own FusionCache usage. |
 
 Equivalent in code:
@@ -122,7 +122,7 @@ builder.Services.AddProviderBasedLocalization(
 
 ## Multiple Providers
 
-Stack providers for fallback chains. Providers are tried in registration order — the first non-null result wins.
+Register providers in the order you want them tried — first one with a translation wins.
 
 **Common pattern** — Crowdin with local JSON fallback:
 
@@ -224,10 +224,10 @@ For provider-specific setup, file formats, and options, see the dedicated docs:
 
 **Build time:** The [Extractor CLI](Extractor.md) scans your code, finds every `IStringLocalizer` usage, and exports source strings. Upload these to your translation provider — manually, or automate it in CI.
 
-**Runtime:** On each `Translation()` call, the library checks the cache, falls back to your provider(s), and walks the culture chain (`es-MX` → `es` → source text). Translations are cached by [FusionCache](https://github.com/ZiggyCreatures/FusionCache) — L1 in-memory, optional L2 distributed.
+**Each `Translation()` call:** Your app checks the cache first. On a cache miss, it fetches from your provider(s) and tries parent cultures if the exact locale isn't available (`es-MX` → `es` → source text). Translations are cached by [FusionCache](https://github.com/ZiggyCreatures/FusionCache) — L1 in-memory, optional L2 distributed.
 
-On a cold boot with an empty cache, users see your source text as fallback. The background fetch starts immediately, and translations appear once the provider responds. With an L2 cache (Redis, SQLite), cold boots are warm — translations are served from L2 while the provider refreshes in the background.
+On a fresh start with an empty cache, users see your source text while translations load in the background. Once the provider responds, translations appear automatically. With an L2 cache (Redis, SQLite), translations survive restarts — your app serves them from L2 while the provider refreshes in the background.
 
 ---
 
-**See also:** [Examples](Examples.md) for API usage · [Extractor CLI](Extractor.md) for string extraction
+**See also:** [Examples](Examples.md) for `Translation()` usage · [Extractor CLI](Extractor.md) for string extraction
