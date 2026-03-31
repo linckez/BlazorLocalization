@@ -14,7 +14,7 @@ No `.resx` files. No rebuild to update a translation.
 
 </div>
 
-Inline translations · Pluggable providers · Plurals & ordinals · Over-the-air updates · Distributed caching · Reusable definitions
+Inline translations · Pluggable providers · Plurals & ordinals · Over-the-air updates · Distributed caching
 
 ---
 
