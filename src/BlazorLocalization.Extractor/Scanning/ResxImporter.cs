@@ -22,7 +22,10 @@ public static class ResxImporter
 	{
 		var projectName = Path.GetFileName(projectDir);
 		var groups = GroupResxFilesByBaseName(EnumerateResxFiles(projectDir));
-		return groups.SelectMany(g => ImportGroup(g.Value, projectName)).ToList();
+		return groups
+			.OrderBy(g => g.Key, StringComparer.Ordinal)
+			.SelectMany(g => ImportGroup(g.Value, projectName))
+			.ToList();
 	}
 
 	/// <summary>
@@ -82,13 +85,14 @@ public static class ResxImporter
 		{
 			// Neutral → SourceText
 			TranslationSourceText? sourceText = null;
-			var sourceFile = group.NeutralPath;
+			string? sourceFile = null;
 			var sourceLine = 0;
 			string? comment = null;
 
 			if (neutralEntries.TryGetValue(key, out var neutral))
 			{
 				sourceText = new SingularText(neutral.Value);
+				sourceFile = group.NeutralPath;
 				sourceLine = neutral.Line;
 				comment = neutral.Comment;
 			}
