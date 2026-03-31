@@ -22,7 +22,7 @@ public static class ResxImporter
 	{
 		var projectName = Path.GetFileName(projectDir);
 		var groups = GroupResxFilesByBaseName(EnumerateResxFiles(projectDir));
-		return groups.SelectMany(g => ImportGroup(g.Key, g.Value, projectName)).ToList();
+		return groups.SelectMany(g => ImportGroup(g.Value, projectName)).ToList();
 	}
 
 	/// <summary>
@@ -62,7 +62,6 @@ public static class ResxImporter
 	/// provide <see cref="TranslationEntry.InlineTranslations"/>.
 	/// </summary>
 	private static IEnumerable<TranslationEntry> ImportGroup(
-		string baseName,
 		ResxFileGroup group,
 		string projectName)
 	{
@@ -79,7 +78,7 @@ public static class ResxImporter
 		foreach (var entries in cultureEntries.Values)
 			allKeys.UnionWith(entries.Keys);
 
-		foreach (var key in allKeys.Order())
+		foreach (var key in allKeys.Order(StringComparer.Ordinal))
 		{
 			// Neutral → SourceText
 			TranslationSourceText? sourceText = null;
@@ -108,7 +107,7 @@ public static class ResxImporter
 			// For culture-only keys, use the first culture file that has the key as the source reference
 			if (sourceFile is null && inlineTranslations is not null)
 			{
-				var firstCulture = inlineTranslations.Keys.First();
+				var firstCulture = inlineTranslations.Keys.Order(StringComparer.Ordinal).First();
 				sourceFile = group.CulturePaths[firstCulture];
 				var firstEntries = cultureEntries[firstCulture];
 				if (firstEntries.TryGetValue(key, out var firstEntry))
@@ -158,21 +157,25 @@ public static class ResxImporter
 	/// </summary>
 	private static (string BaseName, string? Culture) ParseResxFileName(string path)
 	{
-		var withoutExtension = Path.ChangeExtension(path, null); // strips .resx
-		var lastDot = withoutExtension.LastIndexOf('.');
+		var dir = Path.GetDirectoryName(path);
+		var fileNameNoResx = Path.GetFileNameWithoutExtension(path); // strips .resx
+		var lastDot = fileNameNoResx.LastIndexOf('.');
 		if (lastDot < 0)
-			return (withoutExtension, null);
+			return (Combine(dir, fileNameNoResx), null);
 
-		var suffix = withoutExtension[(lastDot + 1)..];
+		var suffix = fileNameNoResx[(lastDot + 1)..];
 		try
 		{
 			CultureInfo.GetCultureInfo(suffix, predefinedOnly: true);
-			return (withoutExtension[..lastDot], suffix);
+			return (Combine(dir, fileNameNoResx[..lastDot]), suffix);
 		}
 		catch
 		{
-			return (withoutExtension, null);
+			return (Combine(dir, fileNameNoResx), null);
 		}
+
+		static string Combine(string? dir, string name) =>
+			dir is null ? name : Path.Combine(dir, name);
 	}
 
 	/// <summary>
