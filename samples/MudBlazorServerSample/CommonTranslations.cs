@@ -11,16 +11,16 @@ public static class CommonTranslations
 {
     // ── Simple ──────────────────────────────────────────────────────
 
-    public static readonly SimpleDefinitionBuilder SaveButton =
-        Translate("Common.Save", "Save")
+    public static readonly SimpleDefinition SaveButton =
+        DefineSimple("Common.Save", "Save")
             .For("de", "Speichern")
             .For("pl", "Zapisz")
             .For("da", "Gem");
 
     // ── Plural ──────────────────────────────────────────────────────
 
-    public static readonly PluralDefinitionBuilder CartItems =
-        Translate("Common.CartItems")
+    public static readonly PluralDefinition CartItems =
+        DefinePlural("Common.CartItems")
             .One("{Count} item in your cart")
             .Other("{Count} items in your cart")
             .For("da")
@@ -29,8 +29,8 @@ public static class CommonTranslations
 
     // ── Select ──────────────────────────────────────────────────────
 
-    public static readonly SelectDefinitionBuilder<UserTitle> TitleGreeting =
-        Translate<UserTitle>("Common.TitleGreeting")
+    public static readonly SelectDefinition<UserTitle> TitleGreeting =
+        DefineSelect<UserTitle>("Common.TitleGreeting")
             .When(UserTitle.Mr, "Dear Mr. Smith")
             .When(UserTitle.Mrs, "Dear Mrs. Smith")
             .Otherwise("Dear customer")
@@ -41,8 +41,8 @@ public static class CommonTranslations
 
     // ── SelectPlural ────────────────────────────────────────────────
 
-    public static readonly SelectPluralDefinitionBuilder<UserTitle> TitleInbox =
-        Translate<UserTitle>("Common.TitleInbox", howMany: 0)
+    public static readonly SelectPluralDefinition<UserTitle> TitleInbox =
+        DefineSelectPlural<UserTitle>("Common.TitleInbox")
             .When(UserTitle.Mr)
             .One("Mr. Smith has {Count} message")
             .Other("Mr. Smith has {Count} messages")

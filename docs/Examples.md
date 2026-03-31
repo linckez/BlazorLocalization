@@ -182,14 +182,14 @@ using static BlazorLocalization.Extensions.Translations;
 public static class CommonTranslations
 {
     // Simple
-    public static readonly SimpleDefinitionBuilder SaveButton =
-        Translate("Common.Save", "Save")
+    public static readonly SimpleDefinition SaveButton =
+        DefineSimple("Common.Save", "Save")
             .For("da", "Gem")
             .For("es-MX", "Guardar");
 
     // Plural
-    public static readonly PluralDefinitionBuilder CartItems =
-        Translate("Common.CartItems")
+    public static readonly PluralDefinition CartItems =
+        DefinePlural("Common.CartItems")
             .One("{Count} item in your cart")
             .Other("{Count} items in your cart")
             .For("da")
@@ -197,8 +197,8 @@ public static class CommonTranslations
             .Other("{Count} varer i din kurv");
 
     // Select
-    public static readonly SelectDefinitionBuilder<UserTitle> TitleGreeting =
-        Translate<UserTitle>("Common.TitleGreeting")
+    public static readonly SelectDefinition<UserTitle> TitleGreeting =
+        DefineSelect<UserTitle>("Common.TitleGreeting")
             .When(UserTitle.Mr, "Dear Mr. Smith")
             .When(UserTitle.Mrs, "Dear Mrs. Smith")
             .Otherwise("Dear customer")
@@ -208,8 +208,8 @@ public static class CommonTranslations
             .Otherwise("Kære kunde");
 
     // Select + Plural
-    public static readonly SelectPluralDefinitionBuilder<UserTitle> TitleInbox =
-        Translate<UserTitle>("Common.TitleInbox", howMany: 0)
+    public static readonly SelectPluralDefinition<UserTitle> TitleInbox =
+        DefineSelectPlural<UserTitle>("Common.TitleInbox")
             .When(UserTitle.Mr)
             .One("Mr. Smith has {Count} message")
             .Other("Mr. Smith has {Count} messages")
@@ -219,7 +219,7 @@ public static class CommonTranslations
 }
 ```
 
-`using static Translations` lets you call `Translate()` directly. Resolve definitions with `Loc.Translation(definition)` — the same method name as the runtime API.
+`using static Translations` lets you call `DefineSimple()`, `DefinePlural()`, etc. directly. Resolve definitions with `Loc.Translation(definition)` — the same method name as the runtime API.
 
 **Step 2 — Use** the definitions anywhere via `Loc.Translation(definition)`:
 

@@ -1,28 +1,26 @@
-using Microsoft.Extensions.Localization;
-
 namespace BlazorLocalization.Extensions.Translation.Definitions;
 
 /// <summary>
 /// Captures a reusable simple translation definition — key, source text, and optional
-/// inline translations — without requiring an <see cref="IStringLocalizer"/> at definition time.
-/// Created by <see cref="Translate.Simple"/>.
+/// inline translations — without requiring an <see cref="Microsoft.Extensions.Localization.IStringLocalizer"/> at definition time.
+/// Created by <see cref="Translations.DefineSimple"/>.
 /// </summary>
 /// <remarks>
 /// Define once as a static field, use everywhere via <c>Loc.Translation(definition)</c>:
 /// <code>
-/// public static readonly SimpleDefinitionBuilder SaveButton =
-///     Translate.Simple("Common.Save", "Save")
+/// public static readonly SimpleDefinition SaveButton =
+///     DefineSimple("Common.Save", "Save")
 ///         .For("da", "Gem");
 ///
 /// // Usage:
 /// Loc.Translation(CommonTranslations.SaveButton)
 /// </code>
 /// </remarks>
-public sealed class SimpleDefinitionBuilder
+public sealed class SimpleDefinition
 {
     private Dictionary<string, string>? _inlineMessages;
 
-    internal SimpleDefinitionBuilder(string key, string message)
+    internal SimpleDefinition(string key, string message)
     {
         Key = key;
         Message = message;
@@ -40,30 +38,17 @@ public sealed class SimpleDefinitionBuilder
     /// <summary>
     /// Adds a translation for the specified locale directly in the definition.
     /// <code>
-    /// Translate.Simple("Common.Save", "Save")
+    /// DefineSimple("Common.Save", "Save")
     ///     .For("da", "Gem")
     ///     .For("de", "Speichern")
     /// </code>
     /// </summary>
     /// <param name="locale">A culture code, e.g. <c>"da"</c>, <c>"es-MX"</c>.</param>
     /// <param name="message">The translated text for this locale.</param>
-    public SimpleDefinitionBuilder For(string locale, string message)
+    public SimpleDefinition For(string locale, string message)
     {
         _inlineMessages ??= new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
         _inlineMessages[locale] = message;
         return this;
-    }
-
-    /// <summary>
-    /// Resolves this definition against the given localizer and returns the translated string.
-    /// Resolution chain: provider/cache → inline translation → source text.
-    /// </summary>
-    internal string Resolve(IStringLocalizer localizer, object? replaceWith)
-    {
-        var resolved = TranslationResolver.TryLocalizer(localizer, Key)
-            ?? TranslationResolver.TryInline(_inlineMessages)
-            ?? Message;
-
-        return TranslationFormatter.Format(resolved, replaceWith);
     }
 }

@@ -11,16 +11,16 @@ public static class CommonTranslations
 {
     // ── Simple ──────────────────────────────────────────────────────
 
-    public static readonly SimpleDefinitionBuilder ValidationFailed =
-        Translate("Api.Validation.Title", "Validation failed")
+    public static readonly SimpleDefinition ValidationFailed =
+        DefineSimple("Api.Validation.Title", "Validation failed")
             .For("de", "Validierung fehlgeschlagen")
             .For("pl", "Walidacja nie powiodła się")
             .For("da", "Validering fejlede");
 
     // ── Plural ──────────────────────────────────────────────────────
 
-    public static readonly PluralDefinitionBuilder ResultCount =
-        Translate("Api.ResultCount")
+    public static readonly PluralDefinition ResultCount =
+        DefinePlural("Api.ResultCount")
             .One("{Count} result")
             .Other("{Count} results")
             .For("da")
@@ -29,8 +29,8 @@ public static class CommonTranslations
 
     // ── Select ──────────────────────────────────────────────────────
 
-    public static readonly SelectDefinitionBuilder<CustomerType> CustomerGreeting =
-        Translate<CustomerType>("Api.CustomerGreeting")
+    public static readonly SelectDefinition<CustomerType> CustomerGreeting =
+        DefineSelect<CustomerType>("Api.CustomerGreeting")
             .When(CustomerType.Premium, "Welcome back, valued customer")
             .Otherwise("Welcome back")
             .For("da")
@@ -39,8 +39,8 @@ public static class CommonTranslations
 
     // ── SelectPlural ────────────────────────────────────────────────
 
-    public static readonly SelectPluralDefinitionBuilder<CustomerType> NotificationSummary =
-        Translate<CustomerType>("Api.NotificationSummary", howMany: 0)
+    public static readonly SelectPluralDefinition<CustomerType> NotificationSummary =
+        DefineSelectPlural<CustomerType>("Api.NotificationSummary")
             .When(CustomerType.Premium)
             .One("{Count} priority notification")
             .Other("{Count} priority notifications")

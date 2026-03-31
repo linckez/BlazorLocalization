@@ -66,8 +66,8 @@ internal static class ChainInterpreter
 	}
 
 	/// <summary>
-	/// Interprets a <c>Translate.Simple/Plural/Select/SelectPlural()</c> definition factory call
-	/// and its fluent chain into a <see cref="TranslationEntry"/>.
+	/// Interprets a <c>Translations.DefineSimple/DefinePlural/DefineSelect/DefineSelectPlural()</c>
+	/// definition factory call and its fluent chain into a <see cref="TranslationEntry"/>.
 	/// </summary>
 	public static TranslationEntry? InterpretDefinitionCall(
 		ExtractedCall call,

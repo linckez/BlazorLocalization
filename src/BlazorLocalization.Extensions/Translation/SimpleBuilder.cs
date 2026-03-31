@@ -22,6 +22,18 @@ public sealed class SimpleBuilder
         _replaceWith = replaceWith;
     }
 
+    /// <summary>Replay constructor: builds from a definition's pre-populated state.</summary>
+    internal SimpleBuilder(IStringLocalizer localizer, string key, string sourceMessage, Dictionary<string, string>? inlineMessages, object? replaceWith)
+        : this(localizer, key, sourceMessage, replaceWith)
+    {
+        if (inlineMessages is not null)
+        {
+            _inlineMessages ??= new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+            foreach (var (locale, msg) in inlineMessages)
+                _inlineMessages[locale] = msg;
+        }
+    }
+
     /// <summary>
     /// Adds a translation for the specified locale directly in code.
     /// Used as fallback when your providers don't have this translation yet:

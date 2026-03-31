@@ -47,8 +47,8 @@ public sealed class TranslationDefinitionTests : IDisposable
 
     // ── Simple ──────────────────────────────────────────────────────
 
-    private static readonly Translation.Definitions.SimpleDefinitionBuilder SaveButton =
-        Translate("Common.Save", "Save")
+    private static readonly Translation.Definitions.SimpleDefinition SaveButton =
+        DefineSimple("Common.Save", "Save")
             .For("da", "Gem")
             .For("de", "Speichern");
 
@@ -83,7 +83,7 @@ public sealed class TranslationDefinitionTests : IDisposable
     [Fact]
     public void SimpleDefinition_WithPlaceholders_Resolved()
     {
-        var greeting = Translate("Greet", "Hello {Name}!");
+        var greeting = DefineSimple("Greet", "Hello {Name}!");
 
         var result = _localizer.Translation(greeting, replaceWith: new { Name = "World" });
 
@@ -92,8 +92,8 @@ public sealed class TranslationDefinitionTests : IDisposable
 
     // ── Plural ──────────────────────────────────────────────────────
 
-    private static readonly Translation.Definitions.PluralDefinitionBuilder CartItems =
-        Translate("Cart.Items")
+    private static readonly Translation.Definitions.PluralDefinition CartItems =
+        DefinePlural("Cart.Items")
             .One("1 item")
             .Other("{ItemCount} items")
             .For("da")
@@ -134,7 +134,7 @@ public sealed class TranslationDefinitionTests : IDisposable
     [Fact]
     public void PluralDefinition_ExactMatchTakesPriority()
     {
-        var withExact = Translate("Cart.Exact")
+        var withExact = DefinePlural("Cart.Exact")
             .Exactly(0, "Your cart is empty")
             .One("1 item")
             .Other("Several items");
@@ -146,8 +146,8 @@ public sealed class TranslationDefinitionTests : IDisposable
 
     // ── Select ──────────────────────────────────────────────────────
 
-    private static readonly Translation.Definitions.SelectDefinitionBuilder<Gender> GreetingDef =
-        Translate<Gender>("Invite")
+    private static readonly Translation.Definitions.SelectDefinition<Gender> GreetingDef =
+        DefineSelect<Gender>("Invite")
             .When(Gender.Female, "{Name} invited you to her party")
             .When(Gender.Male, "{Name} invited you to his party")
             .Otherwise("{Name} invited you to their party");
@@ -175,7 +175,7 @@ public sealed class TranslationDefinitionTests : IDisposable
     {
         CultureInfo.CurrentUICulture = new CultureInfo("da");
 
-        var def = Translate<Gender>("Greet.Select")
+        var def = DefineSelect<Gender>("Greet.Select")
             .When(Gender.Female, "Welcome, ma'am!")
             .Otherwise("Welcome!")
             .For("da")
@@ -195,7 +195,7 @@ public sealed class TranslationDefinitionTests : IDisposable
         _cache.Set("locale_en_Inbox_Female_one", "She has {MessageCount} message");
         _cache.Set("locale_en_Inbox_Female_other", "She has {MessageCount} messages");
 
-        var def = Translate<Gender>("Inbox", howMany: 0)
+        var def = DefineSelectPlural<Gender>("Inbox")
             .When(Gender.Female).One("She has {MessageCount} message").Other("She has {MessageCount} messages")
             .When(Gender.Male).One("He has {MessageCount} message").Other("He has {MessageCount} messages")
             .Otherwise().One("They have {MessageCount} message").Other("They have {MessageCount} messages");
@@ -208,7 +208,7 @@ public sealed class TranslationDefinitionTests : IDisposable
     [Fact]
     public void SelectPluralDefinition_SourceTextFallback()
     {
-        var def = Translate<Gender>("Inbox.Def", howMany: 0)
+        var def = DefineSelectPlural<Gender>("Inbox.Def")
             .When(Gender.Female).One("She has {N} message").Other("She has {N} messages")
             .Otherwise().One("They have {N} message").Other("They have {N} messages");
 
@@ -222,7 +222,7 @@ public sealed class TranslationDefinitionTests : IDisposable
     [Fact]
     public void Definitions_AreReusable_MultipleCallsSameResult()
     {
-        var def = Translate("Reuse.Test", "Hello!");
+        var def = DefineSimple("Reuse.Test", "Hello!");
 
         var result1 = _localizer.Translation(def);
         var result2 = _localizer.Translation(def);

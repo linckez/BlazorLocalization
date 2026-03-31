@@ -27,6 +27,19 @@ public sealed class SelectBuilder<TSelect> where TSelect : Enum
         _replaceWith = replaceWith;
     }
 
+    /// <summary>Replay constructor: builds from a definition's pre-populated state.</summary>
+    internal SelectBuilder(IStringLocalizer localizer, string key, TSelect selectValue,
+        Dictionary<string, string> sourceMessages,
+        Dictionary<string, Dictionary<string, string>> inlineMessages,
+        object? replaceWith)
+        : this(localizer, key, selectValue, replaceWith)
+    {
+        foreach (var (k, msg) in sourceMessages)
+            _sourceMessages[k] = msg;
+        foreach (var (locale, dict) in inlineMessages)
+            _inlineMessages[locale] = new Dictionary<string, string>(dict);
+    }
+
     /// <summary>Defines the message for a specific enum value.</summary>
     /// <param name="select">The enum value this message applies to.</param>
     /// <param name="message">The text shown when <paramref name="select"/> matches.</param>

@@ -11,15 +11,15 @@ public static class CommonDefinitions
 {
     // ── Simple ──────────────────────────────────────────────────────
 
-    public static readonly SimpleDefinitionBuilder SaveButton =
-        Translate("Def.Save", "Save")
+    public static readonly SimpleDefinition SaveButton =
+        DefineSimple("Def.Save", "Save")
             .For("da", "Gem")
             .For("es-MX", "Guardar");
 
     // ── Plural ──────────────────────────────────────────────────────
 
-    public static readonly PluralDefinitionBuilder CartItems =
-        Translate("Def.Cart")
+    public static readonly PluralDefinition CartItems =
+        DefinePlural("Def.Cart")
             .One("{ItemCount} item")
             .Other("{ItemCount} items")
             .For("da")
@@ -28,8 +28,8 @@ public static class CommonDefinitions
 
     // ── Select ──────────────────────────────────────────────────────
 
-    public static readonly SelectDefinitionBuilder<TestCategory> CategoryGreeting =
-        Translate<TestCategory>("Def.Greeting")
+    public static readonly SelectDefinition<TestCategory> CategoryGreeting =
+        DefineSelect<TestCategory>("Def.Greeting")
             .When(TestCategory.Alpha, "Hello Alpha")
             .When(TestCategory.Beta, "Hello Beta")
             .Otherwise("Hello friend")
@@ -40,8 +40,8 @@ public static class CommonDefinitions
 
     // ── SelectPlural ────────────────────────────────────────────────
 
-    public static readonly SelectPluralDefinitionBuilder<TestCategory> CategoryInbox =
-        Translate<TestCategory>("Def.Inbox", howMany: 0)
+    public static readonly SelectPluralDefinition<TestCategory> CategoryInbox =
+        DefineSelectPlural<TestCategory>("Def.Inbox")
             .When(TestCategory.Alpha)
             .One("{ItemCount} Alpha message")
             .Other("{ItemCount} Alpha messages")

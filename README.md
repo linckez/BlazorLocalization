@@ -14,7 +14,7 @@ No `.resx` files. No rebuild to update a translation.
 
 </div>
 
-Inline translations · Pluggable providers · Plurals & ordinals · Over-the-air updates · Distributed caching
+Inline translations · Pluggable providers · Plurals & ordinals · Over-the-air updates · Distributed caching · Reusable definitions
 
 ---
 
@@ -142,6 +142,7 @@ See [Extractor CLI](docs/Extractor.md) for recipes, CI integration, and export f
 | External provider support | ✗ | ✗ | ✓ — pluggable |
 | Merge-conflict-free | ✗ — XML | ✗ — PO files | ✓ — with OTA providers. File-based providers are opt-in |
 | Automated string extraction | Manual | Manual | Roslyn-based CLI |
+| Reusable definitions | ✗ | ✗ | ✓ — define once, resolve anywhere |
 | Standard `IStringLocalizer` | ✓ | ✓ | ✓ |
 | Battle-tested | ✓ — 20+ years | ✓ | Production use, actively maintained |
 
@@ -153,7 +154,7 @@ See [Extractor CLI](docs/Extractor.md) for recipes, CI integration, and export f
 
 | Topic | Description |
 |-------|-------------|
-| [Examples](docs/Examples.md) | `Translation()` usage — simple, placeholders, plurals, ordinals, select, inline translations |
+| [Examples](docs/Examples.md) | `Translation()` usage — simple, placeholders, plurals, ordinals, select, inline translations, reusable definitions |
 | [Extractor CLI](docs/Extractor.md) | Install, interactive wizard, common recipes, CI integration, export formats |
 | [Configuration](docs/Configuration.md) | Cache settings, `appsettings.json` binding, multiple providers, code-only config |
 | [Crowdin Provider](docs/Providers/Crowdin.md) | Over-the-air translations from Crowdin — distribution hash, export formats, error handling |

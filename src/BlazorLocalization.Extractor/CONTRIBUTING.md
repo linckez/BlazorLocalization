@@ -62,7 +62,7 @@ This is the most important section in this file. Every Scanner bug we've had tra
 
 ### Background
 
-The Scanner interprets fluent builder chains from `BlazorLocalization.Extensions`. The Extractor has a direct `ProjectReference` to Extensions, so `typeof()`, `nameof()`, and reflection all work against the real assembly at compile time and runtime. Roslyn's compilation also loads the same assembly via `MetadataReference.CreateFromFile()`.
+The Scanner interprets fluent builder chains from `BlazorLocalization.Extensions`. It recognises two entry points: `IStringLocalizer.Translation()` calls (inline usage) and `Translations.DefineSimple()` / `DefinePlural()` / `DefineSelect<T>()` / `DefineSelectPlural<T>()` factory calls (reusable definitions). The Extractor has a direct `ProjectReference` to Extensions, so `typeof()`, `nameof()`, and reflection all work against the real assembly at compile time and runtime. Roslyn's compilation also loads the same assembly via `MetadataReference.CreateFromFile()`.
 
 Both lenses — reflection and Roslyn — describe the same binary on disk. `typeof(PluralBuilder).FullName!` is the bridge key that connects them.
 
@@ -75,6 +75,7 @@ Every type, method, and parameter the Scanner matches against must be derived fr
 | What | How | Guarantor |
 |------|-----|-----------|
 | Builder types | `typeof(PluralBuilder)` → `compilation.GetTypeByMetadataName(typeof(PluralBuilder).FullName!)` | Compiler — rename breaks build |
+| Definition types | `typeof(SimpleDefinition)` → `compilation.GetTypeByMetadataName(typeof(SimpleDefinition).FullName!)` | Compiler — rename breaks build |
 | Methods | `nameof(PluralBuilder.For)` → `roslynType.GetMembers(nameof(...))` | Compiler — rename breaks build |
 | Parameter names | `typeof(PluralBuilder).GetMethod(nameof(PluralBuilder.For))!.GetParameters()[0].Name` | Reflection — reads the real assembly, auto-tracks renames |
 

@@ -27,6 +27,19 @@ public sealed class PluralBuilder
         _replaceWith = replaceWith;
     }
 
+    /// <summary>Replay constructor: builds from a definition's pre-populated state.</summary>
+    internal PluralBuilder(IStringLocalizer localizer, string key, int howMany, bool ordinal,
+        Dictionary<string, string> sourceMessages,
+        Dictionary<string, Dictionary<string, string>> inlineMessages,
+        object? replaceWith)
+        : this(localizer, key, howMany, ordinal, replaceWith)
+    {
+        foreach (var (suffix, msg) in sourceMessages)
+            _sourceMessages[suffix] = msg;
+        foreach (var (locale, dict) in inlineMessages)
+            _inlineMessages[locale] = new Dictionary<string, string>(dict);
+    }
+
     /// <summary>
     /// Message shown when <c>howMany</c> equals <paramref name="value"/> exactly.
     /// Checked before singular/plural rules:
