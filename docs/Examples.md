@@ -171,7 +171,7 @@ ArrivedABitLate
 
 ## Reusable Definitions
 
-For large applications where common strings like "Save", "Cancel", or "Validation failed" appear in many components, you can define translations once and reuse them everywhere. This avoids repeating the same key, source text, and inline translations in every file.
+Some translations live across your whole app — "Save", "Cancel", validation messages. They don't belong to any one component. Others are complex plurals or selects with inline translations in multiple languages that you don't want to repeat. Definitions give both a single home, with full IntelliSense when you use them.
 
 **Step 1 — Define** a static class with your shared translations:
 
