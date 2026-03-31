@@ -5,7 +5,7 @@
 
 <MudText Typo="Typo.h4" Class="mb-4">Extractor Test Matrix</MudText>
 <MudText Typo="Typo.body2" Class="mb-6">
-    32 test calls across 3 files (Home, EdgeCasePage, ReconnectModal) + 1 passive resx entry.
+    36 test calls across 3 files (Home, EdgeCasePage, ReconnectModal) + 1 passive resx entry + 1 definitions file.
     Each line states what it tests and what the rendered output should be.
     If the text after the colon does not match the expectation, something is broken.
 </MudText>
@@ -197,11 +197,31 @@
 <MudText Typo="Typo.h6" Class="mt-4">S25 — Enum Display (custom key)</MudText>
 <MudText>S25 Display with custom Key override (Key = "Flight.Late"), expect "Arrived a bit late": @Loc.Display(FlightStatus.ArrivedABitLate)</MudText>
 
+@* S26 — Definition: Simple *@
+<MudText Typo="Typo.h6" Class="mt-4">S26 — Definition: Simple</MudText>
+<MudText>S26 Definition Simple, expect "Save": @_defSimple</MudText>
+
+@* S27 — Definition: Plural *@
+<MudText Typo="Typo.h6" Class="mt-4">S27 — Definition: Plural</MudText>
+<MudText>S27 Definition Plural howMany=3, expect "3 items": @_defPlural</MudText>
+
+@* S28 — Definition: Select *@
+<MudText Typo="Typo.h6" Class="mt-4">S28 — Definition: Select</MudText>
+<MudText>S28 Definition Select Alpha, expect "Hello Alpha": @_defSelect</MudText>
+
+@* S29 — Definition: SelectPlural *@
+<MudText Typo="Typo.h6" Class="mt-4">S29 — Definition: SelectPlural</MudText>
+<MudText>S29 Definition SelectPlural Alpha howMany=1, expect "1 Alpha message": @_defSelectPlural</MudText>
+
 @code {
     private readonly string _dynamicKey = "S13.Dynamic";
     private bool _flag = true;
     private string? _codeResult;
     private string? _nestedResult;
+    private string? _defSimple;
+    private string? _defPlural;
+    private string? _defSelect;
+    private string? _defSelectPlural;
 
     protected override void OnInitialized()
     {
@@ -217,6 +237,12 @@ Line two with ""quotes""").ToString();
 
         // S22: Translation nested inside another method's argument list
         _nestedResult = PassThrough(Loc.Translation("S22.Nested", "Nested value").ToString());
+
+        // S26–S29: Reusable translation definitions (defined in CommonDefinitions.cs)
+        _defSimple = Loc.Translation(CommonDefinitions.SaveButton);
+        _defPlural = Loc.Translation(CommonDefinitions.CartItems, 3, replaceWith: new { ItemCount = 3 });
+        _defSelect = Loc.Translation(CommonDefinitions.CategoryGreeting, TestCategory.Alpha);
+        _defSelectPlural = Loc.Translation(CommonDefinitions.CategoryInbox, TestCategory.Alpha, 1, replaceWith: new { ItemCount = 1 });
     }
 
     private static string PassThrough(string input) => input;

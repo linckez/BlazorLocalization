@@ -9,7 +9,7 @@ namespace BlazorLocalization.Extensions.Translation.Definitions;
 /// Created by <see cref="Translate.SelectPlural{TSelect}"/>.
 /// </summary>
 /// <remarks>
-/// Define once as a static field, use everywhere via <c>Loc.Translate(definition, select, howMany)</c>:
+/// Define once as a static field, use everywhere via <c>Loc.Translation(definition, select, howMany)</c>:
 /// <code>
 /// public static readonly SelectPluralDefinitionBuilder&lt;Gender&gt; InboxMessage =
 ///     Translate.SelectPlural&lt;Gender&gt;("Inbox")
@@ -17,7 +17,7 @@ namespace BlazorLocalization.Extensions.Translation.Definitions;
 ///         .Otherwise().One("They have {MessageCount} message").Other("They have {MessageCount} messages");
 ///
 /// // Usage:
-/// Loc.Translate(CommonTranslations.InboxMessage, user.Gender, messageCount, replaceWith: new { MessageCount = messageCount })
+/// Loc.Translation(CommonTranslations.InboxMessage, user.Gender, messageCount, replaceWith: new { MessageCount = messageCount })
 /// </code>
 /// </remarks>
 /// <typeparam name="TSelect">An enum type whose members represent the variants.</typeparam>

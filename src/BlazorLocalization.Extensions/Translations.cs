@@ -4,28 +4,28 @@ namespace BlazorLocalization.Extensions;
 
 /// <summary>
 /// Static factory for reusable translation definitions. Define translations once,
-/// use everywhere via <c>Loc.Translate(definition)</c>.
+/// use everywhere via <c>Loc.Translation(definition)</c>.
 /// </summary>
 /// <remarks>
 /// Add <c>using static BlazorLocalization.Extensions.Translations;</c> to call
-/// <c>Translate()</c> directly — the overloads mirror <c>Translation()</c>:
+/// <c>Translate()</c> directly:
 /// <code>
 /// using static BlazorLocalization.Extensions.Translations;
 ///
 /// public static class CommonTranslations
 /// {
-///     // Simple — key + source text (same as Translation(key, message)):
+///     // Simple — key + source text:
 ///     public static readonly SimpleDefinitionBuilder SaveButton =
 ///         Translate("Common.Save", "Save")
 ///             .For("da", "Gem");
 ///
-///     // Plural — key only, forms from chain (same as Translation(key, howMany)):
+///     // Plural — key only, forms from chain:
 ///     public static readonly PluralDefinitionBuilder CartItems =
 ///         Translate("Cart.Items")
 ///             .One("{ItemCount} item in your cart")
 ///             .Other("{ItemCount} items in your cart");
 ///
-///     // Select — generic enum type (same as Translation&lt;T&gt;(key, select)):
+///     // Select — generic enum type:
 ///     public static readonly SelectDefinitionBuilder&lt;UserTitle&gt; Greeting =
 ///         Translate&lt;UserTitle&gt;("Home.Greeting")
 ///             .When(UserTitle.Mr, "Dear Mr. Smith")
@@ -95,7 +95,7 @@ public static class Translations
     /// <param name="howMany">
     /// Not used at definition time — only distinguishes this overload from
     /// <see cref="Translate{TSelect}(string)"/>. Pass any value (e.g. <c>0</c>).
-    /// The actual quantity is provided at the call site via <c>Loc.Translate(definition, select, howMany)</c>.
+    /// The actual quantity is provided at the call site via <c>Loc.Translation(definition, select, howMany)</c>.
     /// </param>
     /// <typeparam name="TSelect">An enum type whose members represent the variants.</typeparam>
     public static SelectPluralDefinitionBuilder<TSelect> Translate<TSelect>(string key, int howMany) where TSelect : Enum

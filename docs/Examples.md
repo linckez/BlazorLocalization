@@ -10,7 +10,7 @@ All examples assume an injected localizer:
 @inject IStringLocalizer<Home> Loc
 ```
 
-**On this page:** [Simple](#simple) · [Placeholders](#placeholders) · [Plurals](#plurals) · [Ordinals](#ordinals) · [Exact Counts](#exact-counts) · [Select](#select) · [Select + Plural](#select--plural) · [Inline Translations](#inline-translations) · [Enums](#enums) · [Standard IStringLocalizer](#standard-istringlocalizer)
+**On this page:** [Simple](#simple) · [Placeholders](#placeholders) · [Plurals](#plurals) · [Ordinals](#ordinals) · [Exact Counts](#exact-counts) · [Select](#select) · [Select + Plural](#select--plural) · [Inline Translations](#inline-translations) · [Enums](#enums) · [Reusable Definitions](#reusable-definitions) · [Standard IStringLocalizer](#standard-istringlocalizer)
 
 ---
 
@@ -168,6 +168,72 @@ Override the auto-generated key with `Key`:
 [Translation("Arrived a bit late", Key = "Flight.Late")]
 ArrivedABitLate
 ```
+
+## Reusable Definitions
+
+For large applications where common strings like "Save", "Cancel", or "Validation failed" appear in many components, you can define translations once and reuse them everywhere. This avoids repeating the same key, source text, and inline translations in every file.
+
+**Step 1 — Define** a static class with your shared translations:
+
+```csharp
+using BlazorLocalization.Extensions.Translation.Definitions;
+using static BlazorLocalization.Extensions.Translations;
+
+public static class CommonTranslations
+{
+    // Simple
+    public static readonly SimpleDefinitionBuilder SaveButton =
+        Translate("Common.Save", "Save")
+            .For("da", "Gem")
+            .For("es-MX", "Guardar");
+
+    // Plural
+    public static readonly PluralDefinitionBuilder CartItems =
+        Translate("Common.CartItems")
+            .One("{Count} item in your cart")
+            .Other("{Count} items in your cart")
+            .For("da")
+            .One("{Count} vare i din kurv")
+            .Other("{Count} varer i din kurv");
+
+    // Select
+    public static readonly SelectDefinitionBuilder<UserTitle> TitleGreeting =
+        Translate<UserTitle>("Common.TitleGreeting")
+            .When(UserTitle.Mr, "Dear Mr. Smith")
+            .When(UserTitle.Mrs, "Dear Mrs. Smith")
+            .Otherwise("Dear customer")
+            .For("da")
+            .When(UserTitle.Mr, "Kære hr. Smith")
+            .When(UserTitle.Mrs, "Kære fru Smith")
+            .Otherwise("Kære kunde");
+
+    // Select + Plural
+    public static readonly SelectPluralDefinitionBuilder<UserTitle> TitleInbox =
+        Translate<UserTitle>("Common.TitleInbox", howMany: 0)
+            .When(UserTitle.Mr)
+            .One("Mr. Smith has {Count} message")
+            .Other("Mr. Smith has {Count} messages")
+            .Otherwise()
+            .One("{Count} message")
+            .Other("{Count} messages");
+}
+```
+
+`using static Translations` lets you call `Translate()` directly. Resolve definitions with `Loc.Translation(definition)` — the same method name as the runtime API.
+
+**Step 2 — Use** the definitions anywhere via `Loc.Translation(definition)`:
+
+```razor
+<button>@Loc.Translation(CommonTranslations.SaveButton)</button>
+
+<p>@Loc.Translation(CommonTranslations.CartItems, itemCount, replaceWith: new { Count = itemCount })</p>
+
+<p>@Loc.Translation(CommonTranslations.TitleGreeting, selectedTitle)</p>
+
+<p>@Loc.Translation(CommonTranslations.TitleInbox, selectedTitle, msgCount, replaceWith: new { Count = msgCount })</p>
+```
+
+Same fallback chain as inline `Translation()`: translation provider → inline `.For()` text → source text → raw key.
 
 ---
 

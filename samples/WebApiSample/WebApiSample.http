@@ -42,3 +42,21 @@ Content-Type: application/json
 Accept-Language: da
 
 { "name": "", "price": 0 }
+
+### Notifications — Regular customer, default count (English)
+GET {{WebApiSample_HostAddress}}/notifications?type=Regular&count=5
+Accept: application/json
+
+### Notifications — Premium customer, 1 item (English)
+GET {{WebApiSample_HostAddress}}/notifications?type=Premium&count=1
+Accept: application/json
+
+### Notifications — Regular customer (Danish)
+GET {{WebApiSample_HostAddress}}/notifications?type=Regular&count=3
+Accept: application/json
+Accept-Language: da
+
+### Notifications — Premium customer (German)
+GET {{WebApiSample_HostAddress}}/notifications?type=Premium&count=12
+Accept: application/json
+Accept-Language: de

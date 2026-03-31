@@ -8,14 +8,14 @@ namespace BlazorLocalization.Extensions.Translation.Definitions;
 /// Created by <see cref="Translate.Simple"/>.
 /// </summary>
 /// <remarks>
-/// Define once as a static field, use everywhere via <c>Loc.Translate(definition)</c>:
+/// Define once as a static field, use everywhere via <c>Loc.Translation(definition)</c>:
 /// <code>
 /// public static readonly SimpleDefinitionBuilder SaveButton =
 ///     Translate.Simple("Common.Save", "Save")
 ///         .For("da", "Gem");
 ///
 /// // Usage:
-/// Loc.Translate(CommonTranslations.SaveButton)
+/// Loc.Translation(CommonTranslations.SaveButton)
 /// </code>
 /// </remarks>
 public sealed class SimpleDefinitionBuilder

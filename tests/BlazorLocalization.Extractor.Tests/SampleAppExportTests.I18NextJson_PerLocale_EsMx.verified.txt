@@ -1,4 +1,5 @@
 ﻿{
   "S02": "Hola",
+  "Def.Save": "Guardar",
   "Enum.FlightStatus_Delayed": "Retrasado"
 }

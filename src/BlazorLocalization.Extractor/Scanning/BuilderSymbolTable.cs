@@ -229,7 +229,7 @@ public sealed class BuilderSymbolTable
 		PluralDefinitionBuilder = ResolveType<Extensions.Translation.Definitions.PluralDefinitionBuilder>(compilation);
 		SelectDefinitionBuilder = ResolveType(compilation, typeof(SelectDefinitionBuilder<>));
 		SelectPluralDefinitionBuilder = ResolveType(compilation, typeof(SelectPluralDefinitionBuilder<>));
-		TranslateClass = ResolveType(compilation, typeof(Extensions.Translate));
+		TranslateClass = ResolveType(compilation, typeof(Extensions.Translations));
 
 		// ── PluralBuilder methods ─────────────────────────────────────
 		PluralFor = ResolveMethod(PluralBuilder, nameof(Extensions.Translation.PluralBuilder.For));
@@ -320,11 +320,11 @@ public sealed class BuilderSymbolTable
 		AllSelectPluralCategoryMethods = new(SelectPluralCategoryMethods, SymbolEqualityComparer.Default);
 		AllSelectPluralCategoryMethods.UnionWith(SelectPluralDefCategoryMethods);
 
-		// ── Translate factory methods ─────────────────────────────────
-		TranslateSimple = ResolveMethod(TranslateClass, nameof(Extensions.Translate.Simple));
-		TranslatePlural = ResolveMethod(TranslateClass, nameof(Extensions.Translate.Plural));
-		TranslateSelect = ResolveMethod(TranslateClass, nameof(Extensions.Translate.Select));
-		TranslateSelectPlural = ResolveMethod(TranslateClass, nameof(Extensions.Translate.SelectPlural));
+		// ── Translate factory methods (all named Translate, disambiguated by param count + arity) ──
+		TranslateSimple = ResolveFactoryMethod(TranslateClass, nameof(Extensions.Translations.Translate), paramCount: 2, arity: 0);
+		TranslatePlural = ResolveFactoryMethod(TranslateClass, nameof(Extensions.Translations.Translate), paramCount: 1, arity: 0);
+		TranslateSelect = ResolveFactoryMethod(TranslateClass, nameof(Extensions.Translations.Translate), paramCount: 1, arity: 1);
+		TranslateSelectPlural = ResolveFactoryMethod(TranslateClass, nameof(Extensions.Translations.Translate), paramCount: 2, arity: 1);
 
 		// ── Reflection-derived parameter names ────────────────────────
 		CategoryMessageParam = ReflectParam<Extensions.Translation.PluralBuilder>(nameof(Extensions.Translation.PluralBuilder.One), 0);
@@ -369,8 +369,9 @@ public sealed class BuilderSymbolTable
 			            && !m.GetParameters().Any(p => p.ParameterType == typeof(int)));
 		TranslateSelectParam = selectTranslate.GetParameters()[2].Name!;
 
-		// ── Translate.XXX() factory parameter names ───────────────────
-		var translateSimpleReflect = typeof(Extensions.Translate).GetMethod(nameof(Extensions.Translate.Simple))!;
+		// ── Translate.Translate() factory parameter names ───────────────────────
+		var translateSimpleReflect = typeof(Extensions.Translations).GetMethods()
+			.First(m => m.Name == nameof(Extensions.Translations.Translate) && m.GetParameters().Length == 2 && !m.IsGenericMethod);
 		DefKeyParam = translateSimpleReflect.GetParameters()[0].Name!;
 		DefSimpleMessageParam = translateSimpleReflect.GetParameters()[1].Name!;
 
@@ -470,7 +471,7 @@ public sealed class BuilderSymbolTable
 		IsMethod(symbol, SelectPluralExactly) || IsMethod(symbol, SelectPluralDefExactly);
 
 	/// <summary>
-	/// Checks whether a method symbol is one of the <c>Translate.XXX()</c> factory methods.
+	/// Checks whether a method symbol is one of the <c>Translations.Translate()</c> factory methods.
 	/// </summary>
 	public bool IsTranslateFactory(IMethodSymbol symbol) =>
 		IsMethod(symbol, TranslateSimple) || IsMethod(symbol, TranslatePlural)
@@ -500,7 +501,27 @@ public sealed class BuilderSymbolTable
 				$"Roslyn cannot find method '{methodName}' on {type.ToDisplayString()}."),
 			_ => throw new InvalidOperationException(
 				$"Expected 1 method '{methodName}' on {type.ToDisplayString()}, found {methods.Count}. " +
-				"Overload resolution not supported in symbol table — add separate entries for each overload.")
+				"Overload resolution not supported in symbol table — use ResolveFactoryMethod for overloaded methods.")
+		};
+	}
+
+	/// <summary>
+	/// Resolves a specific overload by parameter count and generic arity.
+	/// Used for the <c>Translations.Translate()</c> factory which has 4 overloads sharing the same name.
+	/// </summary>
+	private static IMethodSymbol ResolveFactoryMethod(INamedTypeSymbol type, string methodName, int paramCount, int arity)
+	{
+		var methods = type.GetMembers(methodName)
+			.OfType<IMethodSymbol>()
+			.Where(m => m.Parameters.Length == paramCount && m.Arity == arity)
+			.ToList();
+		return methods.Count switch
+		{
+			1 => methods[0],
+			0 => throw new InvalidOperationException(
+				$"Roslyn cannot find method '{methodName}({paramCount} params, arity {arity})' on {type.ToDisplayString()}."),
+			_ => throw new InvalidOperationException(
+				$"Expected 1 method '{methodName}({paramCount} params, arity {arity})' on {type.ToDisplayString()}, found {methods.Count}.")
 		};
 	}
 
@@ -537,6 +558,34 @@ public sealed class BuilderSymbolTable
 		var reflectMethod = reflectionType.GetMethod(methodName)
 			?? throw new InvalidOperationException(
 				$"Reflection cannot find '{methodName}' on {reflectionType.FullName}.");
+
+		var roslynParams = roslynMethod.Parameters;
+		var reflectParams = reflectMethod.GetParameters();
+
+		if (roslynParams.Length != reflectParams.Length)
+			throw new InvalidOperationException(
+				$"Parameter count mismatch for {reflectionType.Name}.{methodName}: " +
+				$"Roslyn={roslynParams.Length}, Reflection={reflectParams.Length}.");
+
+		for (var i = 0; i < roslynParams.Length; i++)
+		{
+			if (roslynParams[i].Name != reflectParams[i].Name)
+				throw new InvalidOperationException(
+					$"Parameter name mismatch for {reflectionType.Name}.{methodName}[{i}]: " +
+					$"Roslyn='{roslynParams[i].Name}', Reflection='{reflectParams[i].Name}'.");
+		}
+	}
+
+	/// <summary>
+	/// Like <see cref="ValidateParams"/> but resolves the correct overload by parameter count and
+	/// generic status. Used for <c>Translations.Translate()</c> which has 4 overloads sharing one name.
+	/// </summary>
+	private static void ValidateFactoryParams(IMethodSymbol roslynMethod, Type reflectionType, string methodName, int paramCount, bool isGeneric)
+	{
+		var reflectMethod = reflectionType.GetMethods()
+			.FirstOrDefault(m => m.Name == methodName && m.GetParameters().Length == paramCount && m.IsGenericMethod == isGeneric)
+			?? throw new InvalidOperationException(
+				$"Reflection cannot find '{methodName}({paramCount} params, generic={isGeneric})' on {reflectionType.FullName}.");
 
 		var roslynParams = roslynMethod.Parameters;
 		var reflectParams = reflectMethod.GetParameters();
@@ -605,8 +654,8 @@ public sealed class BuilderSymbolTable
 		ValidateParams(SelectPluralDefExactly, typeof(SelectPluralDefinitionBuilder<>), nameof(SelectPluralDefinitionBuilder<DayOfWeek>.Exactly));
 		ValidateParams(SelectPluralDefOne, typeof(SelectPluralDefinitionBuilder<>), nameof(SelectPluralDefinitionBuilder<DayOfWeek>.One));
 
-		ValidateParams(TranslateSimple, typeof(Extensions.Translate), nameof(Extensions.Translate.Simple));
-		ValidateParams(TranslatePlural, typeof(Extensions.Translate), nameof(Extensions.Translate.Plural));
+		ValidateFactoryParams(TranslateSimple, typeof(Extensions.Translations), nameof(Extensions.Translations.Translate), paramCount: 2, isGeneric: false);
+		ValidateFactoryParams(TranslatePlural, typeof(Extensions.Translations), nameof(Extensions.Translations.Translate), paramCount: 1, isGeneric: false);
 	}
 
 	/// <summary>
@@ -617,11 +666,11 @@ public sealed class BuilderSymbolTable
 	{
 		if (DefKeyParam != TranslateKeyParam)
 			throw new InvalidOperationException(
-				$"Translate.Simple 'key' param '{DefKeyParam}' doesn't match " +
+				$"Translations.Translate 'key' param '{DefKeyParam}' doesn't match " +
 				$"StringLocalizerExtensions.Translation 'key' param '{TranslateKeyParam}'.");
 		if (DefSimpleMessageParam != TranslateMessageParam)
 			throw new InvalidOperationException(
-				$"Translate.Simple 'message' param '{DefSimpleMessageParam}' doesn't match " +
+				$"Translations.Translate 'message' param '{DefSimpleMessageParam}' doesn't match " +
 				$"StringLocalizerExtensions.Translation 'message' param '{TranslateMessageParam}'.");
 	}
 }

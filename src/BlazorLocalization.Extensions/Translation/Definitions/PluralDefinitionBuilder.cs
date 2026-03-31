@@ -9,7 +9,7 @@ namespace BlazorLocalization.Extensions.Translation.Definitions;
 /// Created by <see cref="Translate.Plural"/>.
 /// </summary>
 /// <remarks>
-/// Define once as a static field, use everywhere via <c>Loc.Translate(definition, howMany)</c>:
+/// Define once as a static field, use everywhere via <c>Loc.Translation(definition, howMany)</c>:
 /// <code>
 /// public static readonly PluralDefinitionBuilder CartItems =
 ///     Translate.Plural("Cart.Items")
@@ -20,7 +20,7 @@ namespace BlazorLocalization.Extensions.Translation.Definitions;
 ///         .Other("{ItemCount} varer i din kurv");
 ///
 /// // Usage:
-/// Loc.Translate(CommonTranslations.CartItems, howMany: itemCount, replaceWith: new { ItemCount = itemCount })
+/// Loc.Translation(CommonTranslations.CartItems, howMany: itemCount, replaceWith: new { ItemCount = itemCount })
 /// </code>
 /// </remarks>
 public sealed class PluralDefinitionBuilder

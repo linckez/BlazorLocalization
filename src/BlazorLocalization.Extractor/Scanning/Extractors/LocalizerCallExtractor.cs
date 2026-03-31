@@ -65,8 +65,8 @@ internal static class LocalizerCallExtractor
 	}
 
 	/// <summary>
-	/// Detects <c>Translate.Simple()</c>, <c>Translate.Plural()</c>, <c>Translate.Select()</c>,
-	/// and <c>Translate.SelectPlural()</c> static factory calls, producing both an
+	/// Detects <c>Translations.Translate()</c> static factory calls (Simple, Plural, Select,
+	/// SelectPlural overloads), producing both an
 	/// <see cref="ExtractedCall"/> and an optional <see cref="TranslationEntry"/>.
 	/// </summary>
 	public static (ExtractedCall Call, TranslationEntry? Entry)? TryExtractDefinition(

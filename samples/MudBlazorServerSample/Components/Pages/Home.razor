@@ -106,7 +106,36 @@
     @Loc.Translation("Home.LastVisit", "Last visited by {UserName} on {Date}", new { UserName = "Anna", Date = DateTime.Now.ToShortDateString() })
 </MudText>
 
+<MudDivider Class="my-4" />
+
+@* ── Reusable Definitions — define once, use everywhere ── *@
+
+<MudText Typo="Typo.h5" GutterBottom="true">Reusable Definitions</MudText>
+<MudText Class="mb-2">
+    Common labels defined once in <code>CommonTranslations.cs</code>, shared across components.
+</MudText>
+
+<MudText Class="mb-1">Simple: <MudButton Variant="Variant.Filled" Color="Color.Primary" Size="Size.Small">@_defSave</MudButton></MudText>
+
+<MudText Class="mb-1">Plural (count = @_itemCount): @_defCart</MudText>
+
+<MudText Class="mb-1">Select (@_selectedTitle): @_defGreeting</MudText>
+
+<MudText Class="mb-1">SelectPlural (@_selectedTitle, count = @_itemCount): @_defInbox</MudText>
+
 @code {
     private int _itemCount = 5;
     private UserTitle _selectedTitle = UserTitle.Mr;
+    private string _defSave = "";
+    private string _defCart = "";
+    private string _defGreeting = "";
+    private string _defInbox = "";
+
+    protected override void OnParametersSet()
+    {
+        _defSave = Loc.Translation(CommonTranslations.SaveButton);
+        _defCart = Loc.Translation(CommonTranslations.CartItems, _itemCount, replaceWith: new { Count = _itemCount });
+        _defGreeting = Loc.Translation(CommonTranslations.TitleGreeting, _selectedTitle);
+        _defInbox = Loc.Translation(CommonTranslations.TitleInbox, _selectedTitle, _itemCount, replaceWith: new { Count = _itemCount });
+    }
 }

@@ -187,25 +187,60 @@ msgstr "Inside text block"
 msgid "S23.Placeholder"
 msgstr "Visited {VisitCount} times"
 
-#: tests/SampleBlazorApp/Components/Pages/Home.razor:209
+#: tests/SampleBlazorApp/Components/Pages/Home.razor:229
 #. .Translation
 msgid "S21.Verbatim"
 msgstr "Line one\nLine two with \"quotes\""
 
-#: tests/SampleBlazorApp/Components/Pages/Home.razor:213
+#: tests/SampleBlazorApp/Components/Pages/Home.razor:233
 #. .Translation
 msgid "S21.Raw"
 msgstr "This has \"raw quotes\" inside"
 
-#: tests/SampleBlazorApp/Components/Pages/Home.razor:216
+#: tests/SampleBlazorApp/Components/Pages/Home.razor:236
 #. .Translation
 msgid "S21.Concat"
 msgstr "First half second half"
 
-#: tests/SampleBlazorApp/Components/Pages/Home.razor:219
+#: tests/SampleBlazorApp/Components/Pages/Home.razor:239
 #. .Translation
 msgid "S22.Nested"
 msgstr "Nested value"
+
+#: tests/SampleBlazorApp/CommonDefinitions.cs:15
+#. Translations.Translate
+msgid "Def.Save"
+msgstr "Save"
+
+#: tests/SampleBlazorApp/CommonDefinitions.cs:22
+#. Translations.Translate
+msgid "Def.Cart"
+msgid_plural "Def.Cart"
+msgstr[0] "{ItemCount} item"
+msgstr[1] "{ItemCount} items"
+
+#: tests/SampleBlazorApp/CommonDefinitions.cs:32
+#. Translations.Translate
+msgid "Def.Greeting_Alpha"
+msgstr "Hello Alpha"
+
+msgid "Def.Greeting_Beta"
+msgstr "Hello Beta"
+
+msgid "Def.Greeting"
+msgstr "Hello friend"
+
+#: tests/SampleBlazorApp/CommonDefinitions.cs:44
+#. Translations.Translate
+msgid "Def.Inbox_Alpha"
+msgid_plural "Def.Inbox_Alpha"
+msgstr[0] "{ItemCount} Alpha message"
+msgstr[1] "{ItemCount} Alpha messages"
+
+msgid "Def.Inbox"
+msgid_plural "Def.Inbox"
+msgstr[0] "{ItemCount} message"
+msgstr[1] "{ItemCount} messages"
 
 #: tests/SampleBlazorApp/Components/Pages/EdgeCasePage.razor.cs:11
 #. .Translation

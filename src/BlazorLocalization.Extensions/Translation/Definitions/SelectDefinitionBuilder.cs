@@ -8,7 +8,7 @@ namespace BlazorLocalization.Extensions.Translation.Definitions;
 /// Created by <see cref="Translate.Select{TSelect}"/>.
 /// </summary>
 /// <remarks>
-/// Define once as a static field, use everywhere via <c>Loc.Translate(definition, select)</c>:
+/// Define once as a static field, use everywhere via <c>Loc.Translation(definition, select)</c>:
 /// <code>
 /// public static readonly SelectDefinitionBuilder&lt;UserTitle&gt; Greeting =
 ///     Translate.Select&lt;UserTitle&gt;("Home.Greeting")
@@ -17,7 +17,7 @@ namespace BlazorLocalization.Extensions.Translation.Definitions;
 ///         .Otherwise("Dear customer");
 ///
 /// // Usage:
-/// Loc.Translate(CommonTranslations.Greeting, selectedTitle)
+/// Loc.Translation(CommonTranslations.Greeting, selectedTitle)
 /// </code>
 /// </remarks>
 /// <typeparam name="TSelect">An enum type whose members represent the variants.</typeparam>
