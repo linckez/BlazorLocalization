@@ -5,7 +5,7 @@
         <LangVersion>14</LangVersion>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
-        <PackageVersion>10.2.1</PackageVersion>
+        <PackageVersion>10.3.0</PackageVersion>
     </PropertyGroup>
 
     <ItemGroup>
