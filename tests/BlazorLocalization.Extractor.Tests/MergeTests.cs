@@ -1,40 +1,54 @@
+using BlazorLocalization.Extractor.Application;
 using BlazorLocalization.Extractor.Domain;
-using BlazorLocalization.Extractor.Domain.Entries;
+using BlazorLocalization.Extractor.Ports;
 using FluentAssertions;
 
 namespace BlazorLocalization.Extractor.Tests;
 
 public class MergeTests
 {
-	private static SourceReference Source(string file, int line) =>
-		new(file, line, "TestProject", null);
+	private static DefinitionSite DefSite(string file, int line, DefinitionKind kind = DefinitionKind.InlineTranslation) =>
+		new(new SourceFilePath(file, "/test/TestProject"), line, kind);
+
+	private static ReferenceSite RefSite(string file, int line) =>
+		new(new SourceFilePath(file, "/test/TestProject"), line);
+
+	private record TestScannerOutput(
+		IReadOnlyList<TranslationDefinition> Definitions,
+		IReadOnlyList<TranslationReference> References,
+		IReadOnlyList<ScanDiagnostic> Diagnostics) : IScannerOutput;
+
+	private static IScannerOutput Output(
+		IReadOnlyList<TranslationDefinition>? defs = null,
+		IReadOnlyList<TranslationReference>? refs = null) =>
+		new TestScannerOutput(defs ?? [], refs ?? [], []);
 
 	[Fact]
-	public void SameKey_SameText_MergesSources_NoConflict()
+	public void SameKey_SameText_MergesDefinitions_NoConflict()
 	{
-		var entries = new List<TranslationEntry>
-		{
-			new("Key1", new SingularText("Hello"), Source("A.cs", 1)),
-			new("Key1", new SingularText("Hello"), Source("B.cs", 5))
-		};
+		var output = Output(defs:
+		[
+			new("Key1", new SingularText("Hello"), DefSite("A.cs", 1)),
+			new("Key1", new SingularText("Hello"), DefSite("B.cs", 5))
+		]);
 
-		var result = MergedTranslationEntry.FromRaw(entries);
+		var result = TranslationPipeline.Run([output]);
 
 		result.Entries.Should().ContainSingle()
-			.Which.Sources.Should().HaveCount(2);
+			.Which.Definitions.Should().HaveCount(2);
 		result.Conflicts.Should().BeEmpty();
 	}
 
 	[Fact]
 	public void SameKey_DifferentText_DetectsConflict()
 	{
-		var entries = new List<TranslationEntry>
-		{
-			new("Key1", new SingularText("Hello"), Source("A.cs", 1)),
-			new("Key1", new SingularText("Goodbye"), Source("B.cs", 5))
-		};
+		var output = Output(defs:
+		[
+			new("Key1", new SingularText("Hello"), DefSite("A.cs", 1)),
+			new("Key1", new SingularText("Goodbye"), DefSite("B.cs", 5))
+		]);
 
-		var result = MergedTranslationEntry.FromRaw(entries);
+		var result = TranslationPipeline.Run([output]);
 
 		result.Entries.Should().ContainSingle();
 		result.Conflicts.Should().ContainSingle()
@@ -45,13 +59,11 @@ public class MergeTests
 	[Fact]
 	public void Definition_PlusReference_DefinitionWins()
 	{
-		var entries = new List<TranslationEntry>
-		{
-			new("Key1", null, Source("Indexer.cs", 1)),
-			new("Key1", new SingularText("Real text"), Source("Translation.cs", 10))
-		};
+		var output = Output(
+			defs: [new("Key1", new SingularText("Real text"), DefSite("Translation.cs", 10))],
+			refs: [new("Key1", true, RefSite("Indexer.cs", 1))]);
 
-		var result = MergedTranslationEntry.FromRaw(entries);
+		var result = TranslationPipeline.Run([output]);
 
 		result.Entries.Should().ContainSingle()
 			.Which.SourceText.Should().BeOfType<SingularText>()

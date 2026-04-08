@@ -1,5 +1,7 @@
 using System.Runtime.CompilerServices;
 
+namespace BlazorLocalization.Extractor.Tests;
+
 static class ModuleInit
 {
 	[ModuleInitializer]

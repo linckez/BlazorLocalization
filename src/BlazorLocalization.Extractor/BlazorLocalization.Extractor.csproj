@@ -7,9 +7,13 @@
         <Nullable>enable</Nullable>
         <PackAsTool>true</PackAsTool>
         <ToolCommandName>blazor-loc</ToolCommandName>
-        <Version>10.1.3</Version>
-        <NoWarn>$(NoWarn);NU1510</NoWarn>
+        <Version>10.2.0</Version>
+        <NoWarn>$(NoWarn);NU1510;RS1041;RS1036;RS2008</NoWarn>
     </PropertyGroup>
+
+    <ItemGroup>
+        <InternalsVisibleTo Include="BlazorLocalization.Extractor.Tests" />
+    </ItemGroup>
 
     <PropertyGroup Label="Package Properties">
         <Title>BlazorLocalization.Extractor</Title>
@@ -26,8 +30,8 @@
         <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="5.3.0" />
         <PackageReference Include="Microsoft.AspNetCore.Razor.Language" Version="6.0.36"/>
         <PackageReference Include="Microsoft.Extensions.Localization.Abstractions" Version="10.0.5" />
-        <PackageReference Include="Spectre.Console" Version="0.54.0" />
-        <PackageReference Include="Spectre.Console.Cli" Version="0.53.1" />
+        <PackageReference Include="Spectre.Console" Version="0.55.0" />
+        <PackageReference Include="Spectre.Console.Cli" Version="0.55.0" />
         <PackageReference Include="Basic.Reference.Assemblies.Net100" Version="1.8.*"/>
     </ItemGroup>
 

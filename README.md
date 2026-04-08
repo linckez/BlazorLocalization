@@ -58,7 +58,7 @@ See [Examples](docs/Examples.md) for plurals, ordinals, enum display names, and 
 | Package | Version | Install |
 |---------|:-------:|--------:|
 | [**BlazorLocalization.Extensions**](https://www.nuget.org/packages/BlazorLocalization.Extensions) <br/> Caches translations, supports plurals and inline translations, pluggable translation providers | [![NuGet](https://img.shields.io/nuget/v/BlazorLocalization.Extensions.svg)](https://www.nuget.org/packages/BlazorLocalization.Extensions) | `dotnet add package BlazorLocalization.Extensions` |
-| [**BlazorLocalization.Extractor**](https://www.nuget.org/packages/BlazorLocalization.Extractor) <br/> CLI tool (`blazor-loc`) — Roslyn-based scanner that extracts source strings from `.razor`, `.cs`, and `.resx` files | [![NuGet](https://img.shields.io/nuget/v/BlazorLocalization.Extractor.svg)](https://www.nuget.org/packages/BlazorLocalization.Extractor) | `dotnet tool install -g BlazorLocalization.Extractor` |
+| [**BlazorLocalization.Extractor**](https://www.nuget.org/packages/BlazorLocalization.Extractor) <br/> CLI tool (`blazor-loc`) — inspect translation health and extract source strings from `.razor`, `.cs`, and `.resx` files | [![NuGet](https://img.shields.io/nuget/v/BlazorLocalization.Extractor.svg)](https://www.nuget.org/packages/BlazorLocalization.Extractor) | `dotnet tool install -g BlazorLocalization.Extractor` |
 
 Translation providers:
 
@@ -109,24 +109,43 @@ Built on [Microsoft's `IStringLocalizer`](https://learn.microsoft.com/en-us/aspn
 
 ---
 
-## 🎬 String Extraction
+## 🎬 CLI Tool — Inspect & Extract
 
-Already using `IStringLocalizer`? The Extractor scans your `.razor`, `.cs`, and `.resx` files and exports every translation string — no matter which localization backend you use.
+A Roslyn-based CLI that understands both BlazorLocalization's `Translation()` API and Microsoft's built-in `IStringLocalizer["key"]` + `.resx` — no code changes or adoption required. Point it at your project and go.
+
+```bash
+dotnet tool install -g BlazorLocalization.Extractor
+```
+
+### Inspect: Translation Health Audit
+
+```bash
+blazor-loc inspect ./src
+```
+
+You get a table of every translation key, where it's used, its source text, which locales have it, and whether anything is wrong. Spot duplicate keys with conflicting values, `IStringLocalizer` calls the scanner couldn't resolve, and `.resx` entries that no code references anymore — across hundreds of files in seconds.
+
+### Extract: Keep Translations in Sync
+
+Without tooling, keeping your translation platform in sync with your code means manually copying strings — every key, every language, every time something changes. There's no built-in way to get translation strings out of a .NET project and into Crowdin, Lokalise, a database, or anywhere else.
+
+```bash
+blazor-loc extract ./src -f po -o ./translations
+```
+
+One command scans your entire codebase and exports every source string to PO, i18next JSON, or generic JSON. Run it in CI on every merge and your translation platform always has the latest strings.
+
+### Interactive Wizard
+
+Run with no arguments for a guided walkthrough:
 
 ![blazor-loc interactive wizard demo](https://raw.githubusercontent.com/linckez/BlazorLocalization/main/docs/assets/blazor-loc.svg)
 
 ```bash
-dotnet tool install -g BlazorLocalization.Extractor
-
-# Interactive wizard — run with no arguments
 blazor-loc
-
-# Or go direct
-blazor-loc extract ./src -f po -o ./translations
 ```
 
-Upload the generated files to Crowdin, Lokalise, or any translation management system.
-See [Extractor CLI](docs/Extractor.md) for recipes, CI integration, and export formats.
+See [Extractor CLI](docs/Extractor.md) for all recipes, CI integration, and export formats.
 
 ---
 
@@ -141,7 +160,7 @@ See [Extractor CLI](docs/Extractor.md) for recipes, CI integration, and export f
 | Named placeholders | ✗ | ✗ | ✓ — via SmartFormat |
 | External provider support | ✗ | ✗ | ✓ — pluggable |
 | Merge-conflict-free | ✗ — XML | ✗ — PO files | ✓ — with OTA providers. File-based providers are opt-in |
-| Automated string extraction | Manual | Manual | Roslyn-based CLI |
+| Translation audit + extraction | Manual | Manual | Roslyn-based CLI — inspect and export |
 | Reusable definitions | ✗ | ✗ | ✓ — define once, use anywhere |
 | Standard `IStringLocalizer` | ✓ | ✓ | ✓ |
 | Battle-tested | ✓ — 20+ years | ✓ | Production use, actively maintained |
@@ -155,7 +174,7 @@ See [Extractor CLI](docs/Extractor.md) for recipes, CI integration, and export f
 | Topic | Description |
 |-------|-------------|
 | [Examples](docs/Examples.md) | `Translation()` usage — simple, placeholders, plurals, ordinals, select, inline translations, reusable definitions |
-| [Extractor CLI](docs/Extractor.md) | Install, interactive wizard, common recipes, CI integration, export formats |
+| [Extractor CLI](docs/Extractor.md) | Install, inspect & extract commands, interactive wizard, CI integration, export formats |
 | [Configuration](docs/Configuration.md) | Cache settings, `appsettings.json` binding, multiple providers, code-only config |
 | [Crowdin Provider](docs/Providers/Crowdin.md) | Over-the-air translations from Crowdin — distribution hash, export formats, error handling |
 | [JSON File Provider](docs/Providers/JsonFile.md) | Load translations from flat JSON files on disk |

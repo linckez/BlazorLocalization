@@ -213,8 +213,36 @@
 <MudText Typo="Typo.h6" Class="mt-4">S29 — Definition: SelectPlural</MudText>
 <MudText>S29 Definition SelectPlural Alpha howMany=1, expect "1 Alpha message": @_defSelectPlural</MudText>
 
+@* ────────────────────────────────────────────────────────────────── *@
+@* Reference Type Test Matrix                                        *@
+@* Tests the call-site to .resx reference model for RESX support     *@
+@* ────────────────────────────────────────────────────────────────── *@
+
+@* R01 — Compile-time indexer with RESX match *@
+<MudText Typo="Typo.h6" Class="mt-4">R01 — Compile-time indexer (RESX match)</MudText>
+<MudText>R01 Literal indexer key, RESX has entry — expect "Resolved from database via indexer": @Loc["R01.IndexerResolved"]</MudText>
+
+@* R02 — Runtime indexer, no RESX *@
+<MudText Typo="Typo.h6" Class="mt-4">R02 — Runtime indexer (no RESX)</MudText>
+<MudText>R02 Variable key, no RESX entry — expect raw key fallback: @Loc[_dynamicNoResx]</MudText>
+
+@* R03 — Runtime indexer, RESX exists but scanner can't match *@
+<MudText Typo="Typo.h6" Class="mt-4">R03 — Runtime indexer (RESX exists, can't match)</MudText>
+<MudText>R03 Variable key, RESX has the actual key but scanner can't resolve — expect raw key fallback: @Loc[_dynamicWithResx]</MudText>
+
+@* R04 — Compile-time indexer with RESX match + cultures *@
+<MudText Typo="Typo.h6" Class="mt-4">R04 — Compile-time indexer (RESX match + cultures)</MudText>
+<MudText>R04 Literal indexer key, RESX has entry with da/es-MX — expect "Base text with culture variants": @Loc["R04.WithCultures"]</MudText>
+
+@* R05 — SharedResource localizer (separate marker class) *@
+<MudText Typo="Typo.h6" Class="mt-4">R05 — SharedResource (cross-component RESX)</MudText>
+<MudText>R05 AppTitle, expect "Sample Blazor Application" (en) / "Eksempel Blazor-applikation" (da): @SharedLoc["AppTitle"]</MudText>
+<MudText>R05 WelcomeMessage, expect "Welcome to the localization test matrix" (en) / "Velkommen til lokaliseringstestmatrixen" (da): @SharedLoc["WelcomeMessage"]</MudText>
+
 @code {
     private readonly string _dynamicKey = "S13.Dynamic";
+    private readonly string _dynamicNoResx = "R02.Unknown";
+    private readonly string _dynamicWithResx = "R03.RuntimeTarget";
     private bool _flag = true;
     private string? _codeResult;
     private string? _nestedResult;
