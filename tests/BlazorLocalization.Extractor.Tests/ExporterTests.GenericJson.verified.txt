@@ -5,13 +5,14 @@
       "type": "singular",
       "value": "Welcome"
     },
-    "sources": [
+    "definitions": [
       {
         "filePath": "Home.razor",
         "line": 10,
         "projectName": "MyApp"
       }
-    ]
+    ],
+    "references": []
   },
   {
     "key": "Cart.Items",
@@ -24,13 +25,14 @@
         "42": "The answer"
       }
     },
-    "sources": [
+    "definitions": [
       {
         "filePath": "Cart.razor",
         "line": 20,
         "projectName": "MyApp"
       }
-    ]
+    ],
+    "references": []
   },
   {
     "key": "Invite",
@@ -42,13 +44,14 @@
       },
       "otherwise": "They invited you"
     },
-    "sources": [
+    "definitions": [
       {
         "filePath": "Invite.razor",
         "line": 30,
         "projectName": "MyApp"
       }
-    ]
+    ],
+    "references": []
   },
   {
     "key": "Inbox",
@@ -72,22 +75,23 @@
         "one": "They have {MessageCount} message"
       }
     },
-    "sources": [
+    "definitions": [
       {
         "filePath": "Inbox.razor",
         "line": 40,
         "projectName": "MyApp"
       }
-    ]
+    ],
+    "references": []
   },
   {
     "key": "Legacy.Key",
-    "sources": [
+    "definitions": [],
+    "references": [
       {
         "filePath": "Old.cs",
         "line": 50,
-        "projectName": "MyApp",
-        "context": "GetString call"
+        "projectName": "MyApp"
       }
     ]
   }

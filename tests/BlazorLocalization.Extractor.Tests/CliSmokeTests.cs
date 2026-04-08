@@ -1,5 +1,5 @@
 using System.Text.Json;
-using BlazorLocalization.Extractor.Cli.Commands;
+using BlazorLocalization.Extractor.Adapters.Cli.Commands;
 using FluentAssertions;
 using Spectre.Console.Cli;
 
@@ -70,7 +70,6 @@ public class CliSmokeTests : IDisposable
 	[Fact]
 	public void Extract_WithOutputDir_WritesFiles()
 	{
-		// --output takes precedence over piped-stdout JSON mode
 		var exitCode = BuildApp().Run(["extract", SampleAppDir, "-f", "po", "-o", _tempDir]);
 
 		exitCode.Should().Be(0);
@@ -87,8 +86,8 @@ public class CliSmokeTests : IDisposable
 		exitCode.Should().Be(0);
 
 		using var doc = JsonDocument.Parse(output);
-		doc.RootElement.TryGetProperty("calls", out _).Should().BeTrue();
-		doc.RootElement.TryGetProperty("entries", out _).Should().BeTrue();
+		doc.RootElement.TryGetProperty("translationEntries", out _).Should().BeTrue();
+		doc.RootElement.TryGetProperty("crossReference", out _).Should().BeTrue();
 	}
 
 	[Fact]
@@ -102,7 +101,6 @@ public class CliSmokeTests : IDisposable
 	[Fact]
 	public void Extract_DirectoryOutput_WritesPerLocaleFiles()
 	{
-		// Per-locale files are now exported by default with directory output
 		var exitCode = BuildApp().Run(
 			["extract", SampleAppDir, "-f", "i18next", "-o", _tempDir]);
 
@@ -163,11 +161,11 @@ public class CliSmokeTests : IDisposable
 	}
 
 	[Fact]
-	public void Extract_ToStdout_MultipleLocales_ReturnsError()
+	public void Extract_ToStdout_MultipleLocales_Succeeds()
 	{
 		var (_, exitCode) = RunCapturingStdout(["extract", SampleAppDir, "-l", "da", "-l", "es-MX"]);
 
-		exitCode.Should().Be(1);
+		exitCode.Should().Be(0);
 	}
 
 	[Fact]

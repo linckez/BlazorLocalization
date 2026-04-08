@@ -1,5 +1,5 @@
+using BlazorLocalization.Extractor.Adapters.Cli.Commands;
 using BlazorLocalization.Extractor.Domain;
-using BlazorLocalization.Extractor.Domain.Requests;
 using FluentAssertions;
 
 namespace BlazorLocalization.Extractor.Tests;
@@ -14,7 +14,7 @@ public class ExtractRequestTests
 		new(
 			ProjectDirs: projectDirs ?? ["/proj"],
 			Format: ExportFormat.I18Next,
-			Output: output ?? OutputTarget.Stdout,
+			Output: output ?? new OutputTarget.StdoutTarget(),
 			LocaleFilter: localeFilter,
 			SourceOnly: sourceOnly,
 			PathStyle: PathStyle.Relative,
@@ -36,7 +36,7 @@ public class ExtractRequestTests
 		var request = MakeRequest(projectDirs: []);
 
 		request.Validate().Should().ContainSingle()
-			.Which.Should().Contain("No .csproj projects found");
+			.Which.Should().Contain("No projects to scan");
 	}
 
 	[Fact]
@@ -56,17 +56,16 @@ public class ExtractRequestTests
 		var request = MakeRequest(projectDirs: ["/proj1", "/proj2"]);
 
 		request.Validate().Should().ContainSingle()
-			.Which.Should().Contain("Multiple projects");
+			.Which.Should().Contain("single project");
 	}
 
 	[Fact]
-	public void Stdout_MultipleLocales_ReturnsError()
+	public void Stdout_MultipleLocales_IsValid()
 	{
 		var request = MakeRequest(
 			localeFilter: new(StringComparer.OrdinalIgnoreCase) { "da", "es-MX" });
 
-		request.Validate().Should().ContainSingle()
-			.Which.Should().Contain("one locale at a time");
+		request.Validate().Should().BeEmpty();
 	}
 
 	[Fact]
@@ -83,10 +82,10 @@ public class ExtractRequestTests
 	{
 		var request = MakeRequest(
 			projectDirs: ["/proj1", "/proj2"],
-			output: OutputTarget.File("out.po"));
+			output: new OutputTarget.FileTarget("out.po"));
 
 		request.Validate().Should().ContainSingle()
-			.Which.Should().Contain("Multiple projects require -o <dir>");
+			.Which.Should().Contain("single project");
 	}
 
 	[Fact]
@@ -94,7 +93,7 @@ public class ExtractRequestTests
 	{
 		var request = MakeRequest(
 			projectDirs: ["/proj1", "/proj2"],
-			output: OutputTarget.Dir("./out"));
+			output: new OutputTarget.DirTarget("./out"));
 
 		request.Validate().Should().BeEmpty();
 	}
@@ -116,7 +115,7 @@ public class OutputTargetTests
 	[Fact]
 	public void Null_ReturnsStdout()
 	{
-		OutputTarget.FromRawOutput(null).Should().Be(OutputTarget.Stdout);
+		OutputTarget.FromRawOutput(null).Should().BeOfType<OutputTarget.StdoutTarget>();
 	}
 
 	[Fact]

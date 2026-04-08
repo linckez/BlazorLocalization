@@ -1,8 +1,11 @@
 ﻿{
-  "S02": "Hola",
-  "Resx.Match": "Texto fuente coincidente",
-  "Resx.Conflict": "Resx dice esto",
   "Def.Save": "Guardar",
   "Enum.FlightStatus_Delayed": "Retrasado",
-  "Resx.Only": "Solo en resx, sin contraparte de código"
+  "R01.IndexerResolved": "Resuelto desde base de datos vía indexador",
+  "R03.RuntimeTarget": "Solo puedes alcanzarme en tiempo de ejecución",
+  "R04.WithCultures": "Texto base con variantes culturales",
+  "Resx.Conflict": "Resx dice esto",
+  "Resx.Match": "Texto fuente coincidente",
+  "Resx.Only": "Solo en resx, sin contraparte de código",
+  "S02": "Hola"
 }

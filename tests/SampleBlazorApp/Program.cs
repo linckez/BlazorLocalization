@@ -13,6 +13,7 @@ builder.Services.AddMudServices();
 // Localization:
 builder.Services.AddSqliteCache(o => o.CachePath = "translations.db");
 
+// builder.Services.AddLocalization(options => options.ResourcesPath = "Resources");
 builder.Services.AddProviderBasedLocalization(builder.Configuration);
 
 // Stub providers — uncomment one pair at a time to test different architectures.

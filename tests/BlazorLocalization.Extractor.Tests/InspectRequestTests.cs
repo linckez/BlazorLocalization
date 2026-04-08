@@ -1,5 +1,5 @@
+using BlazorLocalization.Extractor.Adapters.Cli.Commands;
 using BlazorLocalization.Extractor.Domain;
-using BlazorLocalization.Extractor.Domain.Requests;
 using FluentAssertions;
 
 namespace BlazorLocalization.Extractor.Tests;
@@ -8,13 +8,13 @@ public class InspectRequestTests
 {
 	private static InspectRequest MakeRequest(
 		IReadOnlyList<string>? projectDirs = null,
-		HashSet<string>? localeFilter = null,
-		bool sourceOnly = false) =>
+		HashSet<string>? localeFilter = null) =>
 		new(
 			ProjectDirs: projectDirs ?? ["/proj"],
 			JsonOutput: false,
 			LocaleFilter: localeFilter,
-			SourceOnly: sourceOnly,
+			ShowResxLocales: false,
+			ShowExtractedCalls: false,
 			PathStyle: PathStyle.Relative);
 
 	[Fact]
@@ -31,18 +31,7 @@ public class InspectRequestTests
 		var request = MakeRequest(projectDirs: []);
 
 		request.Validate().Should().ContainSingle()
-			.Which.Should().Contain("No .csproj projects found");
-	}
-
-	[Fact]
-	public void SourceOnly_WithLocale_ReturnsError()
-	{
-		var request = MakeRequest(
-			sourceOnly: true,
-			localeFilter: new(StringComparer.OrdinalIgnoreCase) { "da" });
-
-		request.Validate().Should().ContainSingle()
-			.Which.Should().Contain("--source-only").And.Contain("--locale");
+			.Which.Should().Contain("No projects to scan");
 	}
 
 	[Fact]

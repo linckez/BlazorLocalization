@@ -1,4 +1,4 @@
-using BlazorLocalization.Extractor.Scanning;
+using BlazorLocalization.Extractor.Adapters.Cli;
 using FluentAssertions;
 
 namespace BlazorLocalization.Extractor.Tests;

@@ -1,19 +1,17 @@
+using BlazorLocalization.Extractor.Application;
 using BlazorLocalization.Extractor.Domain;
-using BlazorLocalization.Extractor.Domain.Calls;
-using BlazorLocalization.Extractor.Domain.Entries;
 using FluentAssertions;
 
 namespace BlazorLocalization.Extractor.Tests;
 
 public class LocaleDiscoveryTests
 {
-	private static SourceReference Source(string file, int line) =>
-		new(file, line, "TestProject", null);
-
-	private static MergedTranslationEntry Entry(
+	private static MergedTranslation Entry(
 		string key,
 		IReadOnlyDictionary<string, TranslationSourceText>? inlineTranslations = null) =>
-		new(key, new SingularText("Hello"), [Source("A.cs", 1)], inlineTranslations);
+		new(key, new SingularText("Hello"),
+			[new DefinitionSite(new SourceFilePath("/test/TestProject/A.cs", "/test/TestProject"), 1, DefinitionKind.InlineTranslation)],
+			[], inlineTranslations);
 
 	[Fact]
 	public void DiscoverLocales_ReturnsEmpty_WhenNoInlineTranslations()
@@ -87,62 +85,60 @@ public class LocaleDiscoveryTests
 	}
 }
 
-public class RelativizeTests
+public class SourceFilePathTests
 {
 	[Fact]
-	public void SourceReference_Relativize_ProducesForwardSlashes()
+	public void RelativePath_ProducesForwardSlashes()
 	{
-		var source = new SourceReference("/project/src/File.cs", 10, "MyProject", null);
+		var sfp = new SourceFilePath("/project/src/File.cs", "/project");
 
-		var result = source.Relativize("/project");
-
-		result.FilePath.Should().Be("src/File.cs");
-		result.Line.Should().Be(10);
-		result.ProjectName.Should().Be("MyProject");
+		sfp.RelativePath.Should().Be("src/File.cs");
 	}
 
 	[Fact]
-	public void SourceLocation_Relativize_ProducesForwardSlashes()
+	public void Display_Relative_ReturnsRelativePath()
 	{
-		var loc = new SourceLocation("/project/src/File.cs", 10, "MyProject");
+		var sfp = new SourceFilePath("/project/src/File.cs", "/project");
 
-		var result = loc.Relativize("/project");
-
-		result.FilePath.Should().Be("src/File.cs");
-		result.Line.Should().Be(10);
+		sfp.Display(PathStyle.Relative).Should().Be("src/File.cs");
 	}
 
 	[Fact]
-	public void MergedTranslationEntry_RelativizeSources_AllSourcesRelativized()
+	public void Display_Absolute_ReturnsAbsolutePath()
 	{
-		var entry = new MergedTranslationEntry(
-			"key1",
-			new SingularText("Hello"),
-			[
-				new SourceReference("/project/src/A.cs", 1, "P", null),
-				new SourceReference("/project/src/B.cs", 5, "P", null)
-			]);
+		var sfp = new SourceFilePath("/project/src/File.cs", "/project");
 
-		var result = entry.RelativizeSources("/project");
-
-		result.Sources.Select(s => s.FilePath).Should().Equal("src/A.cs", "src/B.cs");
-		result.Key.Should().Be("key1");
+		sfp.Display(PathStyle.Absolute).Should().Be("/project/src/File.cs");
 	}
 
 	[Fact]
-	public void ExtractedCall_RelativizeLocation()
+	public void IsResx_TrueForResxFiles()
 	{
-		var call = new ExtractedCall(
-			"MyClass",
-			"GetString",
-			CallKind.MethodInvocation,
-			new SourceLocation("/project/src/File.cs", 42, "P"),
-			OverloadResolutionStatus.Resolved,
-			[]);
+		new SourceFilePath("/p/Home.resx", "/p").IsResx.Should().BeTrue();
+		new SourceFilePath("/p/Home.da.resx", "/p").IsResx.Should().BeTrue();
+	}
 
-		var result = call.RelativizeLocation("/project");
+	[Fact]
+	public void IsResx_FalseForNonResxFiles()
+	{
+		new SourceFilePath("/p/Home.razor", "/p").IsResx.Should().BeFalse();
+		new SourceFilePath("/p/Home.cs", "/p").IsResx.Should().BeFalse();
+	}
 
-		result.Location.FilePath.Should().Be("src/File.cs");
-		result.Location.Line.Should().Be(42);
+
+	[Fact]
+	public void ProjectName_DerivedFromProjectDir()
+	{
+		var sfp = new SourceFilePath("/home/user/MyApp/File.cs", "/home/user/MyApp");
+
+		sfp.ProjectName.Should().Be("MyApp");
+	}
+
+	[Fact]
+	public void FileName_ReturnsJustFileName()
+	{
+		var sfp = new SourceFilePath("/project/src/Components/Home.razor", "/project");
+
+		sfp.FileName.Should().Be("Home.razor");
 	}
 }

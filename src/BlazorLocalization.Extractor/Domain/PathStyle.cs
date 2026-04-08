@@ -8,11 +8,11 @@ namespace BlazorLocalization.Extractor.Domain;
 /// </summary>
 public enum PathStyle
 {
-	/// <summary>Paths relative to the project root directory (e.g. <c>Components/Pages/Home.razor</c>).</summary>
-	[Description("Paths relative to project root (recommended)")]
-	Relative,
+    /// <summary>Paths relative to the project root directory (e.g. <c>Components/Pages/Home.razor</c>).</summary>
+    [Description("Paths relative to project root (recommended)")]
+    Relative,
 
-	/// <summary>Full absolute filesystem paths.</summary>
-	[Description("Full filesystem paths")]
-	Absolute
+    /// <summary>Full absolute filesystem paths.</summary>
+    [Description("Full filesystem paths")]
+    Absolute
 }

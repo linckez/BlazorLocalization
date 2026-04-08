@@ -1,6 +1,5 @@
+using BlazorLocalization.Extractor.Adapters.Export;
 using BlazorLocalization.Extractor.Domain;
-using BlazorLocalization.Extractor.Domain.Entries;
-using BlazorLocalization.Extractor.Exporters;
 
 namespace BlazorLocalization.Extractor.Tests;
 
@@ -10,11 +9,12 @@ namespace BlazorLocalization.Extractor.Tests;
 /// </summary>
 public class ExporterTests
 {
-	private static readonly IReadOnlyList<MergedTranslationEntry> TestEntries =
+	private static readonly IReadOnlyList<MergedTranslation> TestEntries =
 	[
 		new("App.Title",
 			new SingularText("Welcome"),
-			[new SourceReference("Home.razor", 10, "MyApp", null)]),
+			[new DefinitionSite(new SourceFilePath("/test/MyApp/Home.razor", "/test/MyApp"), 10, DefinitionKind.InlineTranslation)],
+			[]),
 
 		new("Cart.Items",
 			new PluralText(
@@ -22,7 +22,8 @@ public class ExporterTests
 				One: "{ItemCount} item",
 				Zero: "No items",
 				ExactMatches: new Dictionary<int, string> { [42] = "The answer" }),
-			[new SourceReference("Cart.razor", 20, "MyApp", null)]),
+			[new DefinitionSite(new SourceFilePath("/test/MyApp/Cart.razor", "/test/MyApp"), 20, DefinitionKind.InlineTranslation)],
+			[]),
 
 		new("Invite",
 			new SelectText(
@@ -32,7 +33,8 @@ public class ExporterTests
 					["Male"] = "He invited you"
 				},
 				Otherwise: "They invited you"),
-			[new SourceReference("Invite.razor", 30, "MyApp", null)]),
+			[new DefinitionSite(new SourceFilePath("/test/MyApp/Invite.razor", "/test/MyApp"), 30, DefinitionKind.InlineTranslation)],
+			[]),
 
 		new("Inbox",
 			new SelectPluralText(
@@ -42,22 +44,24 @@ public class ExporterTests
 					["Male"] = new("He has {MessageCount} messages", One: "He has {MessageCount} message")
 				},
 				Otherwise: new("They have {MessageCount} messages", One: "They have {MessageCount} message")),
-			[new SourceReference("Inbox.razor", 40, "MyApp", null)]),
+			[new DefinitionSite(new SourceFilePath("/test/MyApp/Inbox.razor", "/test/MyApp"), 40, DefinitionKind.InlineTranslation)],
+			[]),
 
 		new("Legacy.Key",
 			null,
-			[new SourceReference("Old.cs", 50, "MyApp", "GetString call")])
+			[],
+			[new ReferenceSite(new SourceFilePath("/test/MyApp/Old.cs", "/test/MyApp"), 50, "GetString call")])
 	];
 
 	[Fact]
 	public Task I18NextJson() =>
-		Verify(new I18NextJsonExporter().Export(TestEntries));
+		Verify(new I18NextJsonExporter().Export(TestEntries, PathStyle.Relative));
 
 	[Fact]
 	public Task Po() =>
-		Verify(new PoExporter().Export(TestEntries));
+		Verify(new PoExporter().Export(TestEntries, PathStyle.Relative));
 
 	[Fact]
 	public Task GenericJson() =>
-		Verify(new GenericJsonExporter().Export(TestEntries));
+		Verify(new GenericJsonExporter().Export(TestEntries, PathStyle.Relative));
 }

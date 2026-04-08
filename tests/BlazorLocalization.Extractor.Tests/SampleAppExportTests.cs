@@ -1,5 +1,5 @@
-using BlazorLocalization.Extractor.Domain.Entries;
-using BlazorLocalization.Extractor.Exporters;
+using BlazorLocalization.Extractor.Adapters.Export;
+using BlazorLocalization.Extractor.Domain;
 
 namespace BlazorLocalization.Extractor.Tests;
 
@@ -11,11 +11,11 @@ public class SampleAppExportTests(SampleAppFixture fixture) : IClassFixture<Samp
 {
 	[Fact]
 	public Task I18NextJson_FullOutput() =>
-		Verify(new I18NextJsonExporter().Export(fixture.MergeResult.Entries.ToList()));
+		Verify(new I18NextJsonExporter().Export(fixture.MergeResult.Entries.ToList(), PathStyle.Relative));
 
 	[Fact]
 	public Task Po_FullOutput() =>
-		Verify(new PoExporter().Export(RelativizePaths(fixture.MergeResult.Entries)));
+		Verify(new PoExporter().Export(fixture.MergeResult.Entries.ToList(), PathStyle.Relative));
 
 	/// <summary>
 	/// Per-locale files should contain only entries that have a .For() translation for that locale —
@@ -33,23 +33,9 @@ public class SampleAppExportTests(SampleAppFixture fixture) : IClassFixture<Samp
 	{
 		var entries = fixture.MergeResult.Entries
 			.Where(e => e.InlineTranslations is not null && e.InlineTranslations.ContainsKey(locale))
-			.Select(e => new MergedTranslationEntry(e.Key, e.InlineTranslations![locale], e.Sources))
+			.Select(e => new MergedTranslation(e.Key, e.InlineTranslations![locale], e.Definitions, e.References))
 			.ToList();
 
-		return new I18NextJsonExporter().Export(entries);
+		return new I18NextJsonExporter().Export(entries, PathStyle.Relative);
 	}
-
-	/// <summary>
-	/// Converts absolute source paths to solution-relative forward-slash paths,
-	/// mirroring what the CLI does with <c>PathStyle.Relative</c>.
-	/// This avoids platform-dependent Verify path scrubbing issues.
-	/// </summary>
-	private List<MergedTranslationEntry> RelativizePaths(IReadOnlyList<MergedTranslationEntry> entries) =>
-		entries.Select(e => e with
-		{
-			Sources = e.Sources.Select(s => s with
-			{
-				FilePath = Path.GetRelativePath(fixture.SolutionDirectory, s.FilePath).Replace('\\', '/')
-			}).ToList()
-		}).ToList();
 }

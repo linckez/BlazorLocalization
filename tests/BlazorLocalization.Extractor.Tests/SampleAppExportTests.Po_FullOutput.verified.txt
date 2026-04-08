@@ -6,34 +6,120 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Crowdin-SourceKey: msgstr\n"
 
-#: tests/SampleBlazorApp/Components/Layout/ReconnectModal.razor:9
-#. .Translation
-msgid "RC.Title"
-msgstr "Connection Interrupted"
+#: Resources/SharedResource.resx:20
+msgid "AppTitle"
+msgstr "Sample Blazor Application"
 
-#: tests/SampleBlazorApp/Components/Pages/EdgeCasePage.razor:5
+#: Components/Pages/EdgeCasePage.razor.cs:11
+#. .Translation
+msgid "CB.CodeBehind"
+msgstr "From code-behind"
+
+#: Components/Pages/EdgeCasePage.razor:5
 #. .Translation
 msgid "CB.Razor"
 msgstr "From Razor side"
 
-#: tests/SampleBlazorApp/Components/Pages/Home.razor:15
+#: CommonDefinitions.cs:22
+#. TranslationDefinitions.DefinePlural
+msgid "Def.Cart"
+msgid_plural "Def.Cart"
+msgstr[0] "{ItemCount} item"
+msgstr[1] "{ItemCount} items"
+
+#: CommonDefinitions.cs:32
+#. TranslationDefinitions.DefineSelect
+msgid "Def.Greeting_Alpha"
+msgstr "Hello Alpha"
+
+msgid "Def.Greeting_Beta"
+msgstr "Hello Beta"
+
+msgid "Def.Greeting"
+msgstr "Hello friend"
+
+#: CommonDefinitions.cs:44
+#. TranslationDefinitions.DefineSelectPlural
+msgid "Def.Inbox_Alpha"
+msgid_plural "Def.Inbox_Alpha"
+msgstr[0] "{ItemCount} Alpha message"
+msgstr[1] "{ItemCount} Alpha messages"
+
+msgid "Def.Inbox"
+msgid_plural "Def.Inbox"
+msgstr[0] "{ItemCount} message"
+msgstr[1] "{ItemCount} messages"
+
+#: CommonDefinitions.cs:15
+#. TranslationDefinitions.DefineSimple
+msgid "Def.Save"
+msgstr "Save"
+
+#: FlightStatus.cs:7
+msgid "Enum.FlightStatus_Delayed"
+msgstr "Delayed"
+
+#: FlightStatus.cs:12
+msgid "Flight.Late"
+msgstr "Arrived a bit late"
+
+#: Resources/Components/Pages/Home.resx:35
+#. Compile-time indexer reference — scanner can match this key deterministically
+msgid "R01.IndexerResolved"
+msgstr "Resolved from database via indexer"
+
+#: Resources/Components/Pages/Home.resx:40
+#. RESX entry exists but R03 code uses a variable key — scanner cannot match
+msgid "R03.RuntimeTarget"
+msgstr "You can only reach me at runtime"
+
+#: Resources/Components/Pages/Home.resx:45
+#. Compile-time indexer reference with culture-specific translations in da/es-MX
+msgid "R04.WithCultures"
+msgstr "Base text with culture variants"
+
+#: Components/Layout/ReconnectModal.razor:9
+#. .Translation
+msgid "RC.Title"
+msgstr "Connection Interrupted"
+
+#: Components/Pages/Home.razor:158
+#. .Translation
+#: Resources/Components/Pages/Home.resx:25
+#. Different text from S15 Translation() call — should produce KeyConflict
+msgid "Resx.Conflict"
+msgstr "Code says this"
+
+#: Components/Pages/Home.razor:154
+#. .Translation
+#: Resources/Components/Pages/Home.resx:20
+#. Same text as S14 Translation() call — should merge cleanly
+msgid "Resx.Match"
+msgstr "Matching source text"
+
+#: Resources/Components/Pages/Home.resx:30
+#. Passive entry — no Translation() call references this key
+msgid "Resx.Only"
+msgstr "Only in resx, no code counterpart"
+
+#: Components/Pages/Home.razor:15
 #. .Translation
 msgid "S01"
 msgstr "Hello World"
 
-#: tests/SampleBlazorApp/Components/Pages/Home.razor:21
+#: Components/Pages/Home.razor:21
 #. .Translation
 msgid "S02"
 msgstr "Hi"
 
-#: tests/SampleBlazorApp/Components/Pages/Home.razor:30
+#: Components/Pages/Home.razor:30
 #. .Translation
 msgid "S03"
 msgid_plural "S03"
 msgstr[0] "{ItemCount} item"
 msgstr[1] "{ItemCount} items"
 
-#: tests/SampleBlazorApp/Components/Pages/Home.razor:43
+#: Components/Pages/Home.razor:43
 #. .Translation
 #. ⚠️ ORDINAL — use ordinal forms (1st, 2nd, 3rd), not cardinal (1, 2, 3)
 msgid "S04"
@@ -41,7 +127,7 @@ msgid_plural "S04"
 msgstr[0] "{Position}st"
 msgstr[1] "{Position}th"
 
-#: tests/SampleBlazorApp/Components/Pages/Home.razor:54
+#: Components/Pages/Home.razor:54
 #. .Translation
 msgid "S05"
 msgid_plural "S05"
@@ -51,14 +137,14 @@ msgstr[1] "{ItemCount} items"
 msgid "S05_exactly_0"
 msgstr "none at all"
 
-#: tests/SampleBlazorApp/Components/Pages/Home.razor:64
+#: Components/Pages/Home.razor:64
 #. .Translation
 msgid "S06"
 msgid_plural "S06"
 msgstr[0] "{ItemCount} item"
 msgstr[1] "{ItemCount} items"
 
-#: tests/SampleBlazorApp/Components/Pages/Home.razor:76
+#: Components/Pages/Home.razor:76
 #. .Translation
 msgid "S07_Alpha"
 msgstr "Alpha path"
@@ -69,7 +155,7 @@ msgstr "Beta path"
 msgid "S07"
 msgstr "Other path"
 
-#: tests/SampleBlazorApp/Components/Pages/Home.razor:86
+#: Components/Pages/Home.razor:86
 #. .Translation
 msgid "S08_Alpha"
 msgstr "Alpha path"
@@ -77,7 +163,7 @@ msgstr "Alpha path"
 msgid "S08"
 msgstr "Other path"
 
-#: tests/SampleBlazorApp/Components/Pages/Home.razor:98
+#: Components/Pages/Home.razor:98
 #. .Translation
 msgid "S09_Alpha"
 msgid_plural "S09_Alpha"
@@ -94,7 +180,7 @@ msgid_plural "S09"
 msgstr[0] "{ItemCount} other item"
 msgstr[1] "{ItemCount} other items"
 
-#: tests/SampleBlazorApp/Components/Pages/Home.razor:114
+#: Components/Pages/Home.razor:114
 #. .Translation
 #. ⚠️ ORDINAL — use ordinal forms (1st, 2nd, 3rd), not cardinal (1, 2, 3)
 msgid "S10_Alpha"
@@ -111,7 +197,7 @@ msgid_plural "S10"
 msgstr[0] "{Position}st other"
 msgstr[1] "{Position}th other"
 
-#: tests/SampleBlazorApp/Components/Pages/Home.razor:128
+#: Components/Pages/Home.razor:128
 #. .Translation
 msgid "S11_Alpha"
 msgid_plural "S11_Alpha"
@@ -123,145 +209,80 @@ msgid_plural "S11"
 msgstr[0] "{ItemCount} other item"
 msgstr[1] "{ItemCount} other items"
 
-#: tests/SampleBlazorApp/Components/Pages/Home.razor:146
+#: Components/Pages/Home.razor:146
 #. IStringLocalizer.this[]
 msgid "S12"
 msgstr ""
 
-#: tests/SampleBlazorApp/Components/Pages/Home.razor:150
-#. .Translation
-msgid "_dynamicKey"
-msgstr "Dynamic message"
-
-#: tests/SampleBlazorApp/Components/Pages/Home.razor:154
-#. .Translation
-#: tests/SampleBlazorApp/Resources/Home.resx:20
-#. Same text as S14 Translation() call — should merge cleanly
-msgid "Resx.Match"
-msgstr "Matching source text"
-
-#: tests/SampleBlazorApp/Components/Pages/Home.razor:158
-#. .Translation
-#: tests/SampleBlazorApp/Resources/Home.resx:25
-#. Different text from S15 Translation() call — should produce KeyConflict
-msgid "Resx.Conflict"
-msgstr "Code says this"
-
-#: tests/SampleBlazorApp/Components/Pages/Home.razor:162
+#: Components/Pages/Home.razor:162
 #. .Translation
 msgid "S16.Attr"
 msgstr "Search…"
 
-#: tests/SampleBlazorApp/Components/Pages/Home.razor:166
+#: Components/Pages/Home.razor:166
 #. .Translation
 msgid "S17.TernA"
 msgstr "Edit"
 
-#: tests/SampleBlazorApp/Components/Pages/Home.razor:166
+#: Components/Pages/Home.razor:166
 #. .Translation
 msgid "S17.TernB"
 msgstr "Add"
 
-#: tests/SampleBlazorApp/Components/Pages/Home.razor:170
+#: Components/Pages/Home.razor:170
 #. .Translation
 msgid "S18.Cast"
 msgstr "Text with <strong>bold</strong>"
 
-#: tests/SampleBlazorApp/Components/Pages/Home.razor:174
+#: Components/Pages/Home.razor:174
 #. .Translation
 msgid "S19.A"
 msgstr "First"
 
-#: tests/SampleBlazorApp/Components/Pages/Home.razor:174
+#: Components/Pages/Home.razor:174
 #. .Translation
 msgid "S19.B"
 msgstr "Second"
 
-#: tests/SampleBlazorApp/Components/Pages/Home.razor:178
+#: Components/Pages/Home.razor:178
 #. .Translation
 msgid "S20.TextBlock"
 msgstr "Inside text block"
 
-#: tests/SampleBlazorApp/Components/Pages/Home.razor:190
-#. .Translation
-msgid "S23.Placeholder"
-msgstr "Visited {VisitCount} times"
-
-#: tests/SampleBlazorApp/Components/Pages/Home.razor:229
-#. .Translation
-msgid "S21.Verbatim"
-msgstr "Line one\nLine two with \"quotes\""
-
-#: tests/SampleBlazorApp/Components/Pages/Home.razor:233
-#. .Translation
-msgid "S21.Raw"
-msgstr "This has \"raw quotes\" inside"
-
-#: tests/SampleBlazorApp/Components/Pages/Home.razor:236
+#: Components/Pages/Home.razor:264
 #. .Translation
 msgid "S21.Concat"
 msgstr "First half second half"
 
-#: tests/SampleBlazorApp/Components/Pages/Home.razor:239
+#: Components/Pages/Home.razor:261
+#. .Translation
+msgid "S21.Raw"
+msgstr "This has \"raw quotes\" inside"
+
+#: Components/Pages/Home.razor:257
+#. .Translation
+msgid "S21.Verbatim"
+msgstr "Line one\nLine two with \"quotes\""
+
+#: Components/Pages/Home.razor:267
 #. .Translation
 msgid "S22.Nested"
 msgstr "Nested value"
 
-#: tests/SampleBlazorApp/CommonDefinitions.cs:15
-#. TranslationDefinitions.DefineSimple
-msgid "Def.Save"
-msgstr "Save"
-
-#: tests/SampleBlazorApp/CommonDefinitions.cs:22
-#. TranslationDefinitions.DefinePlural
-msgid "Def.Cart"
-msgid_plural "Def.Cart"
-msgstr[0] "{ItemCount} item"
-msgstr[1] "{ItemCount} items"
-
-#: tests/SampleBlazorApp/CommonDefinitions.cs:32
-#. TranslationDefinitions.DefineSelect
-msgid "Def.Greeting_Alpha"
-msgstr "Hello Alpha"
-
-msgid "Def.Greeting_Beta"
-msgstr "Hello Beta"
-
-msgid "Def.Greeting"
-msgstr "Hello friend"
-
-#: tests/SampleBlazorApp/CommonDefinitions.cs:44
-#. TranslationDefinitions.DefineSelectPlural
-msgid "Def.Inbox_Alpha"
-msgid_plural "Def.Inbox_Alpha"
-msgstr[0] "{ItemCount} Alpha message"
-msgstr[1] "{ItemCount} Alpha messages"
-
-msgid "Def.Inbox"
-msgid_plural "Def.Inbox"
-msgstr[0] "{ItemCount} message"
-msgstr[1] "{ItemCount} messages"
-
-#: tests/SampleBlazorApp/Components/Pages/EdgeCasePage.razor.cs:11
+#: Components/Pages/Home.razor:190
 #. .Translation
-msgid "CB.CodeBehind"
-msgstr "From code-behind"
+msgid "S23.Placeholder"
+msgstr "Visited {VisitCount} times"
 
-#: tests/SampleBlazorApp/FlightStatus.cs:7
-msgid "Enum.FlightStatus_Delayed"
-msgstr "Delayed"
+#: Resources/SharedResource.resx:24
+msgid "WelcomeMessage"
+msgstr "Welcome to the localization test matrix"
 
-#: tests/SampleBlazorApp/FlightStatus.cs:12
-msgid "Flight.Late"
-msgstr "Arrived a bit late"
-
-#: tests/SampleBlazorApp/Resources/Home.da.resx:32
-#. Key only present in culture-specific file, not in neutral
-msgid "Resx.CultureOnly"
+#: Components/Pages/Home.razor:227
+msgid "_dynamicNoResx"
 msgstr ""
 
-#: tests/SampleBlazorApp/Resources/Home.resx:30
-#. Passive entry — no Translation() call references this key
-msgid "Resx.Only"
-msgstr "Only in resx, no code counterpart"
+#: Components/Pages/Home.razor:231
+msgid "_dynamicWithResx"
+msgstr ""
 

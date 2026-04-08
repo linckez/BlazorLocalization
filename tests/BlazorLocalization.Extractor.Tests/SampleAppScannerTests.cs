@@ -1,6 +1,4 @@
 using BlazorLocalization.Extractor.Domain;
-using BlazorLocalization.Extractor.Domain.Calls;
-using BlazorLocalization.Extractor.Domain.Entries;
 using FluentAssertions;
 
 namespace BlazorLocalization.Extractor.Tests;
@@ -11,7 +9,7 @@ namespace BlazorLocalization.Extractor.Tests;
 /// </summary>
 public class SampleAppScannerTests(SampleAppFixture fixture) : IClassFixture<SampleAppFixture>
 {
-	private MergedTranslationEntry Entry(string key) =>
+	private MergedTranslation Entry(string key) =>
 		fixture.EntryByKey.TryGetValue(key, out var e)
 			? e
 			: throw new KeyNotFoundException($"No merged entry for key '{key}'");
@@ -31,8 +29,16 @@ public class SampleAppScannerTests(SampleAppFixture fixture) : IClassFixture<Sam
 			"S09", "S10", "S11",
 			// Indexer
 			"S12",
-			// Resx
-			"Resx.Match", "Resx.Conflict", "Resx.Only", "Resx.CultureOnly",
+			// Resx (CultureOnly excluded — new adapter skips keys without neutral counterpart)
+			"Resx.Match", "Resx.Conflict", "Resx.Only",
+			// Reference types (call-site → .resx)
+			"R01.IndexerResolved", "R04.WithCultures",
+			// R03.RuntimeTarget exists in RESX but not matched by code (unreferenced .resx entry)
+			"R03.RuntimeTarget",
+			// Runtime variable keys (unresolvable — variable name extracted, not the value)
+			"_dynamicNoResx", "_dynamicWithResx",
+			// SharedResource RESX entries
+			"AppTitle", "WelcomeMessage",
 			// Attribute, ternary, cast, multi-call, text block
 			"S16.Attr", "S17.TernA", "S17.TernB", "S18.Cast", "S19.A", "S19.B", "S20.TextBlock",
 			// Code-behind string literals
@@ -41,6 +47,8 @@ public class SampleAppScannerTests(SampleAppFixture fixture) : IClassFixture<Sam
 			"S22.Nested", "S23.Placeholder",
 			// Enum [Translation] attributes
 			"Enum.FlightStatus_Delayed", "Flight.Late",
+			// Reusable definitions (DefineXxx)
+			"Def.Save", "Def.Cart", "Def.Greeting", "Def.Inbox",
 			// EdgeCasePage
 			"CB.Razor", "CB.CodeBehind",
 			// ReconnectModal
@@ -149,18 +157,8 @@ public class SampleAppScannerTests(SampleAppFixture fixture) : IClassFixture<Sam
 			.Which.Value.Should().Be("Texto fuente coincidente");
 	}
 
-	[Fact]
-	public void ResxCultureOnlyEntry_NullSourceTextWithInlineTranslations()
-	{
-		var entry = Entry("Resx.CultureOnly");
-		entry.SourceText.Should().BeNull();
-		entry.InlineTranslations.Should().NotBeNull();
-		entry.InlineTranslations!.Should().ContainKey("da");
-		entry.InlineTranslations!["da"].Should().BeOfType<SingularText>()
-			.Which.Value.Should().Be("Kun i dansk, ikke i neutral");
-		// es-MX does not have this key
-		entry.InlineTranslations!.Should().NotContainKey("es-MX");
-	}
+	// ResxCultureOnlyEntry test removed — new adapter intentionally skips
+	// keys that exist only in culture .resx files (no neutral counterpart).
 
 	[Fact]
 	public void ResxConflict_Detected()
@@ -212,13 +210,154 @@ public class SampleAppScannerTests(SampleAppFixture fixture) : IClassFixture<Sam
 	}
 
 	[Fact]
-	public void EnumTranslation_ProducesExtractedCalls()
+	public void EnumTranslation_HasDefinition_NoFakeReference()
 	{
-		var enumCalls = fixture.ScanResult.Calls
-			.Where(c => c.CallKind == CallKind.AttributeDeclaration)
-			.ToList();
+		var entry = Entry("Enum.FlightStatus_Delayed");
+		entry.Definitions.Should().NotBeEmpty();
+		entry.Definitions[0].Kind.Should().Be(DefinitionKind.EnumAttribute);
+		entry.References.Should().BeEmpty("enum attributes are definitions, not usages");
+		entry.Status.Should().Be(TranslationStatus.Review, "no Loc.Display() usage can be resolved yet");
+	}
 
-		enumCalls.Should().Contain(c => c.ContainingTypeName == "FlightStatus" && c.MethodName == "Delayed");
-		enumCalls.Should().Contain(c => c.ContainingTypeName == "FlightStatus" && c.MethodName == "ArrivedABitLate");
+	// ── DefinitionKind tests ──
+
+	[Fact]
+	public void InlineTranslation_HasInlineKind()
+	{
+		Entry("S01").Definitions.First().Kind.Should().Be(DefinitionKind.InlineTranslation);
+	}
+
+	[Fact]
+	public void ReusableDefinition_HasReusableKind()
+	{
+		Entry("Def.Save").Definitions.First().Kind.Should().Be(DefinitionKind.ReusableDefinition);
+	}
+
+	[Fact]
+	public void ReusableDefinition_HasNoReference()
+	{
+		var entry = Entry("Def.Save");
+		entry.References.Should().BeEmpty("DefineXxx is a data definition, not a usage");
+		entry.Status.Should().Be(TranslationStatus.Review);
+	}
+
+	[Fact]
+	public void EnumAttribute_HasEnumKind()
+	{
+		Entry("Enum.FlightStatus_Delayed").Definitions.First().Kind.Should().Be(DefinitionKind.EnumAttribute);
+	}
+
+	[Fact]
+	public void ResourceFile_HasResourceKind()
+	{
+		Entry("Resx.Only").Definitions.First().Kind.Should().Be(DefinitionKind.ResourceFile);
+	}
+
+	// ── Reference type tests (call-site → .resx) ──
+
+	[Fact]
+	public void CompileTimeIndexer_ResolvesResxSourceText()
+	{
+		Entry("R01.IndexerResolved").SourceText.Should().BeOfType<SingularText>()
+			.Which.Value.Should().Be("Resolved from database via indexer");
+	}
+
+	[Fact]
+	public void CompileTimeIndexer_ResolvesResxCultures()
+	{
+		var entry = Entry("R01.IndexerResolved");
+		entry.InlineTranslations.Should().NotBeNull();
+		entry.InlineTranslations!.Should().ContainKey("da");
+		entry.InlineTranslations!.Should().ContainKey("es-MX");
+
+		entry.InlineTranslations["da"].Should().BeOfType<SingularText>()
+			.Which.Value.Should().Be("Opløst fra database via indekser");
+	}
+
+	[Fact]
+	public void CompileTimeIndexer_WithCultures_ResolvesAll()
+	{
+		var entry = Entry("R04.WithCultures");
+		entry.SourceText.Should().BeOfType<SingularText>()
+			.Which.Value.Should().Be("Base text with culture variants");
+		entry.InlineTranslations.Should().NotBeNull();
+		entry.InlineTranslations!.Should().ContainKey("da");
+		entry.InlineTranslations!.Should().ContainKey("es-MX");
+
+		entry.InlineTranslations["da"].Should().BeOfType<SingularText>()
+			.Which.Value.Should().Be("Grundtekst med kulturvarianter");
+		entry.InlineTranslations["es-MX"].Should().BeOfType<SingularText>()
+			.Which.Value.Should().Be("Texto base con variantes culturales");
+	}
+
+	[Fact]
+	public void UnreferencedResxEntry_ImportedWithoutCodeMatch()
+	{
+		Entry("R03.RuntimeTarget").SourceText.Should().BeOfType<SingularText>()
+			.Which.Value.Should().Be("You can only reach me at runtime");
+	}
+
+	[Fact]
+	public void CompileTimeIndexerWithoutResx_NullSourceText()
+	{
+		Entry("S12").SourceText.Should().BeNull();
+	}
+
+	// ── Origin & cross-reference tests ──
+
+	[Fact]
+	public void ResxEntry_HasResxDefinition()
+	{
+		Entry("Resx.Only").Definitions.Should().Contain(d => d.File.IsResx);
+	}
+
+	[Fact]
+	public void CodeOnlyEntry_HasNoResxDefinition()
+	{
+		Entry("S01").Definitions.Should().NotContain(d => d.File.IsResx);
+	}
+
+	[Fact]
+	public void MatchedEntry_HasBothCodeAndResxDefinitions()
+	{
+		var entry = Entry("R01.IndexerResolved");
+		entry.Definitions.Should().Contain(d => d.File.IsResx);
+		entry.References.Should().NotBeEmpty();
+	}
+
+	[Fact]
+	public void CompileTimeIndexer_IsKeyLiteralTrue()
+	{
+		Entry("R01.IndexerResolved").IsKeyLiteral.Should().BeTrue();
+	}
+
+	[Fact]
+	public void RuntimeIndexer_IsKeyLiteralFalse()
+	{
+		Entry("_dynamicNoResx").IsKeyLiteral.Should().BeFalse();
+	}
+
+	[Fact]
+	public void CrossReference_MatchedEntry_IsResolved()
+	{
+		Entry("R01.IndexerResolved").Status.Should().Be(TranslationStatus.Resolved);
+	}
+
+	[Fact]
+	public void CrossReference_CodeOnlyWithSourceText_IsResolved()
+	{
+		Entry("S01").Status.Should().Be(TranslationStatus.Resolved);
+	}
+
+	[Fact]
+	public void CrossReference_Unreferenced_IsReview()
+	{
+		Entry("Resx.Only").Status.Should().Be(TranslationStatus.Review);
+	}
+
+	[Fact]
+	public void CrossReference_Unresolvable_IsReview()
+	{
+		Entry("_dynamicNoResx").Status.Should().Be(TranslationStatus.Review);
 	}
 }

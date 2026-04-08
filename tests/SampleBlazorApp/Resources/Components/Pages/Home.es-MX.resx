@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:element name="root" msdata:IsDataSet="true">
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+
+  <data name="Resx.Match" xml:space="preserve">
+    <value>Texto fuente coincidente</value>
+  </data>
+
+  <data name="Resx.Conflict" xml:space="preserve">
+    <value>Resx dice esto</value>
+  </data>
+
+  <data name="Resx.Only" xml:space="preserve">
+    <value>Solo en resx, sin contraparte de código</value>
+  </data>
+
+  <data name="R01.IndexerResolved" xml:space="preserve">
+    <value>Resuelto desde base de datos vía indexador</value>
+  </data>
+
+  <data name="R03.RuntimeTarget" xml:space="preserve">
+    <value>Solo puedes alcanzarme en tiempo de ejecución</value>
+  </data>
+
+  <data name="R04.WithCultures" xml:space="preserve">
+    <value>Texto base con variantes culturales</value>
+  </data>
+</root>

@@ -8,11 +8,11 @@ namespace BlazorLocalization.Extractor.Domain;
 /// </summary>
 public enum ConflictStrategy
 {
-	/// <summary>Keep the first-seen source text for the duplicate key.</summary>
-	[Description("Keep the first-seen source text for the key")]
-	First,
+    /// <summary>Keep the first-seen source text for the duplicate key.</summary>
+    [Description("Keep the first-seen source text for the key")]
+    First,
 
-	/// <summary>Omit the duplicate key from the export entirely.</summary>
-	[Description("Omit the duplicate key from the export")]
-	Skip
+    /// <summary>Omit the duplicate key from the export entirely.</summary>
+    [Description("Omit the duplicate key from the export")]
+    Skip
 }
