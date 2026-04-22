@@ -1,9 +1,13 @@
 <Project>
-  <ItemGroup>
-    <!-- Surface .resx files as AdditionalFiles so the analyzer can read translation data -->
-    <AdditionalFiles Include="@(EmbeddedResource)" Condition="'%(Extension)' == '.resx'" />
-    <!-- Future: PO and JSON -->
-    <!-- <AdditionalFiles Include="**/*.po" /> -->
-    <!-- <AdditionalFiles Include="Translations/**/*.json" /> -->
-  </ItemGroup>
+  <!-- Wrapped in a Target because built-in metadata like %(Extension) cannot be
+       used in Condition attributes during static evaluation (MSB4190). -->
+  <Target Name="_BlazorLocalizationSurfaceResxFiles" BeforeTargets="CoreCompile">
+    <ItemGroup>
+      <!-- Surface .resx files as AdditionalFiles so the analyzer can read translation data -->
+      <AdditionalFiles Include="@(EmbeddedResource)" Condition="'%(Extension)' == '.resx'" />
+      <!-- Future: PO and JSON -->
+      <!-- <AdditionalFiles Include="**/*.po" /> -->
+      <!-- <AdditionalFiles Include="Translations/**/*.json" /> -->
+    </ItemGroup>
+  </Target>
 </Project>
