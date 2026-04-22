@@ -57,6 +57,15 @@ internal static class CallSiteBuilder
         var returnType = method.ReturnType;
         var returnsBuilder = FluentChainWalker.IsBuilderType(returnType as INamedTypeSymbol);
 
+        // Extension method detection:
+        // - Classic extensions: ReducedFrom is set on the call-site symbol
+        // - C# 14 extension blocks: IsExtensionMethod may be true
+        // - Reduced instance calls: the receiver is the first param
+        var isExtension = method.IsExtensionMethod ||
+                          method.ReducedFrom is not null ||
+                          (invocation.Instance is null && method.Parameters.Length > 0 &&
+                           method.IsStatic);
+
         // A call is a "definition" if it returns a builder type OR is a DefineXxx factory
         var isDefinitionLike = returnsBuilder ||
             method.Name.StartsWith("Define", StringComparison.Ordinal);
@@ -74,7 +83,8 @@ internal static class CallSiteBuilder
             File: file,
             Line: line,
             Arguments: arguments,
-            Chain: chain);
+            Chain: chain,
+            ResolvedMethod: method);
     }
 
     private static IReadOnlyList<ScannedArgument> ExtractArguments(IReadOnlyList<IArgumentOperation> arguments)

@@ -182,4 +182,4 @@ blazor-loc inspect --help
 
 ---
 
-**See also:** [Examples](Examples.md) for `Translation()` usage · [Configuration](Configuration.md) for setup
+**See also:** [Examples](Examples.md) for `Translation()` usage · [Configuration](Configuration.md) for setup · [Analyzers](Analyzers.md) for compile-time checks

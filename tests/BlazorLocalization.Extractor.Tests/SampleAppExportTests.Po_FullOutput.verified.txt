@@ -10,12 +10,12 @@ msgstr ""
 msgid "AppTitle"
 msgstr "Sample Blazor Application"
 
-#: Components/Pages/EdgeCasePage.razor.cs:11
+#: Components/Pages/EdgeCasePage.razor.cs:54
 #. .Translation
 msgid "CB.CodeBehind"
 msgstr "From code-behind"
 
-#: Components/Pages/EdgeCasePage.razor:5
+#: Components/Pages/EdgeCasePage.razor:10
 #. .Translation
 msgid "CB.Razor"
 msgstr "From Razor side"
@@ -55,13 +55,87 @@ msgstr[1] "{ItemCount} messages"
 msgid "Def.Save"
 msgstr "Save"
 
+#: Components/Pages/EdgeCasePage.razor.cs:34
+#. .Translation
+msgid "Edge.CodeBehind.Correct"
+msgstr "OK"
+
+#: Resources/Components/Pages/EdgeCasePage.resx:42
+msgid "Edge.CodeBehind.Greeting"
+msgstr "Code-behind greeting"
+
+#: Resources/Components/Pages/EdgeCasePage.resx:36
+msgid "Edge.CodeBehind.Subtitle"
+msgstr "Code-behind subtitle"
+
+#: Resources/Components/Pages/EdgeCasePage.resx:33
+msgid "Edge.CodeBehind.Title"
+msgstr "Code-behind edge title"
+
+#: Resources/Components/Pages/EdgeCasePage.resx:39
+msgid "Edge.CodeBehind.Welcome"
+msgstr "Code-behind welcome"
+
+#: Resources/Components/Pages/EdgeCasePage.resx:27
+msgid "Edge.Greeting"
+msgstr "Hello {name}!"
+
+#: Components/Pages/EdgeCasePage.razor.cs:57
+#. .Translation
+#: Components/Pages/EdgeCasePage.razor.cs:58
+#. .Translation
+#: Resources/Components/Pages/EdgeCasePage.resx:47
+msgid "Edge.Inline.Conflict"
+msgstr "Version A"
+
+#: Components/Pages/EdgeCasePage.razor.cs:61
+#. .Translation
+#: Components/Pages/EdgeCasePage.razor.cs:62
+#. .Translation
+msgid "Edge.Inline.Reuse"
+msgstr "Same text"
+
+#: Resources/Components/Pages/EdgeCasePage.resx:24
+msgid "Edge.Subtitle"
+msgstr "Edge case subtitle"
+
+#: Resources/Components/Pages/EdgeCasePage.resx:21
+msgid "Edge.Title"
+msgstr "Edge case page title"
+
+#: Resources/Components/Pages/EdgeCasePage.resx:30
+msgid "Edge.Welcome"
+msgstr "Welcome, {name}!"
+
 #: FlightStatus.cs:7
 msgid "Enum.FlightStatus_Delayed"
 msgstr "Delayed"
 
+#: Components/Pages/EdgeCasePage.razor.cs:49
+#. .Translation
+#: Resources/Components/Pages/EdgeCasePage.resx:58
+msgid "Extract.Cancel"
+msgstr "Cancel"
+
+#: Components/Pages/EdgeCasePage.razor.cs:43
+#. .Translation
+#: Resources/Components/Pages/EdgeCasePage.resx:55
+msgid "Extract.Greeting"
+msgstr "Hello {name}!"
+
+#: Components/Pages/EdgeCasePage.razor.cs:40
+#. .Translation
+#: Resources/Components/Pages/EdgeCasePage.resx:52
+msgid "Extract.Save"
+msgstr "Save"
+
 #: FlightStatus.cs:12
 msgid "Flight.Late"
 msgstr "Arrived a bit late"
+
+#: AnalyzerShowcase.cs:90
+msgid "Greeting.Hello"
+msgstr ""
 
 #: Resources/Components/Pages/Home.resx:35
 #. Compile-time indexer reference — scanner can match this key deterministically
@@ -94,6 +168,8 @@ msgstr "Code says this"
 #. .Translation
 #: Resources/Components/Pages/Home.resx:20
 #. Same text as S14 Translation() call — should merge cleanly
+#: Resources/SharedResource.resx:28
+#. Conflicts with Home.resx "Matching source text" — triggers BL0006
 msgid "Resx.Match"
 msgstr "Matching source text"
 
@@ -214,75 +290,157 @@ msgstr[1] "{ItemCount} other items"
 msgid "S12"
 msgstr ""
 
-#: Components/Pages/Home.razor:162
+#: Components/Pages/Home.razor:166
 #. .Translation
 msgid "S16.Attr"
 msgstr "Search…"
 
-#: Components/Pages/Home.razor:166
+#: Components/Pages/Home.razor:170
 #. .Translation
 msgid "S17.TernA"
 msgstr "Edit"
 
-#: Components/Pages/Home.razor:166
+#: Components/Pages/Home.razor:170
 #. .Translation
 msgid "S17.TernB"
 msgstr "Add"
 
-#: Components/Pages/Home.razor:170
+#: Components/Pages/Home.razor:174
 #. .Translation
 msgid "S18.Cast"
 msgstr "Text with <strong>bold</strong>"
 
-#: Components/Pages/Home.razor:174
+#: Components/Pages/Home.razor:178
 #. .Translation
 msgid "S19.A"
 msgstr "First"
 
-#: Components/Pages/Home.razor:174
+#: Components/Pages/Home.razor:178
 #. .Translation
 msgid "S19.B"
 msgstr "Second"
 
-#: Components/Pages/Home.razor:178
+#: Components/Pages/Home.razor:182
 #. .Translation
 msgid "S20.TextBlock"
 msgstr "Inside text block"
 
-#: Components/Pages/Home.razor:264
+#: Components/Pages/Home.razor:288
 #. .Translation
 msgid "S21.Concat"
 msgstr "First half second half"
 
-#: Components/Pages/Home.razor:261
+#: Components/Pages/Home.razor:285
 #. .Translation
 msgid "S21.Raw"
 msgstr "This has \"raw quotes\" inside"
 
-#: Components/Pages/Home.razor:257
+#: Components/Pages/Home.razor:281
 #. .Translation
 msgid "S21.Verbatim"
 msgstr "Line one\nLine two with \"quotes\""
 
-#: Components/Pages/Home.razor:267
+#: Components/Pages/Home.razor:291
 #. .Translation
 msgid "S22.Nested"
 msgstr "Nested value"
 
-#: Components/Pages/Home.razor:190
+#: Components/Pages/Home.razor:194
 #. .Translation
 msgid "S23.Placeholder"
 msgstr "Visited {VisitCount} times"
+
+#: Components/Pages/Home.razor:226
+msgid "S30.KeyOnly"
+msgstr ""
+
+#: Components/Pages/Home.razor:230
+msgid "S31.KeyOnlyPlural"
+msgstr ""
+
+#: Components/Pages/Home.razor:234
+msgid "S32.KeyOnlySelect"
+msgstr ""
+
+#: Components/Pages/Home.razor:238
+msgid "S33.KeyOnlySelectPlural"
+msgstr ""
+
+#: AnalyzerShowcase.cs:20
+#. TranslationDefinitions.DefineSimple
+msgid "Showcase.Cancel"
+msgstr "Cancel"
+
+#: AnalyzerShowcase.cs:23
+#. TranslationDefinitions.DefinePlural
+msgid "Showcase.CartItems"
+msgid_plural "Showcase.CartItems"
+msgstr[0] "{Count} item"
+msgstr[1] "{Count} items"
+
+#: AnalyzerShowcase.cs:57
+#. TranslationDefinitions.DefineSimple
+#: AnalyzerShowcase.cs:60
+#. TranslationDefinitions.DefinePlural
+msgid "Showcase.Mismatch.Greeting"
+msgstr "Hello"
+
+#: AnalyzerShowcase.cs:66
+#. TranslationDefinitions.DefineSelect
+#: AnalyzerShowcase.cs:71
+#. TranslationDefinitions.DefineSelectPlural
+msgid "Showcase.Mismatch.Status_Admin"
+msgstr "Active"
+
+msgid "Showcase.Mismatch.Status"
+msgstr "Inactive"
+
+#: AnalyzerShowcase.cs:28
+#. TranslationDefinitions.DefineSelect
+msgid "Showcase.RoleGreeting_Admin"
+msgstr "Welcome back, administrator"
+
+msgid "Showcase.RoleGreeting_Member"
+msgstr "Hello, member"
+
+msgid "Showcase.RoleGreeting"
+msgstr "Welcome, guest"
+
+#: AnalyzerShowcase.cs:34
+#. TranslationDefinitions.DefineSelectPlural
+msgid "Showcase.RoleNotifications_Admin"
+msgid_plural "Showcase.RoleNotifications_Admin"
+msgstr[0] "Admin: {Count} alert"
+msgstr[1] "Admin: {Count} alerts"
+
+msgid "Showcase.RoleNotifications_Member"
+msgid_plural "Showcase.RoleNotifications_Member"
+msgstr[0] "You have {Count} notification"
+msgstr[1] "You have {Count} notifications"
+
+msgid "Showcase.RoleNotifications"
+msgid_plural "Showcase.RoleNotifications"
+msgstr[0] "{Count} notification"
+msgstr[1] "{Count} notifications"
+
+#: AnalyzerShowcase.cs:17
+#. TranslationDefinitions.DefineSimple
+#: AnalyzerShowcase.cs:53
+#. TranslationDefinitions.DefineSimple
+#: Components/Pages/EdgeCasePage.razor:35
+#. .Translation
+msgid "Showcase.Save"
+msgstr "Save"
 
 #: Resources/SharedResource.resx:24
 msgid "WelcomeMessage"
 msgstr "Welcome to the localization test matrix"
 
-#: Components/Pages/Home.razor:227
+#: Components/Pages/Home.razor:251
 msgid "_dynamicNoResx"
 msgstr ""
 
-#: Components/Pages/Home.razor:231
+#: Components/Pages/Home.razor:255
 msgid "_dynamicWithResx"
 msgstr ""
 

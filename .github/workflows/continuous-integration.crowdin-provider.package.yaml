@@ -15,10 +15,10 @@ on:
       - main
     paths:
       - src/BlazorLocalization.TranslationProvider.Crowdin/**
-      - src/BlazorLocalization.Extensions/ITranslationProvider.cs
+      - src/BlazorLocalization.Extensions.Abstractions/ITranslationProvider.cs
       - src/BlazorLocalization.Extensions/ProviderBasedLocalizationBuilder.cs
       - src/BlazorLocalization.Extensions/ProviderBasedLocalizationOptions.cs
-      - src/BlazorLocalization.Extensions/Exceptions/**
+      - src/BlazorLocalization.Extensions.Abstractions/Exceptions/**
 
 jobs:
   test:
@@ -43,12 +43,12 @@ jobs:
 
       - name: Get Package Version 📌
         id: csproj
-        run: echo "version=$(dotnet msbuild src/BlazorLocalization.TranslationProvider.Crowdin/BlazorLocalization.TranslationProvider.Crowdin.csproj -getProperty:PackageVersion)" >> $GITHUB_OUTPUT
+        run: echo "version=$(dotnet msbuild src/BlazorLocalization.TranslationProvider.Crowdin/BlazorLocalization.TranslationProvider.Crowdin.csproj -getProperty:Version)" >> $GITHUB_OUTPUT
 
       - name: Fail if version not bumped ❌
         if: steps.released.outputs.version == steps.csproj.outputs.version
         run: |
-          echo "::error::PackageVersion ${{ steps.csproj.outputs.version }} matches latest release. Bump <PackageVersion> in the csproj."
+          echo "::error::Version ${{ steps.csproj.outputs.version }} matches latest release. Bump <Version> in the csproj."
           exit 1
 
       - name: Build .NET Project 🚧

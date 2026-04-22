@@ -1,0 +1,45 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFrameworks>netstandard2.0;net8.0;net9.0;net10.0</TargetFrameworks>
+        <LangVersion>latest</LangVersion>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+        <Version>10.3.0</Version>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <InternalsVisibleTo Include="BlazorLocalization.Extensions" />
+        <InternalsVisibleTo Include="BlazorLocalization.Extensions.Tests" />
+    </ItemGroup>
+
+    <PropertyGroup Label="Package Properties">
+        <Title>BlazorLocalization.Extensions.Abstractions</Title>
+        <Description>Core types and contracts for BlazorLocalization — translation definitions, attributes, and marker interfaces. Referenced by analyzers and libraries that don't need the full runtime.</Description>
+        <PackageId>BlazorLocalization.Extensions.Abstractions</PackageId>
+        <PackageTags>blazor;localization;i18n;internationalization;abstractions;translation</PackageTags>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <None Include="../../README.md" Pack="true" PackagePath="" />
+    </ItemGroup>
+
+    <!-- netstandard2.0 needs polyfills -->
+    <ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
+        <PackageReference Include="System.ValueTuple" Version="4.5.0" />
+        <PackageReference Include="Microsoft.Extensions.Localization.Abstractions" Version="8.0.0" />
+    </ItemGroup>
+
+    <ItemGroup Condition="'$(TargetFramework)' == 'net8.0'">
+        <PackageReference Include="Microsoft.Extensions.Localization.Abstractions" Version="8.0.*" />
+    </ItemGroup>
+
+    <ItemGroup Condition="'$(TargetFramework)' == 'net9.0'">
+        <PackageReference Include="Microsoft.Extensions.Localization.Abstractions" Version="9.0.*" />
+    </ItemGroup>
+
+    <ItemGroup Condition="'$(TargetFramework)' == 'net10.0'">
+        <PackageReference Include="Microsoft.Extensions.Localization.Abstractions" Version="10.0.*" />
+    </ItemGroup>
+
+</Project>

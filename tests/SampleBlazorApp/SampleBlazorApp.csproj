@@ -24,5 +24,17 @@
   <ItemGroup>
     <ProjectReference Include="..\..\src\BlazorLocalization.Extensions\BlazorLocalization.Extensions.csproj" />
     <ProjectReference Include="..\..\src\BlazorLocalization.TranslationProvider.Crowdin\BlazorLocalization.TranslationProvider.Crowdin.csproj" />
+    <!-- Build the Analyzers project (triggers ILRepack), but don't add its output as a normal reference -->
+    <ProjectReference Include="..\..\src\BlazorLocalization.Analyzers\BlazorLocalization.Analyzers.csproj" ReferenceOutputAssembly="false" />
+    <!-- In Release, load the merged analyzer DLL (single file with all dependencies baked in via ILRepack).
+         In Debug, ILRepack doesn't run so fall back to the unmerged analyzer DLL. -->
+    <Analyzer Include="..\..\src\BlazorLocalization.Analyzers\bin\$(Configuration)\netstandard2.0\merged\BlazorLocalization.Analyzers.dll" Condition="'$(Configuration)' == 'Release'" />
+    <Analyzer Include="..\..\src\BlazorLocalization.Analyzers\bin\$(Configuration)\netstandard2.0\BlazorLocalization.Analyzers.dll" Condition="'$(Configuration)' != 'Release'" />
+  </ItemGroup>
+
+  <!-- Surface .resx files as AdditionalFiles so the analyzer can read them.
+       NuGet consumers get this automatically via the packed .props; ProjectReference requires it explicitly. -->
+  <ItemGroup>
+    <AdditionalFiles Include="Resources\**\*.resx" />
   </ItemGroup>
 </Project>

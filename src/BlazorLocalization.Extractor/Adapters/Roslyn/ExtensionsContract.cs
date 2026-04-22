@@ -38,6 +38,10 @@ internal static class ExtensionsContract
     public static readonly string ExtensionsAssemblyLocation =
         typeof(BlazorLocalization.Extensions.StringLocalizerExtensions).Assembly.Location;
 
+    /// <summary>Fully-qualified name of <see cref="StringLocalizerExtensions"/>.</summary>
+    public static readonly string MetaStringLocalizerExtensions =
+        typeof(BlazorLocalization.Extensions.StringLocalizerExtensions).FullName!;
+
     // ── Extension method names ────────────────────────────────────────
     // C#14 `extension(IStringLocalizer)` block members cannot be referenced
     // via nameof — the methods live inside the extension block, not on the
@@ -79,6 +83,18 @@ internal static class ExtensionsContract
     public const string TypePluralDefinition = nameof(PluralDefinition);
     public const string TypeSelectDefinition = nameof(SelectDefinition<StringComparison>);
     public const string TypeSelectPluralDefinition = nameof(SelectPluralDefinition<StringComparison>);
+
+    // ── Metadata names for builder/definition types (for Compilation.GetTypeByMetadataName) ──
+
+    public static readonly string MetaSimpleBuilder = typeof(SimpleBuilder).FullName!;
+    public static readonly string MetaPluralBuilder = typeof(PluralBuilder).FullName!;
+    // Generic open types use backtick notation: SelectBuilder`1
+    public static readonly string MetaSelectBuilder = typeof(SelectBuilder<>).FullName!;
+    public static readonly string MetaSelectPluralBuilder = typeof(SelectPluralBuilder<>).FullName!;
+    public static readonly string MetaSimpleDefinition = typeof(SimpleDefinition).FullName!;
+    public static readonly string MetaPluralDefinition = typeof(PluralDefinition).FullName!;
+    public static readonly string MetaSelectDefinition = typeof(SelectDefinition<>).FullName!;
+    public static readonly string MetaSelectPluralDefinition = typeof(SelectPluralDefinition<>).FullName!;
 
     // ── Chain method names ────────────────────────────────────────────
 

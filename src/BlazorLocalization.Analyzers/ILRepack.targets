@@ -1,0 +1,23 @@
+<Project>
+  <!-- Override the default ILRepack.Lib.MSBuild.Task behavior which auto-merges
+       ALL *.dll files from the output directory into the primary assembly.
+       We only want to merge specific dependency DLLs into a separate merged/ folder
+       so the unmerged DLL can still be used by test projects via ProjectReference. -->
+  <Target Name="ILRepacker" AfterTargets="Build" Condition="'$(Configuration)' == 'Release'">
+    <MakeDir Directories="$(OutputPath)merged" />
+    <ItemGroup>
+      <!-- Primary assembly must be first -->
+      <ILRepackInputAssemblies Include="$(OutputPath)$(AssemblyName).dll" />
+      <ILRepackInputAssemblies Include="$(OutputPath)BlazorLocalization.Extensions.Abstractions.dll" />
+      <ILRepackInputAssemblies Include="$(OutputPath)Microsoft.Extensions.Localization.Abstractions.dll" />
+    </ItemGroup>
+    <ILRepack
+      Parallel="true"
+      Internalize="true"
+      InputAssemblies="@(ILRepackInputAssemblies)"
+      LibraryPath="$(OutputPath)"
+      TargetKind="Dll"
+      OutputFile="$(OutputPath)merged/$(AssemblyName).dll"
+    />
+  </Target>
+</Project>

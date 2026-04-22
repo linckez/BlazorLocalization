@@ -126,6 +126,8 @@ public sealed class PluralBuilder
         return _key;
     }
 
+    public static implicit operator string(PluralBuilder builder) => builder.ToString();
+
     private void SetMessage(string suffix, string message)
     {
         if (_currentLocale is null)

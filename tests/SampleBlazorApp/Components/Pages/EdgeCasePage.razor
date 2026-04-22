@@ -1,6 +1,55 @@
 @page "/edge-case"
 @inject IStringLocalizer<EdgeCasePage> Loc
 
+<MudText Typo="Typo.h4" Class="mb-4">Edge Cases & Analyzer Showcase</MudText>
+
+@* ═══════════════════════════════════════════════════════════════
+   CB — Code-behind partial class (existing)
+   ═══════════════════════════════════════════════════════════════ *@
 <MudText Typo="Typo.h6">CB — Code-behind partial class</MudText>
 <MudText>CB/a Razor side, expect "From Razor side": @Loc.Translation("CB.Razor", "From Razor side")</MudText>
 <MudText>CB/b Code-behind side, expect "From code-behind": @_codeBehindGreeting</MudText>
+
+@* ═══════════════════════════════════════════════════════════════
+   BL0001 — Empty translation key (Warning)
+   ═══════════════════════════════════════════════════════════════ *@
+<MudText Typo="Typo.h6" Class="mt-4">BL0001 — Empty Key</MudText>
+<MudText>GetString with empty key: @Loc.GetString("")</MudText>              @* BL0001 + BL0002 *@
+<MudText>Indexer with empty key: @Loc[""]</MudText>                           @* BL0001 + BL0002 *@
+
+@* ═══════════════════════════════════════════════════════════════
+   BL0002 — Use Translation() API (code fix targets)
+   ═══════════════════════════════════════════════════════════════ *@
+<MudText Typo="Typo.h6" Class="mt-4">BL0002 — Use Translation() API</MudText>
+<MudText>GetString: @Loc.GetString("Edge.Title")</MudText>                    @* BL0002 *@
+<MudText>GetString+args: @Loc.GetString("Edge.Welcome", "World")</MudText>    @* BL0002 (HasArgs) *@
+<MudText>Indexer: @Loc["Edge.Subtitle"]</MudText>                             @* BL0002 *@
+<MudText>Indexer+args: @Loc["Edge.Greeting", "World"]</MudText>               @* BL0002 (HasArgs) *@
+
+@* ═══════════════════════════════════════════════════════════════
+   BL0003 — Duplicate key (inline conflicts)
+   ═══════════════════════════════════════════════════════════════ *@
+<MudText Typo="Typo.h6" Class="mt-4">BL0003 — Inline Conflicts</MudText>
+<MudText>Sub-case B conflict A: @_conflictA</MudText>
+<MudText>Sub-case B conflict B: @_conflictB</MudText>
+<MudText>Sub-case C static+inline: @Loc.Translation(key: "Showcase.Save", message: "Save")</MudText>  @* BL0003 *@
+<MudText>Reuse (no BL0003): @_reuseA / @_reuseB</MudText>
+
+@* ═══════════════════════════════════════════════════════════════
+   All four definition types with UserRole — correct usage
+   ═══════════════════════════════════════════════════════════════ *@
+<MudText Typo="Typo.h6" Class="mt-4">Definition Types (UserRole) — Correct Usage</MudText>
+<MudText>SimpleDefinition: @Loc.Translation(AnalyzerShowcaseDefinitions.CancelButton)</MudText>
+<MudText>PluralDefinition: @Loc.Translation(AnalyzerShowcaseDefinitions.CartItems, howMany: 5, replaceWith: new { Count = 5 })</MudText>
+<MudText>SelectDefinition: @Loc.Translation(AnalyzerShowcaseDefinitions.RoleGreeting, select: UserRole.Admin)</MudText>
+<MudText>SelectPluralDefinition: @Loc.Translation(AnalyzerShowcaseDefinitions.RoleNotifications, select: UserRole.Member, howMany: 3, replaceWith: new { Count = 3 })</MudText>
+
+@* ═══════════════════════════════════════════════════════════════
+   BL0004 — IStringLocalizer<T> has no effect
+   Fires on the @inject above + [Inject] in code-behind + GreetingService constructor
+   ═══════════════════════════════════════════════════════════════ *@
+<MudText Typo="Typo.h6" Class="mt-4">BL0004 — IStringLocalizer&lt;T&gt; Unscoped</MudText>
+<MudText>
+    The <code>@@inject IStringLocalizer&lt;EdgeCasePage&gt;</code> above fires BL0004.
+    See code-behind for [Inject] property and GreetingService for constructor injection.
+</MudText>

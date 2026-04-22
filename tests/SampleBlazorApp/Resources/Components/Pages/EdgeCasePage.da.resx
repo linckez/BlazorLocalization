@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:element name="root" msdata:IsDataSet="true">
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+
+  <data name="Edge.Title" xml:space="preserve">
+    <value>Kant-tilfælde sidetitel</value>
+  </data>
+  <data name="Edge.Subtitle" xml:space="preserve">
+    <value>Kant-tilfælde undertitel</value>
+  </data>
+  <data name="Edge.Greeting" xml:space="preserve">
+    <value>Hej {name}!</value>
+  </data>
+  <data name="Edge.Welcome" xml:space="preserve">
+    <value>Velkommen, {name}!</value>
+  </data>
+  <data name="Edge.CodeBehind.Title" xml:space="preserve">
+    <value>Kode-bag kant-titel</value>
+  </data>
+  <data name="Edge.CodeBehind.Subtitle" xml:space="preserve">
+    <value>Kode-bag undertitel</value>
+  </data>
+  <data name="Edge.CodeBehind.Welcome" xml:space="preserve">
+    <value>Kode-bag velkommen</value>
+  </data>
+  <data name="Edge.CodeBehind.Greeting" xml:space="preserve">
+    <value>Kode-bag hilsen</value>
+  </data>
+  <data name="Edge.Inline.Conflict" xml:space="preserve">
+    <value>Den originale version</value>
+  </data>
+  <data name="Extract.Save" xml:space="preserve">
+    <value>Gem</value>
+  </data>
+  <data name="Extract.Greeting" xml:space="preserve">
+    <value>Hej {name}!</value>
+  </data>
+  <data name="Extract.Cancel" xml:space="preserve">
+    <value>Annuller</value>
+  </data>
+</root>

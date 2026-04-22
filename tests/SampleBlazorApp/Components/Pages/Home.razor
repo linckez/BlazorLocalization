@@ -157,6 +157,10 @@
 <MudText Typo="Typo.h6" Class="mt-4">S15 — Resx conflict</MudText>
 <MudText>S15 Resx conflict, expect "Code says this": @Loc.Translation("Resx.Conflict", "Code says this")</MudText>
 
+@* BL0006 — Translation file conflict: "Resx.Match" exists in both Home.resx ("Matching source text")
+   and SharedResource.resx ("Shared says this instead") with different values.
+   The BL0006 warning fires at CompilationEnd — no specific call site needed. *@
+
 @* S16 — Component attribute value *@
 <MudText Typo="Typo.h6" Class="mt-4">S16 — Attribute value</MudText>
 <MudTextField T="string" Label="S16 Attr value, check placeholder" Placeholder="@(Loc.Translation("S16.Attr", "Search…").ToString())" />
@@ -212,6 +216,26 @@
 @* S29 — Definition: SelectPlural *@
 <MudText Typo="Typo.h6" Class="mt-4">S29 — Definition: SelectPlural</MudText>
 <MudText>S29 Definition SelectPlural Alpha howMany=1, expect "1 Alpha message": @_defSelectPlural</MudText>
+
+@* ────────────────────────────────────────────────────────────────── *@
+@* Key-Only Overloads (no source text — reference only)              *@
+@* ────────────────────────────────────────────────────────────────── *@
+
+@* S30 — Key-only simple *@
+<MudText Typo="Typo.h6" Class="mt-4">S30 — Key-only simple</MudText>
+<MudText>S30 Key-only Translation(key): @Loc.Translation("S30.KeyOnly")</MudText>
+
+@* S31 — Key-only plural *@
+<MudText Typo="Typo.h6" Class="mt-4">S31 — Key-only plural</MudText>
+<MudText>S31 Key-only Translation(key, howMany): @Loc.Translation("S31.KeyOnlyPlural", 5)</MudText>
+
+@* S32 — Key-only select *@
+<MudText Typo="Typo.h6" Class="mt-4">S32 — Key-only select</MudText>
+<MudText>S32 Key-only Translation(key, select): @Loc.Translation("S32.KeyOnlySelect", TestCategory.Alpha)</MudText>
+
+@* S33 — Key-only select-plural *@
+<MudText Typo="Typo.h6" Class="mt-4">S33 — Key-only select-plural</MudText>
+<MudText>S33 Key-only Translation(key, select, howMany): @Loc.Translation("S33.KeyOnlySelectPlural", TestCategory.Beta, 2)</MudText>
 
 @* ────────────────────────────────────────────────────────────────── *@
 @* Reference Type Test Matrix                                        *@

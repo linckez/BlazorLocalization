@@ -1,0 +1,9 @@
+<Project>
+  <ItemGroup>
+    <!-- Surface .resx files as AdditionalFiles so the analyzer can read translation data -->
+    <AdditionalFiles Include="@(EmbeddedResource)" Condition="'%(Extension)' == '.resx'" />
+    <!-- Future: PO and JSON -->
+    <!-- <AdditionalFiles Include="**/*.po" /> -->
+    <!-- <AdditionalFiles Include="Translations/**/*.json" /> -->
+  </ItemGroup>
+</Project>

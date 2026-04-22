@@ -5,11 +5,15 @@
         <LangVersion>14</LangVersion>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
-        <PackageVersion>10.3.0</PackageVersion>
+        <Version>10.3.1</Version>
     </PropertyGroup>
 
     <ItemGroup>
         <InternalsVisibleTo Include="BlazorLocalization.Extensions.Tests" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\BlazorLocalization.Extensions.Abstractions\BlazorLocalization.Extensions.Abstractions.csproj" />
     </ItemGroup>
 
     <PropertyGroup Label="Package Properties">

@@ -16,6 +16,7 @@ on:
       - main
     paths:
       - src/BlazorLocalization.Extensions/**
+      - src/BlazorLocalization.Extensions.Abstractions/**
 
 jobs:
   release:
@@ -34,7 +35,7 @@ jobs:
 
       - name: Extract Package Version 📌
         id: version
-        run: echo "package_version=$(dotnet msbuild src/BlazorLocalization.Extensions/BlazorLocalization.Extensions.csproj -getProperty:PackageVersion)" >> $GITHUB_OUTPUT
+        run: echo "package_version=$(dotnet msbuild src/BlazorLocalization.Extensions/BlazorLocalization.Extensions.csproj -getProperty:Version)" >> $GITHUB_OUTPUT
 
       - name: Create Release 🚀
         uses: softprops/action-gh-release@153bb8e04406b158c6c84fc1615b65b24149a1fe # v2

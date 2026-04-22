@@ -142,5 +142,79 @@ public sealed class TranslationTests : IDisposable
         result.Should().Be("She has 3 messages");
     }
 
+    // ── Key-only overloads ─────────────────────────────────────
+
+    [Fact]
+    public void KeyOnly_Simple_ProviderHit_ReturnsTranslation()
+    {
+        _cache.Set("locale_en_Common.Save", "Save");
+
+        var result = _localizer.Translation("Common.Save").ToString();
+
+        result.Should().Be("Save");
+    }
+
+    [Fact]
+    public void KeyOnly_Simple_ProviderMiss_FallsBackToKey()
+    {
+        var result = _localizer.Translation("Common.Save").ToString();
+
+        result.Should().Be("Common.Save");
+    }
+
+    [Fact]
+    public void KeyOnly_Simple_ChainingForWorks()
+    {
+        CultureInfo.CurrentUICulture = new CultureInfo("da");
+
+        var result = _localizer.Translation("Common.Save")
+            .For("da", "Gem")
+            .ToString();
+
+        result.Should().Be("Gem");
+    }
+
+    [Fact]
+    public void KeyOnly_Plural_ChainingWorks()
+    {
+        var result = _localizer.Translation("Cart.Items", 5)
+            .One("1 item")
+            .Other("{Count} items")
+            .ToString();
+
+        result.Should().Be("{Count} items");
+    }
+
+    [Fact]
+    public void KeyOnly_Select_ChainingWorks()
+    {
+        var result = _localizer.Translation("Invite", Gender.Female)
+            .When(Gender.Female, "her party")
+            .Otherwise("their party")
+            .ToString();
+
+        result.Should().Be("her party");
+    }
+
+    [Fact]
+    public void KeyOnly_SelectPlural_ChainingWorks()
+    {
+        var result = _localizer.Translation("Inbox", Gender.Female, 3)
+            .When(Gender.Female).One("She has 1 msg").Other("She has N msgs")
+            .Otherwise().One("They have 1 msg").Other("They have N msgs")
+            .ToString();
+
+        result.Should().Be("She has N msgs");
+    }
+
+    [Fact]
+    public void KeyOnly_DoesNotAmbiguate_WithMessageOverload()
+    {
+        // Explicit message overload must still work when both key and message are provided
+        var result = _localizer.Translation(key: "Home.Title", message: "Welcome").ToString();
+
+        result.Should().Be("Welcome");
+    }
+
     private enum Gender { Female, Male, Other }
 }

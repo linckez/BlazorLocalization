@@ -52,6 +52,8 @@ public sealed class SimpleBuilder
         return this;
     }
 
+    public static implicit operator string(SimpleBuilder builder) => builder.ToString();
+
     /// <inheritdoc/>
     public override string ToString()
     {
