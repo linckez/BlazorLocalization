@@ -83,17 +83,17 @@ public class SymbolNameContractTests
     }
 
     [Fact]
-    public void MessageParameterName_MatchesTranslationParameter()
+    public void SourceMessageParameterName_MatchesTranslationParameter()
     {
         var method = typeof(BLExtensions)
             .GetMethods(BindingFlags.Public | BindingFlags.Instance | BindingFlags.Static)
             .First(m => m.Name == BlazorLocalizationSymbols.TranslationMethodName && !m.IsGenericMethod);
 
         var msgParam = method.GetParameters()
-            .FirstOrDefault(p => p.Name == BlazorLocalizationSymbols.MessageParameterName);
+            .FirstOrDefault(p => p.Name == BlazorLocalizationSymbols.SourceMessageParameterName);
 
         msgParam.Should().NotBeNull(
-            $"Translation() should have a parameter named '{BlazorLocalizationSymbols.MessageParameterName}'");
+            $"Translation() should have a parameter named '{BlazorLocalizationSymbols.SourceMessageParameterName}'");
     }
 
     [Fact]

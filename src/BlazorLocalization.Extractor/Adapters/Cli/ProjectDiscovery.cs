@@ -73,10 +73,23 @@ internal static class ProjectDiscovery
             ? Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), path[1..].TrimStart('/'))
             : Environment.ExpandEnvironmentVariables(path);
 
-    private static bool ShouldSkip(string path)
+    /// <summary>
+    /// Returns <c>true</c> if <paramref name="path"/> passes through a directory that should be skipped
+    /// (build output, dependencies, VCS).
+    /// </summary>
+    internal static bool ShouldSkipPath(string path)
     {
         var sep = Path.DirectorySeparatorChar;
         return SkipDirs.Any(dir =>
             path.Contains($"{sep}{dir}{sep}", StringComparison.OrdinalIgnoreCase));
     }
+
+    private static bool ShouldSkip(string path) => ShouldSkipPath(path);
+
+    /// <summary>
+    /// Returns the project name for a project directory.
+    /// Delegates to <see cref="Application.ProjectMetadata.GetProjectName"/>.
+    /// </summary>
+    internal static string GetProjectName(string projectDir) =>
+        Application.ProjectMetadata.GetProjectName(projectDir);
 }

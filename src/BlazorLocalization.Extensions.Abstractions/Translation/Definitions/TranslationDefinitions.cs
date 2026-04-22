@@ -37,17 +37,17 @@ public static class TranslationDefinitions
     /// Creates a simple translation definition with a key and source text.
     /// Chain <see cref="SimpleDefinition.For"/> to add inline translations.
     /// <code>
-    /// DefineSimple(key: "Common.Save", message: "Save")
+    /// DefineSimple(key: "Common.Save", sourceMessage: "Save")
     ///     .For("da", "Gem")
     /// </code>
     /// </summary>
     /// <param name="key">A unique identifier for this translation, e.g. <c>"Common.Save"</c>.</param>
-    /// <param name="message">
+    /// <param name="sourceMessage">
     /// The original text. Used as fallback when your translation providers
     /// don't have a translation for the user's language.
     /// </param>
-    public static SimpleDefinition DefineSimple(string key, string message)
-        => new(key, message);
+    public static SimpleDefinition DefineSimple(string key, string sourceMessage)
+        => new(key, sourceMessage);
 
     /// <summary>
     /// Creates a plural translation definition with a key.

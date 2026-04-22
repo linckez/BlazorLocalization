@@ -20,7 +20,7 @@ public class TranslationKeyAnalyzerTests
             {
                 string this[string name] { get; }
                 string GetString(string name);
-                BlazorLocalization.Extensions.Translation.SimpleBuilder Translation(string key, string message, object replaceWith = null);
+                BlazorLocalization.Extensions.Translation.SimpleBuilder Translation(string key, string sourceMessage, object replaceWith = null);
                 BlazorLocalization.Extensions.Translation.SimpleBuilder Translation(string key);
                 BlazorLocalization.Extensions.Translation.PluralBuilder Translation(string key, int howMany, bool ordinal = false, object replaceWith = null);
             }
@@ -41,7 +41,7 @@ public class TranslationKeyAnalyzerTests
             public class SelectPluralDefinition<T> { }
             public static class TranslationDefinitions
             {
-                public static SimpleDefinition DefineSimple(string key, string message) => null;
+                public static SimpleDefinition DefineSimple(string key, string sourceMessage) => null;
                 public static PluralDefinition DefinePlural(string key) => null;
                 public static SelectDefinition<T> DefineSelect<T>(string key) where T : System.Enum => null;
                 public static SelectPluralDefinition<T> DefineSelectPlural<T>(string key) where T : System.Enum => null;

@@ -30,10 +30,10 @@ public static readonly SimpleDefinition SaveBtn =
 
 ```csharp
 // Home.razor
-@Loc.Translation(key: "Home.Title", message: "Welcome")       // BL0003
+@Loc.Translation(key: "Home.Title", sourceMessage: "Welcome")       // BL0003
 
 // About.razor
-@Loc.Translation(key: "Home.Title", message: "Hello there")   // BL0003 — same key, different text
+@Loc.Translation(key: "Home.Title", sourceMessage: "Hello there")   // BL0003 — same key, different text
 ```
 
 **Definition + inline overlap:**
@@ -44,7 +44,7 @@ public static readonly SimpleDefinition Save =
     DefineSimple("Common.Save", "Save");
 
 // Home.razor — use Loc.Translation(CommonTranslations.Save) instead
-@Loc.Translation(key: "Common.Save", message: "Save")         // BL0003
+@Loc.Translation(key: "Common.Save", sourceMessage: "Save")         // BL0003
 ```
 
 ### Do this instead — one key, one source text

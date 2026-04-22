@@ -3,6 +3,7 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Text.Unicode;
 using BlazorLocalization.Extractor.Domain;
+using BlazorLocalization.Extractor.Ports;
 
 namespace BlazorLocalization.Extractor.Adapters.Export;
 

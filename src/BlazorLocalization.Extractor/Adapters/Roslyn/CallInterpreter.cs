@@ -62,7 +62,7 @@ internal static class CallInterpreter
         (TranslationDefinition?, TranslationReference?) result;
         if (SymbolEqualityComparer.Default.Equals(matchedBuilder, types.SimpleBuilder))
         {
-            var messageArg = FindArg(call.Arguments, "message");
+            var messageArg = FindArg(call.Arguments, "sourceMessage");
             result = messageArg is not null
                 ? InterpretSimple(key, messageArg, call.Chain, defSite)
                 : (null, null);
@@ -499,7 +499,7 @@ internal static class CallInterpreter
     {
         if (call.MethodName == ExtensionsContract.DefineSimple)
         {
-            var messageArg = FindArg(call.Arguments, "message");
+            var messageArg = FindArg(call.Arguments, "sourceMessage");
             if (messageArg is null) return (null, null);
             messageArg.Value.TryGetString(out var msg);
             if (msg is null) return (null, null);

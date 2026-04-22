@@ -38,7 +38,7 @@ public sealed class SimpleBuilder
     /// Adds a translation for the specified locale directly in code.
     /// Used as fallback when your providers don't have this translation yet:
     /// <code>
-    /// Loc.Translation(key: "Home.Title", message: "Welcome!")
+    /// Loc.Translation(key: "Home.Title", sourceMessage: "Welcome!")
     ///     .For(locale: "da", message: "Velkommen!")
     ///     .For(locale: "es", message: "¡Bienvenido!")
     /// </code>

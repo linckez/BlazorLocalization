@@ -24,7 +24,7 @@ internal static class ExtensionsContract
     public static readonly string MetaIStringLocalizer =
         typeof(IStringLocalizer).FullName!;
 
-    /// <summary>Fully-qualified name of <see cref="TranslationAttribute"/>.</summary>
+    /// <summary>Fully-qualified name of <see cref="BlazorLocalization.Extensions.TranslationAttribute"/>.</summary>
     public static readonly string MetaTranslationAttribute =
         typeof(TranslationAttribute).FullName!;
 
@@ -38,7 +38,7 @@ internal static class ExtensionsContract
     public static readonly string ExtensionsAssemblyLocation =
         typeof(BlazorLocalization.Extensions.StringLocalizerExtensions).Assembly.Location;
 
-    /// <summary>Fully-qualified name of <see cref="StringLocalizerExtensions"/>.</summary>
+    /// <summary>Fully-qualified name of <see cref="BlazorLocalization.Extensions.StringLocalizerExtensions"/>.</summary>
     public static readonly string MetaStringLocalizerExtensions =
         typeof(BlazorLocalization.Extensions.StringLocalizerExtensions).FullName!;
 
@@ -148,9 +148,12 @@ internal static class ExtensionsContract
     /// <summary>The <c>name</c> parameter on <c>IStringLocalizer.this[string name]</c>.</summary>
     public const string ParamName = "name";
 
-    /// <summary>The <c>message</c> parameter on <see cref="TranslationDefinitions.DefineSimple"/>
-    /// and builder chain methods like <see cref="PluralBuilder.One"/>.</summary>
+    /// <summary>The <c>message</c> parameter on builder chain methods like <see cref="PluralBuilder.One"/>.</summary>
     public const string ParamMessage = "message";
+
+    /// <summary>The <c>sourceMessage</c> parameter on <see cref="TranslationDefinitions.DefineSimple"/>
+    /// and the simple <c>.Translation()</c> overload.</summary>
+    public const string ParamSourceMessage = "sourceMessage";
 
     /// <summary>The <c>howMany</c> parameter on plural <c>.Translation()</c> overloads.</summary>
     public const string ParamHowMany = "howMany";

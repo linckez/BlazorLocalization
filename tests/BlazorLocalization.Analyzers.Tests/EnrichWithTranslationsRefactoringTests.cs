@@ -18,7 +18,7 @@ public sealed class EnrichWithTranslationsRefactoringTests
         {
             public interface IStringLocalizer
             {
-                BlazorLocalization.Extensions.Translation.SimpleBuilder Translation(string key, string message, object replaceWith = null);
+                BlazorLocalization.Extensions.Translation.SimpleBuilder Translation(string key, string sourceMessage, object replaceWith = null);
                 BlazorLocalization.Extensions.Translation.SimpleBuilder Translation(string key);
             }
             public interface IStringLocalizer<T> : IStringLocalizer { }

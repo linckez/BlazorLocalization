@@ -23,7 +23,7 @@ Loc.GetString("Home.Title")                 // BL0002
 ### Do this instead
 
 ```csharp
-Loc.Translation(key: "Home.Title", message: "Welcome to our app")
+Loc.Translation(key: "Home.Title", sourceMessage: "Welcome to our app")
 ```
 
 Users never see blank strings or raw keys — your source text is always the fallback.
@@ -32,8 +32,8 @@ Users never see blank strings or raw keys — your source text is always the fal
 
 | Before | After |
 |--------|-------|
-| `Loc["Home.Title"]` | `Loc.Translation(key: "Home.Title", message: "")` |
-| `Loc.GetString("Home.Title")` | `Loc.Translation(key: "Home.Title", message: "")` |
+| `Loc["Home.Title"]` | `Loc.Translation(key: "Home.Title", sourceMessage: "")` |
+| `Loc.GetString("Home.Title")` | `Loc.Translation(key: "Home.Title", sourceMessage: "")` |
 
 Fill in `message` with the actual source text. For calls with positional args, the fix adds a `// TODO` for migrating `{0}` to named placeholders like `{Name}`.
 

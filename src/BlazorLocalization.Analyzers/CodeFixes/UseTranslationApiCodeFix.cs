@@ -112,7 +112,7 @@ public sealed class UseTranslationApiCodeFix : CodeFixProvider
         if (receiver is null)
             return document;
 
-        // Build: Loc.Translation(key: "key", message: "")
+        // Build: Loc.Translation(key: "key", sourceMessage: "")
         var arguments = new List<ArgumentSyntax>
         {
             SyntaxFactory.Argument(
@@ -122,7 +122,7 @@ public sealed class UseTranslationApiCodeFix : CodeFixProvider
                     SyntaxKind.StringLiteralExpression,
                     SyntaxFactory.Literal(key))),
             SyntaxFactory.Argument(
-                SyntaxFactory.NameColon(BlazorLocalizationSymbols.MessageParameterName),
+                SyntaxFactory.NameColon(BlazorLocalizationSymbols.SourceMessageParameterName),
                 default,
                 SyntaxFactory.LiteralExpression(
                     SyntaxKind.StringLiteralExpression,

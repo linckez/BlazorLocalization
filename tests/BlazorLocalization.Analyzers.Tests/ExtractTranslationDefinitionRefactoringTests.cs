@@ -13,7 +13,7 @@ public class ExtractTranslationDefinitionRefactoringTests
             public class SimpleDefinition { }
             public static class TranslationDefinitions
             {
-                public static SimpleDefinition DefineSimple(string key, string message) => null;
+                public static SimpleDefinition DefineSimple(string key, string sourceMessage) => null;
             }
         }
         namespace Microsoft.Extensions.Localization
@@ -22,7 +22,7 @@ public class ExtractTranslationDefinitionRefactoringTests
             {
                 string this[string name] { get; }
                 string GetString(string name);
-                string Translation(string key, string message, object replaceWith = null);
+                string Translation(string key, string sourceMessage, object replaceWith = null);
                 string Translation(string key, int howMany, bool ordinal = false, object replaceWith = null);
                 string Translation(BlazorLocalization.Extensions.Translation.Definitions.SimpleDefinition definition, object replaceWith = null);
             }
@@ -72,7 +72,7 @@ public class ExtractTranslationDefinitionRefactoringTests
             {
                 void M(IStringLocalizer Loc)
                 {
-                    Loc.[||]Translation(key: "Home.Title", message: "Welcome");
+                    Loc.[||]Translation(key: "Home.Title", sourceMessage: "Welcome");
                 }
             }
             """;
@@ -232,7 +232,7 @@ public class ExtractTranslationDefinitionRefactoringTests
         const string source = """
             class Other
             {
-                public string Translation(string key, string message) => "";
+                public string Translation(string key, string sourceMessage) => "";
             }
             class C
             {

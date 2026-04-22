@@ -20,17 +20,17 @@ public sealed class SimpleDefinition
 {
     private Dictionary<string, string>? _inlineMessages;
 
-    internal SimpleDefinition(string key, string message)
+    internal SimpleDefinition(string key, string sourceMessage)
     {
         Key = key;
-        Message = message;
+        SourceMessage = sourceMessage;
     }
 
     /// <summary>The translation key, e.g. <c>"Common.Save"</c>.</summary>
     internal string Key { get; }
 
     /// <summary>The source text, used as fallback when no translation is available.</summary>
-    internal string Message { get; }
+    internal string SourceMessage { get; }
 
     /// <summary>Inline translations keyed by locale, from <see cref="For"/> calls.</summary>
     internal Dictionary<string, string>? InlineMessages => _inlineMessages;

@@ -17,7 +17,7 @@ All examples assume an injected localizer:
 ## Simple
 
 ```razor
-<h1>@Loc.Translation(key: "Home.Title", message: "Welcome to our app")</h1>
+<h1>@Loc.Translation(key: "Home.Title", sourceMessage: "Welcome to our app")</h1>
 ```
 
 Your source text is always the fallback — users never see blank strings or raw keys.
@@ -27,9 +27,9 @@ Your source text is always the fallback — users never see blank strings or raw
 [SmartFormat](https://github.com/axuno/SmartFormat) replaces your named placeholders with actual values. Pass any object — properties become placeholders.
 
 ```razor
-<p>@Loc.Translation(key: "Home.Greeting", message: "Hello, {Name}!", replaceWith: new { Name = user.Name })</p>
+<p>@Loc.Translation(key: "Home.Greeting", sourceMessage: "Hello, {Name}!", replaceWith: new { Name = user.Name })</p>
 
-<p>@Loc.Translation(key: "Home.Stats", message: "Showing {Count} of {Total} items", replaceWith: new { Count = 5, Total = 100 })</p>
+<p>@Loc.Translation(key: "Home.Stats", sourceMessage: "Showing {Count} of {Total} items", replaceWith: new { Count = 5, Total = 100 })</p>
 ```
 
 ## Plurals
@@ -121,7 +121,7 @@ With `itemCount = 3` and `Tier.Premium`, this renders: **"3 items in your cart �
 Already know the translation? Write it where you have the context — no need to switch to Crowdin and back:
 
 ```razor
-<h1>@(Loc.Translation(key: "Home.Title", message: "Welcome!")
+<h1>@(Loc.Translation(key: "Home.Title", sourceMessage: "Welcome!")
     .For(locale: "da", message: "Velkommen!")
     .For(locale: "es", message: "¡Bienvenido!"))</h1>
 ```

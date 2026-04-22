@@ -36,14 +36,21 @@ public sealed class SelectDefinition<TSelect> where TSelect : Enum
     /// <summary>Per-locale select cases.</summary>
     internal Dictionary<string, Dictionary<string, string>> InlineMessages => _inlineMessages;
 
-    /// <inheritdoc cref="SelectBuilder{TSelect}.When"/>
+    /// <summary>Defines the message for a specific enum value.</summary>
+    /// <param name="select">The enum value this message applies to.</param>
+    /// <param name="message">The text shown when <paramref name="select"/> matches.</param>
     public SelectDefinition<TSelect> When(TSelect select, string message)
     {
         SetMessage(select.ToString(), message);
         return this;
     }
 
-    /// <inheritdoc cref="SelectBuilder{TSelect}.Otherwise"/>
+    /// <summary>
+    /// The default message when no <see cref="When"/> case matches.
+    /// Recommended as a safety net — if you add new enum members later,
+    /// this ensures a message always shows.
+    /// </summary>
+    /// <param name="message">The fallback text.</param>
     public SelectDefinition<TSelect> Otherwise(string message)
     {
         SetMessage("__otherwise__", message);

@@ -2,6 +2,7 @@ using System.ComponentModel;
 using System.Globalization;
 using System.Reflection;
 using BlazorLocalization.Extractor.Adapters.Export;
+using BlazorLocalization.Extractor.Adapters.Resx;
 using BlazorLocalization.Extractor.Domain;
 using Spectre.Console;
 
@@ -21,7 +22,8 @@ internal static class InteractiveWizard
         var command = PromptWithDescriptions("What would you like to do?", new Dictionary<string, string>
         {
             ["extract"] = "Scan your projects and export source strings to translation files",
-            ["inspect"] = "Check your translation setup — find missing, conflicting, or unused keys"
+            ["inspect"] = "Check your translation setup — find missing, conflicting, or unused keys",
+            ["migrate"] = "Replace Localizer[[\"key\"]] with Translation() in your .razor files (experimental)"
         });
 
         var path = AnsiConsole.Prompt(
@@ -35,16 +37,25 @@ internal static class InteractiveWizard
             return [command, path];
         }
 
-        var selectedPaths = SelectProjects(discovered, path);
-
         var args = new List<string> { command };
-        foreach (var proj in selectedPaths)
-            args.Add(proj);
 
-        if (command == "extract")
-            AddExtractOptions(args);
-        else if (command == "inspect")
-            AddInspectOptions(args);
+        if (command == "migrate")
+        {
+            var selectedPath = SelectProject(discovered, path);
+            args.Add(selectedPath);
+            AddMigrateOptions(args, selectedPath);
+        }
+        else
+        {
+            var selectedPaths = SelectProjects(discovered, path);
+            foreach (var proj in selectedPaths)
+                args.Add(proj);
+
+            if (command == "extract")
+                AddExtractOptions(args);
+            else if (command == "inspect")
+                AddInspectOptions(args);
+        }
 
         AnsiConsole.WriteLine();
         return args.ToArray();
@@ -66,34 +77,69 @@ internal static class InteractiveWizard
         AnsiConsole.WriteLine();
     }
 
-    private static IReadOnlyList<string> SelectProjects(IReadOnlyList<string> discovered, string root)
+    private static (Dictionary<string, string> DisplayToPath, List<string> SortedKeys, Dictionary<string, string> ProjectNames) BuildProjectMap(
+        IReadOnlyList<string> discovered, string root)
     {
-        if (discovered.Count == 1)
-        {
-            AnsiConsole.MarkupLine($"Found project: [green]{Path.GetFileName(discovered[0])}[/]");
-            return discovered;
-        }
-
-        var rootFull = Path.GetFullPath(root);
+        var rootFull = Path.GetFullPath(ProjectDiscovery.ExpandPath(root));
         var displayToPath = discovered.ToDictionary(
             d => Path.GetRelativePath(rootFull, d),
             d => d);
 
+        var projectNames = discovered.ToDictionary(
+            d => Path.GetRelativePath(rootFull, d),
+            d => ProjectDiscovery.GetProjectName(d));
+
         var sortedKeys = displayToPath.Keys
-            .OrderBy(k => k, StringComparer.Create(CultureInfo.InvariantCulture, CompareOptions.NumericOrdering))
+            .OrderBy(k => projectNames[k], StringComparer.Create(CultureInfo.InvariantCulture, CompareOptions.NumericOrdering))
             .ToList();
+
+        return (displayToPath, sortedKeys, projectNames);
+    }
+
+    private static IReadOnlyList<string> SelectProjects(IReadOnlyList<string> discovered, string root)
+    {
+        if (discovered.Count == 1)
+        {
+            AnsiConsole.MarkupLine($"Found project: [green]{Markup.Escape(ProjectDiscovery.GetProjectName(discovered[0]))}[/]");
+            return discovered;
+        }
+
+        var (displayToPath, sortedKeys, projectNames) = BuildProjectMap(discovered, root);
+        var maxNameLen = projectNames.Values.Max(n => n.Length);
 
         var prompt = new MultiSelectionPrompt<string>()
             .Title("Select [green]projects[/] to scan:")
             .PageSize(15)
             .InstructionsText("[dim](Press [blue]<space>[/] to toggle, [green]<enter>[/] to accept)[/]")
+            .UseConverter(key => $"{Markup.Escape(projectNames[key].PadRight(maxNameLen + 2))} [dim]{Markup.Escape(key)}[/]")
             .AddChoices(sortedKeys);
 
-        foreach (var name in displayToPath.Keys)
+        foreach (var name in sortedKeys)
             prompt.Select(name);
 
         var selected = AnsiConsole.Prompt(prompt);
         return selected.Select(name => displayToPath[name]).ToList();
+    }
+
+    private static string SelectProject(IReadOnlyList<string> discovered, string root)
+    {
+        if (discovered.Count == 1)
+        {
+            AnsiConsole.MarkupLine($"Found project: [green]{Markup.Escape(ProjectDiscovery.GetProjectName(discovered[0]))}[/]");
+            return discovered[0];
+        }
+
+        var (displayToPath, sortedKeys, projectNames) = BuildProjectMap(discovered, root);
+        var maxNameLen = projectNames.Values.Max(n => n.Length);
+
+        var prompt = new SelectionPrompt<string>()
+            .Title("Select [green]project[/] to migrate:")
+            .PageSize(15)
+            .UseConverter(key => $"{Markup.Escape(projectNames[key].PadRight(maxNameLen + 2))} [dim]{Markup.Escape(key)}[/]");
+        prompt.AddChoices(sortedKeys);
+
+        var selected = AnsiConsole.Prompt(prompt);
+        return displayToPath[selected];
     }
 
     private static void AddExtractOptions(List<string> args)
@@ -138,6 +184,55 @@ internal static class InteractiveWizard
             args.Add("--show-resx-locales");
             args.Add("--show-extracted-calls");
         }
+    }
+
+    private static void AddMigrateOptions(List<string> args, string selectedPath)
+    {
+        // Discover locales from .resx files in the selected project
+        var allLocales = new SortedSet<string>(StringComparer.OrdinalIgnoreCase);
+        {
+            var files = ResxFileParser.EnumerateResxFiles(selectedPath);
+            var groups = ResxFileParser.GroupByBaseName(files);
+            foreach (var group in groups.Values)
+                foreach (var culture in group.CulturePaths.Keys)
+                    allLocales.Add(culture);
+        }
+
+        if (allLocales.Count > 0)
+        {
+            var includeLocales = PromptWithDescriptions(
+                "Include inline translations for specific locales?\nYour source text is always the fallback — .For() chains add extra languages directly in code.",
+                new Dictionary<string, string>
+                {
+                    ["Yes"] = "Let me pick locales",
+                    ["No"] = "Just source text"
+                });
+
+            if (includeLocales == "Yes")
+            {
+                var localePrompt = new MultiSelectionPrompt<string>()
+                    .Title("Select locales to include inline:")
+                    .PageSize(15)
+                    .InstructionsText("[dim](Press [blue]<space>[/] to toggle, [green]<enter>[/] to accept)[/]")
+                    .AddChoices(allLocales);
+
+                var selected = AnsiConsole.Prompt(localePrompt);
+                foreach (var locale in selected)
+                {
+                    args.Add("-l");
+                    args.Add(locale);
+                }
+            }
+        }
+
+        var mode = PromptWithDescriptions("Ready to go?", new Dictionary<string, string>
+        {
+            ["Preview"] = "Show a summary without writing",
+            ["Apply"] = "Write changes to your .razor files"
+        });
+
+        if (mode == "Apply")
+            args.Add("--apply");
     }
 
     private static T PromptEnum<T>(string title) where T : struct, Enum
