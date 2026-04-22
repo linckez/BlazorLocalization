@@ -60,8 +60,9 @@ public abstract record OutputTarget
         if (raw is null)
             return new StdoutTarget();
 
-        return Path.HasExtension(raw)
-            ? new FileTarget(raw)
-            : new DirTarget(raw);
+        var expanded = ProjectDiscovery.ExpandPath(raw);
+        return Path.HasExtension(expanded)
+            ? new FileTarget(expanded)
+            : new DirTarget(expanded);
     }
 }

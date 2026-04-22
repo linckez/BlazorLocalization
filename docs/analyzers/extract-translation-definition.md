@@ -12,7 +12,7 @@ When the same key + message appears in multiple files, you're duplicating source
 ## Before
 
 ```razor
-@Loc.Translation(key: "Common.Save", message: "Save changes")
+@Loc.Translation(key: "Common.Save", sourceMessage: "Save changes")
 ```
 
 ## After

@@ -36,31 +36,40 @@ public sealed class SelectPluralDefinition<TSelect> where TSelect : Enum
     /// <summary>Per-locale messages.</summary>
     internal Dictionary<string, Dictionary<(string? selectCase, string pluralSuffix), string>> InlineMessages => _inlineMessages;
 
-    /// <inheritdoc cref="SelectPluralBuilder{TSelect}.When"/>
+    /// <summary>Opens a variant for the specified enum value. Chain <c>.One()</c>, <c>.Other()</c>, etc. after this.</summary>
+    /// <param name="select">The enum value this variant applies to.</param>
     public SelectPluralDefinition<TSelect> When(TSelect select) { _currentSelectCase = select.ToString(); return this; }
 
-    /// <inheritdoc cref="SelectPluralBuilder{TSelect}.Otherwise()"/>
+    /// <summary>Opens the default variant when no <see cref="When"/> case matches. Chain plural forms after this.</summary>
     public SelectPluralDefinition<TSelect> Otherwise() { _currentSelectCase = null; return this; }
 
-    /// <inheritdoc cref="SelectPluralBuilder{TSelect}.Exactly"/>
+    /// <summary>Message shown when <c>howMany</c> equals <paramref name="value"/> exactly, within the current variant. Checked before singular/plural rules.</summary>
+    /// <param name="value">The exact number to match against <c>howMany</c>.</param>
+    /// <param name="message">The text shown when the exact match hits.</param>
     public SelectPluralDefinition<TSelect> Exactly(int value, string message) { SetMessage(KeySuffix.ForExactly(value), message); return this; }
 
-    /// <inheritdoc cref="SelectPluralBuilder{TSelect}.Zero"/>
+    /// <summary>Message for zero, within the current variant (only relevant for some languages).</summary>
+    /// <param name="message">The text for this form.</param>
     public SelectPluralDefinition<TSelect> Zero(string message) { SetMessage(KeySuffix.Zero, message); return this; }
 
-    /// <inheritdoc cref="SelectPluralBuilder{TSelect}.One"/>
+    /// <summary>Message shown when <c>howMany</c> matches the singular form, within the current variant.</summary>
+    /// <param name="message">The text for this form.</param>
     public SelectPluralDefinition<TSelect> One(string message) { SetMessage(KeySuffix.One, message); return this; }
 
-    /// <inheritdoc cref="SelectPluralBuilder{TSelect}.Two"/>
+    /// <summary>Message for exactly two, within the current variant (Arabic, Welsh, etc.).</summary>
+    /// <param name="message">The text for this form.</param>
     public SelectPluralDefinition<TSelect> Two(string message) { SetMessage(KeySuffix.Two, message); return this; }
 
-    /// <inheritdoc cref="SelectPluralBuilder{TSelect}.Few"/>
+    /// <summary>Message for small quantities, within the current variant (e.g. 2–4 in Polish).</summary>
+    /// <param name="message">The text for this form.</param>
     public SelectPluralDefinition<TSelect> Few(string message) { SetMessage(KeySuffix.Few, message); return this; }
 
-    /// <inheritdoc cref="SelectPluralBuilder{TSelect}.Many"/>
+    /// <summary>Message for large quantities, within the current variant (e.g. 11–99 in Arabic).</summary>
+    /// <param name="message">The text for this form.</param>
     public SelectPluralDefinition<TSelect> Many(string message) { SetMessage(KeySuffix.Many, message); return this; }
 
-    /// <inheritdoc cref="SelectPluralBuilder{TSelect}.Other"/>
+    /// <summary>The default plural form within the current variant.</summary>
+    /// <param name="message">The text for this form.</param>
     public SelectPluralDefinition<TSelect> Other(string message) { SetMessage(KeySuffix.Other, message); return this; }
 
     /// <summary>

@@ -5,7 +5,8 @@
         <LangVersion>latest</LangVersion>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
-        <Version>10.3.0</Version>
+        <NoWarn>$(NoWarn);NU1510</NoWarn>
+        <Version>10.4.0</Version>
     </PropertyGroup>
 
     <ItemGroup>

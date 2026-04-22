@@ -2,6 +2,7 @@ using BlazorLocalization.Extractor.Adapters.Cli.Rendering;
 using BlazorLocalization.Extractor.Adapters.Export;
 using BlazorLocalization.Extractor.Application;
 using BlazorLocalization.Extractor.Domain;
+using BlazorLocalization.Extractor.Ports;
 using Spectre.Console;
 using Spectre.Console.Cli;
 
@@ -122,7 +123,7 @@ internal sealed class ExtractCommand : Command<ExtractSettings>
                 scan = null!;
                 AnsiConsole.Status()
                     .Spinner(Spinner.Known.Dots)
-                    .Start($"Scanning [blue]{Markup.Escape(Path.GetFileName(projectDir))}[/]...", _ =>
+                    .Start($"Scanning [blue]{Markup.Escape(ProjectDiscovery.GetProjectName(projectDir))}[/]...", _ =>
                     {
                         scan = ProjectScanner.Scan(projectDir, cancellationToken);
                     });

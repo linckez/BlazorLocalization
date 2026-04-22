@@ -24,20 +24,20 @@ public static class StringLocalizerExtensions
         /// Translates a message. Chain <see cref="SimpleBuilder.For"/> to add
         /// per-locale source texts directly in code.
         /// <code>
-        /// Loc.Translation(key: "Home.Title", message: "Welcome to our app")
+        /// Loc.Translation(key: "Home.Title", sourceMessage: "Welcome to our app")
         /// </code>
         /// </summary>
         /// <param name="key">A unique identifier for this translation, e.g. <c>"Home.Title"</c>.</param>
-        /// <param name="message">
+        /// <param name="sourceMessage">
         /// The original text. Used as fallback when your translation providers
         /// don't have a translation for the user's language.
         /// </param>
         /// <param name="replaceWith">
-        /// Optional named values that fill <c>{placeholders}</c> in <paramref name="message"/>,
+        /// Optional named values that fill <c>{placeholders}</c> in <paramref name="sourceMessage"/>,
         /// e.g. <c>new { Name = user.FirstName }</c> fills <c>{Name}</c>.
         /// </param>
-        public SimpleBuilder Translation(string key, string message, object? replaceWith = null)
-            => new(localizer, key, message, replaceWith);
+        public SimpleBuilder Translation(string key, string sourceMessage, object? replaceWith = null)
+            => new(localizer, key, sourceMessage, replaceWith);
 
         /// <summary>
         /// Translates a message with plural forms — different wording depending on quantity.
@@ -252,7 +252,7 @@ public static class StringLocalizerExtensions
         /// e.g. <c>new { Name = user.FirstName }</c> fills <c>{Name}</c>.
         /// </param>
         public string Translation(SimpleDefinition definition, object? replaceWith = null)
-            => new SimpleBuilder(localizer, definition.Key, definition.Message, definition.InlineMessages, replaceWith).ToString();
+            => new SimpleBuilder(localizer, definition.Key, definition.SourceMessage, definition.InlineMessages, replaceWith).ToString();
 
         /// <summary>
         /// Resolves a reusable plural translation definition.

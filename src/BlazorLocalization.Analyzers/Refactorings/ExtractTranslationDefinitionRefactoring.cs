@@ -64,7 +64,7 @@ public sealed class ExtractTranslationDefinitionRefactoring : CodeRefactoringPro
         if (!TryGetLiteralArgument(invocation, method, BlazorLocalizationSymbols.KeyParameterName, out var key, out _))
             return;
 
-        if (!TryGetLiteralArgument(invocation, method, BlazorLocalizationSymbols.MessageParameterName, out var message, out _))
+        if (!TryGetLiteralArgument(invocation, method, BlazorLocalizationSymbols.SourceMessageParameterName, out var message, out _))
             return;
 
         // Guard: if this is already Translation(SimpleDefinition), don't offer

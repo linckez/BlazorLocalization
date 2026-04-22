@@ -37,25 +37,36 @@ public sealed class PluralDefinition
     /// <summary>Per-locale plural forms.</summary>
     internal Dictionary<string, Dictionary<string, string>> InlineMessages => _inlineMessages;
 
-    /// <inheritdoc cref="PluralBuilder.Exactly"/>
+    /// <summary>Message shown when <c>howMany</c> equals <paramref name="value"/> exactly. Checked before singular/plural rules.</summary>
+    /// <param name="value">The exact number to match against <c>howMany</c>.</param>
+    /// <param name="message">The text shown when the exact match hits.</param>
     public PluralDefinition Exactly(int value, string message) { SetMessage(KeySuffix.ForExactly(value), message); return this; }
 
-    /// <inheritdoc cref="PluralBuilder.Zero"/>
+    /// <summary>Message shown when <c>howMany</c> is zero (only relevant for some languages, e.g. Arabic).</summary>
+    /// <param name="message">The text for this form.</param>
     public PluralDefinition Zero(string message) { SetMessage(KeySuffix.Zero, message); return this; }
 
-    /// <inheritdoc cref="PluralBuilder.One"/>
+    /// <summary>Message shown when <c>howMany</c> matches the singular form (typically 1).</summary>
+    /// <param name="message">The text for this form, e.g. <c>"1 item in your cart"</c>.</param>
     public PluralDefinition One(string message) { SetMessage(KeySuffix.One, message); return this; }
 
-    /// <inheritdoc cref="PluralBuilder.Two"/>
+    /// <summary>Message shown when <c>howMany</c> is exactly two (dual form — Arabic, Welsh, etc.).</summary>
+    /// <param name="message">The text for this form.</param>
     public PluralDefinition Two(string message) { SetMessage(KeySuffix.Two, message); return this; }
 
-    /// <inheritdoc cref="PluralBuilder.Few"/>
+    /// <summary>Message shown for small quantities (e.g. 2–4 in Polish, Czech).</summary>
+    /// <param name="message">The text for this form.</param>
     public PluralDefinition Few(string message) { SetMessage(KeySuffix.Few, message); return this; }
 
-    /// <inheritdoc cref="PluralBuilder.Many"/>
+    /// <summary>Message shown for large quantities (e.g. 11–99 in Arabic, Maltese).</summary>
+    /// <param name="message">The text for this form.</param>
     public PluralDefinition Many(string message) { SetMessage(KeySuffix.Many, message); return this; }
 
-    /// <inheritdoc cref="PluralBuilder.Other"/>
+    /// <summary>
+    /// The default plural form — the one form every language uses.
+    /// If you define only one plural form, make it this one.
+    /// </summary>
+    /// <param name="message">The text for this form, e.g. <c>"{ItemCount} items in your cart"</c>.</param>
     public PluralDefinition Other(string message) { SetMessage(KeySuffix.Other, message); return this; }
 
     /// <summary>

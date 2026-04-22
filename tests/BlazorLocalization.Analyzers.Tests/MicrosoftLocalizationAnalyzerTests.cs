@@ -25,7 +25,7 @@ public class MicrosoftLocalizationAnalyzerTests
                 string this[string name, params object[] arguments] { get; }
                 string GetString(string name);
                 string GetString(string name, params object[] arguments);
-                string Translation(string key, string message, object replaceWith = null);
+                string Translation(string key, string sourceMessage, object replaceWith = null);
                 string Display(string value);
             }
             public interface IStringLocalizer<T> : IStringLocalizer { }
@@ -341,7 +341,7 @@ public class MicrosoftLocalizationAnalyzerTests
             {
                 void M(IStringLocalizer loc)
                 {
-                    loc.Translation(key: "Home.Title", message: "");
+                    loc.Translation(key: "Home.Title", sourceMessage: "");
                 }
             }
             """;
@@ -371,7 +371,7 @@ public class MicrosoftLocalizationAnalyzerTests
             {
                 void M(IStringLocalizer loc)
                 {
-                    var x = loc.Translation(key: "Home.Title", message: "");
+                    var x = loc.Translation(key: "Home.Title", sourceMessage: "");
                 }
             }
             """;
@@ -401,7 +401,7 @@ public class MicrosoftLocalizationAnalyzerTests
             {
                 void M(IStringLocalizer<C> loc)
                 {
-                    loc.Translation(key: "Home.Title", message: "");
+                    loc.Translation(key: "Home.Title", sourceMessage: "");
                 }
             }
             """;
@@ -479,7 +479,7 @@ public class MicrosoftLocalizationAnalyzerTests
                 string this[string name, params object[] arguments] { get; }
                 string GetString(string name);
                 string GetString(string name, params object[] arguments);
-                BlazorLocalization.Extensions.Translation.SimpleBuilder Translation(string key, string message, object replaceWith = null);
+                BlazorLocalization.Extensions.Translation.SimpleBuilder Translation(string key, string sourceMessage, object replaceWith = null);
                 string Display(string value);
             }
             public interface IStringLocalizer<T> : IStringLocalizer { }
@@ -506,7 +506,7 @@ public class MicrosoftLocalizationAnalyzerTests
             {
                 void M(IStringLocalizer loc)
                 {
-                    loc.Translation(key: "Home.Title", message: "Welcome");
+                    loc.Translation(key: "Home.Title", sourceMessage: "Welcome");
                 }
             }
             """;
@@ -548,7 +548,7 @@ public class MicrosoftLocalizationAnalyzerTests
             {
                 void M(IStringLocalizer loc)
                 {
-                    loc.Translation(key: "Home.Title", message: "Welcome").For("da", "Velkommen").For("es", "Bienvenido");
+                    loc.Translation(key: "Home.Title", sourceMessage: "Welcome").For("da", "Velkommen").For("es", "Bienvenido");
                 }
             }
             """;
@@ -594,7 +594,7 @@ public class MicrosoftLocalizationAnalyzerTests
             {
                 void M(IStringLocalizer loc)
                 {
-                    loc.Translation(key: "Home.Title", message: "");
+                    loc.Translation(key: "Home.Title", sourceMessage: "");
                 }
             }
             """;

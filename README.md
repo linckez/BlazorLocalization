@@ -33,14 +33,20 @@ dotnet add package BlazorLocalization.Extensions
 builder.Services.AddProviderBasedLocalization();
 ```
 
-**3. Use in your code:**
+**3. Add the using to `_Imports.razor` (or the individual `.razor` file):**
+
+```razor
+@using BlazorLocalization.Extensions
+```
+
+**4. Use in your code:**
 
 ```razor
 @inject IStringLocalizer<Home> Loc
 
-<h1>@Loc.Translation(key: "Home.Title", message: "Welcome to our app")</h1>
+<h1>@Loc.Translation(key: "Home.Title", sourceMessage: "Welcome to our app")</h1>
 
-<p>@(Loc.Translation(key: "Home.Greeting", message: "Hello, {Name}!", replaceWith: new { Name = user.Name })
+<p>@(Loc.Translation(key: "Home.Greeting", sourceMessage: "Hello, {Name}!", replaceWith: new { Name = user.Name })
     .For(locale: "da", message: "Hej, {Name}!")
     .For(locale: "de", message: "Hallo, {Name}!"))</p>
 ```

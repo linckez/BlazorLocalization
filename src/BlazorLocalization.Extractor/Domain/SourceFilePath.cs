@@ -1,3 +1,5 @@
+using BlazorLocalization.Extractor.Application;
+
 namespace BlazorLocalization.Extractor.Domain;
 
 /// <summary>
@@ -13,8 +15,8 @@ public sealed record SourceFilePath(string AbsolutePath, string ProjectDir)
 	/// <summary>File name with extension (e.g. <c>Home.razor</c>).</summary>
 	public string FileName => Path.GetFileName(AbsolutePath);
 
-	/// <summary>Project directory name (e.g. <c>MudBlazorServerSample</c>).</summary>
-	public string ProjectName => Path.GetFileName(ProjectDir);
+	/// <summary>Project name from <c>&lt;AssemblyName&gt;</c> or the <c>.csproj</c> filename.</summary>
+	public string ProjectName => ProjectMetadata.GetProjectName(ProjectDir);
 
 	/// <summary>Whether this file is a .resx file.</summary>
 	public bool IsResx => AbsolutePath.EndsWith(".resx", StringComparison.OrdinalIgnoreCase);

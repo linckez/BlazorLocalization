@@ -17,7 +17,7 @@ public static class ProjectScanner
     /// </summary>
     public static ProjectScanResult Scan(string projectDir, CancellationToken cancellationToken = default)
     {
-        var projectName = Path.GetFileName(projectDir);
+        var projectName = ProjectMetadata.GetProjectName(projectDir);
 
         // Collect source documents from both providers
         var csDocs = CSharpFileProvider.GetDocuments(projectDir);

@@ -128,6 +128,53 @@ blazor-loc inspect ./src --json
 blazor-loc inspect ./src | jq '.translationEntries[] | select(.status == "Missing")'
 ```
 
+## Migrate .razor (experimental)
+
+Code fixes can't run inside `.razor` files today — the Razor language server blocks them.
+`migrate` bridges that gap for `.resx`-based projects.
+
+It scans your `.razor` files for `Localizer["key"]` and `Localizer.GetString("key")`,
+looks up each key in your `.resx` files, and rewrites them to `Translation()` calls
+with your source text baked in.
+
+Preview what would change (no files written). Picks a single project interactively if multiple are found:
+
+```bash
+blazor-loc migrate ./src
+```
+
+Include Danish inline:
+
+```bash
+blazor-loc migrate ./src -l da
+```
+
+Write the changes:
+
+```bash
+blazor-loc migrate ./src -l da --apply
+```
+
+### What it handles
+
+- `Loc["Home.Title"]` → `Loc.Translation(key: "Home.Title", sourceMessage: "Welcome")`
+- `Loc.GetString("Home.Title")` → same
+- `.For(locale: "da", message: "Velkommen")` chained for each locale you pass with `-l`
+- Localizer variable names inferred from the matched call (e.g. `Loc["..."]` or `Loc.GetString(...)`)
+
+### What it skips
+
+- Calls with extra arguments — `Loc["Key", count]` (needs named placeholders)
+- Variable keys — `Loc[someVariable]`
+
+Skipped usages are listed with file and line so you can handle them by hand.
+
+### Full migration toolkit
+
+`migrate` covers the bulk — `.razor` files where code fixes can't reach today. For the rest:
+
+- **`.cs` and `.razor.cs`** — [BlazorLocalization.Analyzers](Analyzers.md) gives you code fixes and refactorings right in your IDE
+
 ## Export Formats
 
 | Format | Flag | Best for |

@@ -97,7 +97,7 @@ internal static class TranslationCallExtractor
 
     /// <summary>
     /// Tries to extract the message string literal from a Translation() invocation.
-    /// Uses the resolved <paramref name="method"/> to find the parameter named <c>message</c>.
+    /// Uses the resolved <paramref name="method"/> to find the parameter named <c>sourceMessage</c>.
     /// Returns false for non-literal or missing message arguments.
     /// </summary>
     public static bool TryGetMessageFromInvocation(
@@ -107,7 +107,7 @@ internal static class TranslationCallExtractor
     {
         message = null;
 
-        var messageArg = FindArgumentForParameter(invocation.ArgumentList.Arguments, method.Parameters, BlazorLocalizationSymbols.MessageParameterName);
+        var messageArg = FindArgumentForParameter(invocation.ArgumentList.Arguments, method.Parameters, BlazorLocalizationSymbols.SourceMessageParameterName);
         if (messageArg is null)
             return false;
 

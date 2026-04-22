@@ -18,11 +18,11 @@ public class ExtensionsContractTests
     [Fact]
     public void Translation_Simple_ParameterNames()
     {
-        // SimpleBuilder Translation(string key, string message, object? replaceWith = null)
+        // SimpleBuilder Translation(string key, string sourceMessage, object? replaceWith = null)
         var method = GetExtensionMethod("Translation", typeof(string), typeof(string));
-        method.Should().NotBeNull("SimpleBuilder Translation(key, message) overload should exist");
+        method.Should().NotBeNull("SimpleBuilder Translation(key, sourceMessage) overload should exist");
         AssertParam(method!, ExtensionsContract.ParamKey);
-        AssertParam(method!, ExtensionsContract.ParamMessage);
+        AssertParam(method!, ExtensionsContract.ParamSourceMessage);
     }
 
     [Fact]
@@ -44,7 +44,7 @@ public class ExtensionsContractTests
             [typeof(string), typeof(string)]);
         method.Should().NotBeNull();
         AssertParam(method!, ExtensionsContract.ParamKey);
-        AssertParam(method!, ExtensionsContract.ParamMessage);
+        AssertParam(method!, ExtensionsContract.ParamSourceMessage);
     }
 
     [Fact]

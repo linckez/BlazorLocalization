@@ -23,6 +23,10 @@ app.Configure(config =>
         .WithDescription("Check your translation setup: every key with its status, locale coverage, and potential issues.")
         .WithExample("inspect", "./src")
         .WithExample("inspect", "./src", "./lib/Shared");
+
+    config.AddCommand<MigrateCommand>("migrate")
+        .WithDescription("Replace Localizer[\"key\"] with Translation() in your .razor files (experimental)")
+        .WithExample("migrate", "./src/MyApp", "-l", "da", "--apply");
 });
 
 if (args.Length == 0)

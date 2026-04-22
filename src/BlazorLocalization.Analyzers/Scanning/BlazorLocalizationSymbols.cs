@@ -38,6 +38,7 @@ internal sealed class BlazorLocalizationSymbols
     // Validated by contract tests.
     public const string KeyParameterName = "key";
     public const string MessageParameterName = "message";
+    public const string SourceMessageParameterName = "sourceMessage";
     public const string ReplaceWithParameterName = "replaceWith";
 
     /// <summary>

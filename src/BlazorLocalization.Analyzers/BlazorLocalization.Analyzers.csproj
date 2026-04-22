@@ -9,7 +9,7 @@
     <IsRoslynComponent>true</IsRoslynComponent>
     <!-- ILRepack needs all dependency DLLs in output for merging -->
     <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
-    <Version>10.3.1</Version>
+    <Version>10.4.0</Version>
   </PropertyGroup>
 
   <PropertyGroup Label="Package Properties">

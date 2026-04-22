@@ -15,7 +15,7 @@ An empty key will never match a real translation. Your users see the source text
 ### Don't do this
 
 ```csharp
-Loc.Translation(key: "", message: "Welcome")       // BL0001
+Loc.Translation(key: "", sourceMessage: "Welcome")       // BL0001
 Loc[""]                                             // BL0001
 Loc.GetString("")                                   // BL0001
 ```
@@ -23,7 +23,7 @@ Loc.GetString("")                                   // BL0001
 ### Do this instead
 
 ```csharp
-Loc.Translation(key: "Home.Title", message: "Welcome")
+Loc.Translation(key: "Home.Title", sourceMessage: "Welcome")
 Loc["Home.Title"]
 Loc.GetString("Home.Title")
 ```

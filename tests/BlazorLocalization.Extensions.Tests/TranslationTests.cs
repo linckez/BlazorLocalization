@@ -211,7 +211,7 @@ public sealed class TranslationTests : IDisposable
     public void KeyOnly_DoesNotAmbiguate_WithMessageOverload()
     {
         // Explicit message overload must still work when both key and message are provided
-        var result = _localizer.Translation(key: "Home.Title", message: "Welcome").ToString();
+        var result = _localizer.Translation(key: "Home.Title", sourceMessage: "Welcome").ToString();
 
         result.Should().Be("Welcome");
     }

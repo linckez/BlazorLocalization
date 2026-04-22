@@ -22,7 +22,7 @@ public partial class EdgeCasePage
     // ── BL0001 — Empty key ──────────────────────────────────────
     private string EmptyViaGetString => Loc.GetString("");                                   // BL0001 + BL0002
     private string EmptyViaIndexer => Loc[""];                                               // BL0001 + BL0002
-    private string EmptyViaTranslation => Loc.Translation(key: "", message: "").ToString();  // BL0001 only
+    private string EmptyViaTranslation => Loc.Translation(key: "", sourceMessage: "").ToString();  // BL0001 only
 
     // ── BL0002 — GetString/indexer code fix targets ─────────────
     private string ViaGetString => Loc.GetString("Edge.CodeBehind.Title");                   // BL0002
@@ -31,22 +31,22 @@ public partial class EdgeCasePage
     private string ViaIndexerArgs => Loc["Edge.CodeBehind.Greeting", "World"];               // BL0002 (HasArgs)
 
     // Correct — no BL0002
-    private string AlreadyCorrect => Loc.Translation(key: "Edge.CodeBehind.Correct", message: "OK").ToString();
+    private string AlreadyCorrect => Loc.Translation(key: "Edge.CodeBehind.Correct", sourceMessage: "OK").ToString();
 
     // ── Extract Translation Definition refactoring targets ──────
     private void TranslationsReadyForExtraction()
     {
         // Simple extraction
-        var save = Loc.Translation(key: "Extract.Save", message: "Save").ToString();
+        var save = Loc.Translation(key: "Extract.Save", sourceMessage: "Save").ToString();
 
         // With replaceWith — preserved during extraction
         var greeting = Loc.Translation(
             key: "Extract.Greeting",
-            message: "Hello {name}!",
+            sourceMessage: "Hello {name}!",
             replaceWith: new { name = "World" }).ToString();
 
         // Named args in reversed order
-        var cancel = Loc.Translation(message: "Cancel", key: "Extract.Cancel").ToString();
+        var cancel = Loc.Translation(sourceMessage: "Cancel", key: "Extract.Cancel").ToString();
     }
 
     protected override void OnInitialized()
@@ -54,11 +54,11 @@ public partial class EdgeCasePage
         _codeBehindGreeting = Loc.Translation("CB.CodeBehind", "From code-behind").ToString();
 
         // BL0003 sub-case B — same key, different message
-        _conflictA = Loc.Translation(key: "Edge.Inline.Conflict", message: "Version A").ToString();  // BL0003
-        _conflictB = Loc.Translation(key: "Edge.Inline.Conflict", message: "Version B").ToString();  // BL0003
+        _conflictA = Loc.Translation(key: "Edge.Inline.Conflict", sourceMessage: "Version A").ToString();  // BL0003
+        _conflictB = Loc.Translation(key: "Edge.Inline.Conflict", sourceMessage: "Version B").ToString();  // BL0003
 
         // Reuse — same key, same message (no BL0003)
-        _reuseA = Loc.Translation(key: "Edge.Inline.Reuse", message: "Same text").ToString();
-        _reuseB = Loc.Translation(key: "Edge.Inline.Reuse", message: "Same text").ToString();
+        _reuseA = Loc.Translation(key: "Edge.Inline.Reuse", sourceMessage: "Same text").ToString();
+        _reuseB = Loc.Translation(key: "Edge.Inline.Reuse", sourceMessage: "Same text").ToString();
     }
 }

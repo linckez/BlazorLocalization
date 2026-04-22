@@ -21,7 +21,7 @@ public class EmptyKeyAnalyzerTests
                 string this[string name] { get; }
                 string this[string name, params object[] arguments] { get; }
                 string GetString(string name);
-                string Translation(string key, string message, object replaceWith = null);
+                string Translation(string key, string sourceMessage, object replaceWith = null);
                 string Translation(string key, int howMany, bool ordinal = false, object replaceWith = null);
             }
             public interface IStringLocalizer<T> : IStringLocalizer { }
@@ -54,7 +54,7 @@ public class EmptyKeyAnalyzerTests
             {
                 void M(IStringLocalizer Loc)
                 {
-                    Loc.Translation(key: "", message: "Welcome");
+                    Loc.Translation(key: "", sourceMessage: "Welcome");
                 }
             }
             """;
@@ -162,7 +162,7 @@ public class EmptyKeyAnalyzerTests
             {
                 void M(IStringLocalizer Loc)
                 {
-                    Loc.Translation(key: "", message: "A");
+                    Loc.Translation(key: "", sourceMessage: "A");
                     Loc.GetString("");
                     var x = Loc[""];
                 }
@@ -187,7 +187,7 @@ public class EmptyKeyAnalyzerTests
             {
                 void M(IStringLocalizer Loc)
                 {
-                    Loc.Translation(key: "Home.Title", message: "Welcome");
+                    Loc.Translation(key: "Home.Title", sourceMessage: "Welcome");
                 }
             }
             """;
@@ -241,7 +241,7 @@ public class EmptyKeyAnalyzerTests
             {
                 void M(IStringLocalizer Loc, string key)
                 {
-                    Loc.Translation(key: key, message: "Welcome");
+                    Loc.Translation(key: key, sourceMessage: "Welcome");
                 }
             }
             """;
