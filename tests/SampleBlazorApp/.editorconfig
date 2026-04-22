@@ -1,0 +1,6 @@
+root = true
+
+[*.cs]
+# Elevate Info-level diagnostics to warning so they appear in build output
+dotnet_diagnostic.BL0002.severity = warning
+dotnet_diagnostic.BL0004.severity = warning

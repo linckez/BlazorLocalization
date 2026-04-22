@@ -1,4 +1,5 @@
 using BlazorLocalization.Extractor.Domain;
+using Microsoft.CodeAnalysis;
 
 namespace BlazorLocalization.Extractor.Adapters.Roslyn;
 
@@ -36,13 +37,5 @@ internal sealed record ScannedCallSite(
     SourceFilePath File,
     int Line,
     IReadOnlyList<ScannedArgument> Arguments,
-    IReadOnlyList<FluentChainWalker.ChainLink>? Chain)
-{
-    /// <summary>
-    /// Whether this call provides source text (Definition) or just uses a key (Reference).
-    /// Definitions: .Translation() returning a builder, DefineXxx() factories.
-    /// References: indexer access, GetString(), or anything without a builder return type.
-    /// </summary>
-    public bool IsDefinition => CallKind == CallKind.ExtensionMethod &&
-        (MethodName == "Translation" || MethodName.StartsWith("Define", StringComparison.Ordinal));
-}
+    IReadOnlyList<FluentChainWalker.ChainLink>? Chain,
+    IMethodSymbol? ResolvedMethod = null);

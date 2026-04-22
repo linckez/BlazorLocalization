@@ -8,7 +8,7 @@ namespace BlazorLocalization.Extractor.Domain;
 /// </summary>
 public enum PathStyle
 {
-    /// <summary>Paths relative to the project root directory (e.g. <c>Components/Pages/Home.razor</c>).</summary>
+    /// <summary>Paths relative to the project root directory.</summary>
     [Description("Paths relative to project root (recommended)")]
     Relative,
 

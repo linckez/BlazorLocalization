@@ -12,8 +12,8 @@ internal static class EnumAttributeInterpreter
 {
     /// <summary>
     /// Inspects a field symbol (enum member) for <c>[Translation]</c> attributes.
-    /// Returns a <see cref="TranslationDefinition"/> only — enum declarations are definitions,
-    /// not usages. The reference slot is always <c>null</c>.
+    /// Returns a <see cref="TranslationDefinition"/> and a matching <see cref="TranslationReference"/>
+    /// (so the entry gets status=Resolved instead of Review).
     /// </summary>
     public static (TranslationDefinition? Definition, TranslationReference? Reference) TryInterpret(
         IFieldSymbol field,

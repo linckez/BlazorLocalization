@@ -24,4 +24,9 @@
   <data name="WelcomeMessage" xml:space="preserve">
     <value>Welcome to the localization test matrix</value>
   </data>
+
+  <data name="Resx.Match" xml:space="preserve">
+    <value>Shared says this instead</value>
+    <comment>Conflicts with Home.resx "Matching source text" — triggers BL0006</comment>
+  </data>
 </root>

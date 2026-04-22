@@ -14,7 +14,7 @@ public class ProviderBasedStringLocalizerFactory(
     IFusionCacheProvider cacheProvider,
     IEnumerable<ITranslationProvider> translationProviders,
     ILoggerFactory loggerFactory,
-    ProviderBasedLocalizationOptions options) : IStringLocalizerFactory
+    ProviderBasedLocalizationOptions options) : IProviderBasedStringLocalizerFactory
 {
     private readonly IFusionCache _cache = cacheProvider.GetCache(options.CacheName);
     private readonly IReadOnlyList<ITranslationProvider> _providers = [.. translationProviders];

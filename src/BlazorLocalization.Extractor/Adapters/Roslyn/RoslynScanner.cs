@@ -32,6 +32,7 @@ internal static class RoslynScanner
         var target = ScanTargets.ResolveLocalizer(compilation);
         var translationAttr = ScanTargets.ResolveTranslationAttribute(compilation);
         var definitionFactory = ScanTargets.ResolveDefinitionFactory(compilation);
+        var resolvedTypes = ScanTargets.ResolveBuilderTypes(compilation);
 
         var diagnostics = new List<ScanDiagnostic>();
         if (target is null)
@@ -118,7 +119,7 @@ internal static class RoslynScanner
                 allCalls.Add(callSite);
 
                 // Interpret into domain types
-                var (def, refr) = CallInterpreter.Interpret(callSite, file);
+                var (def, refr) = CallInterpreter.Interpret(callSite, file, resolvedTypes);
                 if (def is not null) definitions.Add(def);
                 if (refr is not null) references.Add(refr);
             }
@@ -153,6 +154,12 @@ internal static class RoslynScanner
             typeof(Microsoft.AspNetCore.Components.ComponentBase).Assembly.Location));
         refs.Add(MetadataReference.CreateFromFile(
             ExtensionsContract.ExtensionsAssemblyLocation));
+
+        // Extensions.Abstractions may live in a separate assembly (TranslationAttribute,
+        // TranslationDefinitions, builder types). Add it if it's a different DLL.
+        var abstractionsLocation = typeof(BlazorLocalization.Extensions.Translation.Definitions.TranslationDefinitions).Assembly.Location;
+        if (abstractionsLocation != ExtensionsContract.ExtensionsAssemblyLocation)
+            refs.Add(MetadataReference.CreateFromFile(abstractionsLocation));
 
         return refs;
     }

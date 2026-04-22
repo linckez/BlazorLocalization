@@ -59,6 +59,7 @@ See [Examples](docs/Examples.md) for plurals, ordinals, enum display names, and 
 |---------|:-------:|--------:|
 | [**BlazorLocalization.Extensions**](https://www.nuget.org/packages/BlazorLocalization.Extensions) <br/> Caches translations, supports plurals and inline translations, pluggable translation providers | [![NuGet](https://img.shields.io/nuget/v/BlazorLocalization.Extensions.svg)](https://www.nuget.org/packages/BlazorLocalization.Extensions) | `dotnet add package BlazorLocalization.Extensions` |
 | [**BlazorLocalization.Extractor**](https://www.nuget.org/packages/BlazorLocalization.Extractor) <br/> CLI tool (`blazor-loc`) — inspect translation health and extract source strings from `.razor`, `.cs`, and `.resx` files | [![NuGet](https://img.shields.io/nuget/v/BlazorLocalization.Extractor.svg)](https://www.nuget.org/packages/BlazorLocalization.Extractor) | `dotnet tool install -g BlazorLocalization.Extractor` |
+| [**BlazorLocalization.Analyzers**](https://www.nuget.org/packages/BlazorLocalization.Analyzers) <br/> Catches localization mistakes at compile time — empty keys, duplicates, migration hints | [![NuGet](https://img.shields.io/nuget/v/BlazorLocalization.Analyzers.svg)](https://www.nuget.org/packages/BlazorLocalization.Analyzers) | `dotnet add package BlazorLocalization.Analyzers` |
 
 Translation providers:
 
@@ -175,6 +176,7 @@ See [Extractor CLI](docs/Extractor.md) for all recipes, CI integration, and expo
 |-------|-------------|
 | [Examples](docs/Examples.md) | `Translation()` usage — simple, placeholders, plurals, ordinals, select, inline translations, reusable definitions |
 | [Extractor CLI](docs/Extractor.md) | Install, inspect & extract commands, interactive wizard, CI integration, export formats |
+| [Analyzers](docs/Analyzers.md) | Compile-time rules — empty keys, duplicates, migration from `IStringLocalizer` indexer |
 | [Configuration](docs/Configuration.md) | Cache settings, `appsettings.json` binding, multiple providers, code-only config |
 | [Crowdin Provider](docs/Providers/Crowdin.md) | Over-the-air translations from Crowdin — distribution hash, export formats, error handling |
 | [JSON File Provider](docs/Providers/JsonFile.md) | Load translations from flat JSON files on disk |

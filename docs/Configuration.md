@@ -230,4 +230,4 @@ On a fresh start with an empty cache, users see your source text while translati
 
 ---
 
-**See also:** [Examples](Examples.md) for `Translation()` usage · [Extractor CLI](Extractor.md) for string extraction
+**See also:** [Examples](Examples.md) for `Translation()` usage · [Extractor CLI](Extractor.md) for string extraction · [Analyzers](Analyzers.md) for compile-time checks

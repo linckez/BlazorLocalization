@@ -1,4 +1,5 @@
 using BlazorLocalization.Extractor.Domain;
+using Microsoft.CodeAnalysis;
 
 namespace BlazorLocalization.Extractor.Adapters.Roslyn;
 
@@ -6,8 +7,10 @@ namespace BlazorLocalization.Extractor.Adapters.Roslyn;
 /// Converts <see cref="ScannedCallSite"/> (with its fluent chain) into domain types:
 /// <see cref="TranslationDefinition"/> or <see cref="TranslationReference"/>.
 ///
-/// Dispatches by method name on chain links — no BuilderSymbolTable needed.
-/// The builder type was already confirmed by <see cref="FluentChainWalker.IsBuilderType"/>.
+/// Dispatches by the method's **return type** against pre-resolved builder/definition types.
+/// Builder return → inline translation (or key-only reference if no source text in chain).
+/// Definition return → factory call (DefineXxx).
+/// String/other → reference (indexer, GetString, definition-replay).
 /// </summary>
 internal static class CallInterpreter
 {
@@ -16,14 +19,95 @@ internal static class CallInterpreter
 
     /// <summary>
     /// Classify a scanned call site and produce the appropriate domain type.
+    /// Routes by return type when <paramref name="resolvedTypes"/> is available.
     /// </summary>
     public static (TranslationDefinition? Definition, TranslationReference? Reference) Interpret(
+        ScannedCallSite call, SourceFilePath file, ResolvedTypes? resolvedTypes)
+    {
+        if (call.ResolvedMethod is not null && resolvedTypes is not null)
+        {
+            var returnType = call.ResolvedMethod.ReturnType;
+
+            // Builder return type → inline Translation() call (with or without source text)
+            if (resolvedTypes.IsBuilder(returnType, out var matchedBuilder))
+                return InterpretBuilderCall(call, file, matchedBuilder, resolvedTypes);
+
+            // Definition return type → DefineXxx factory
+            if (resolvedTypes.IsDefinitionType(returnType))
+                return InterpretDefinitionFactory(call, file);
+
+            // String return → definition-replay (Translation(SimpleDefinition, ...))
+            // or Display() — these are reference-only
+        }
+
+        // Fallback: indexer, GetString, definition-replay, Display, or unresolved
+        return InterpretAsReference(call, file);
+    }
+
+    /// <summary>
+    /// Handles Translation() calls that return a builder type (SimpleBuilder, PluralBuilder, etc.).
+    /// Extracts the key, delegates to the form-specific interpreter, and always emits a reference.
+    /// If the interpreter produces a definition (source text found), emits that too.
+    /// </summary>
+    private static (TranslationDefinition?, TranslationReference?) InterpretBuilderCall(
+        ScannedCallSite call, SourceFilePath file, INamedTypeSymbol matchedBuilder, ResolvedTypes types)
+    {
+        var keyArg = FindArg(call.Arguments, "key");
+        if (keyArg is null || !keyArg.Value.TryGetString(out var key) || key is null)
+            return (null, null);
+
+        var defSite = new DefinitionSite(file, call.Line, DefinitionKind.InlineTranslation, FormatContext(call));
+
+        // Route by which builder type the method returns
+        (TranslationDefinition?, TranslationReference?) result;
+        if (SymbolEqualityComparer.Default.Equals(matchedBuilder, types.SimpleBuilder))
+        {
+            var messageArg = FindArg(call.Arguments, "message");
+            result = messageArg is not null
+                ? InterpretSimple(key, messageArg, call.Chain, defSite)
+                : (null, null);
+        }
+        else if (SymbolEqualityComparer.Default.Equals(matchedBuilder, types.PluralBuilder))
+        {
+            var ordinalArg = FindArg(call.Arguments, "ordinal");
+            var isOrdinal = ordinalArg?.Value is OperationValue.Constant { Value: true };
+            result = InterpretPlural(key, isOrdinal, call.Chain, defSite);
+        }
+        else if (SymbolEqualityComparer.Default.Equals(matchedBuilder, types.SelectBuilder))
+        {
+            result = InterpretSelect(key, call.Chain, defSite);
+        }
+        else if (SymbolEqualityComparer.Default.Equals(matchedBuilder, types.SelectPluralBuilder))
+        {
+            var ordinalArg = FindArg(call.Arguments, "ordinal");
+            var isOrdinal = ordinalArg?.Value is OperationValue.Constant { Value: true };
+            result = InterpretSelectPlural(key, isOrdinal, call.Chain, defSite);
+        }
+        else
+        {
+            result = (null, null);
+        }
+
+        // Always emit a reference (this call site uses the key)
+        var refSite = new ReferenceSite(file, call.Line);
+        var reference = new TranslationReference(key, true, refSite);
+
+        // If the interpreter produced a definition (source text found), return both
+        return (result.Item1, reference);
+    }
+
+    /// <summary>
+    /// Handles DefineXxx() factory calls. These produce definitions only, not references.
+    /// </summary>
+    private static (TranslationDefinition?, TranslationReference?) InterpretDefinitionFactory(
         ScannedCallSite call, SourceFilePath file)
     {
-        if (!call.IsDefinition)
-            return InterpretAsReference(call, file);
+        var keyArg = FindArg(call.Arguments, "key");
+        if (keyArg is null || !keyArg.Value.TryGetString(out var key) || key is null)
+            return (null, null);
 
-        return InterpretAsDefinition(call, file);
+        var defSite = new DefinitionSite(file, call.Line, DefinitionKind.ReusableDefinition, FormatContext(call));
+        return InterpretDefinitionFactoryByName(call, key, call.Chain, defSite);
     }
 
     private static (TranslationDefinition?, TranslationReference?) InterpretAsReference(
@@ -71,73 +155,6 @@ internal static class CallInterpreter
         var context = call.CallKind == CallKind.Indexer ? "IStringLocalizer.this[]" : null;
         var refSite = new ReferenceSite(file, call.Line, context);
         return (null, new TranslationReference(key, isLiteral, refSite));
-    }
-
-    private static (TranslationDefinition?, TranslationReference?) InterpretAsDefinition(
-        ScannedCallSite call, SourceFilePath file)
-    {
-        var keyArg = FindArg(call.Arguments, "key");
-        if (keyArg is null || !keyArg.Value.TryGetString(out var key) || key is null)
-            return (null, null);
-
-        var isFactory = call.MethodName.StartsWith(ExtensionsContract.DefinePrefix, StringComparison.Ordinal);
-        var kind = isFactory ? DefinitionKind.ReusableDefinition : DefinitionKind.InlineTranslation;
-        var defSite = new DefinitionSite(file, call.Line, kind, FormatContext(call));
-
-        // Determine builder kind from return type (captured during CallSiteBuilder via chain presence)
-        // If no chain: simple translation with just message
-        // If chain: walk it to determine the form
-        var chain = call.Chain;
-
-        (TranslationDefinition?, TranslationReference?) result = (null, null);
-
-        if (call.MethodName == ExtensionsContract.Translation)
-        {
-            // Check if there's a "message" param → Simple/Singular
-            var messageArg = FindArg(call.Arguments, "message");
-            if (messageArg is not null)
-                result = InterpretSimple(key, messageArg, chain, defSite);
-
-            // Check if BOTH "select" AND "howMany" → SelectPlural (must check before individual)
-            else if (FindArg(call.Arguments, "select") is not null
-                     && FindArg(call.Arguments, "howMany") is not null)
-            {
-                var ordinalArg = FindArg(call.Arguments, "ordinal");
-                var isOrdinal = ordinalArg?.Value is OperationValue.Constant { Value: true };
-                result = InterpretSelectPlural(key, isOrdinal, chain, defSite);
-            }
-
-            // Check if there's a "howMany" param → Plural
-            else if (FindArg(call.Arguments, "howMany") is not null)
-            {
-                var ordinalArg = FindArg(call.Arguments, "ordinal");
-                var isOrdinal = ordinalArg?.Value is OperationValue.Constant { Value: true };
-                result = InterpretPlural(key, isOrdinal, chain, defSite);
-            }
-
-            // Check if there's a "select" param → Select
-            else if (FindArg(call.Arguments, "select") is not null)
-            {
-                result = InterpretSelect(key, chain, defSite);
-            }
-        }
-        else if (isFactory)
-        {
-            result = InterpretDefinitionFactory(call, key, chain, defSite);
-        }
-
-        if (result.Item1 is null)
-            return (null, null);
-
-        // InlineTranslation (.Translation() in Razor/code) is genuinely both definition AND usage.
-        // ReusableDefinition (DefineXxx factory) is only a definition — not a usage.
-        if (kind == DefinitionKind.InlineTranslation)
-        {
-            var refSite = new ReferenceSite(file, call.Line);
-            return (result.Item1, new TranslationReference(key, true, refSite));
-        }
-
-        return (result.Item1, null);
     }
 
     // ─── Simple ──────────────────────────────────────────────────────
@@ -474,7 +491,7 @@ internal static class CallInterpreter
 
     // ─── Definition Factories ────────────────────────────────────────
 
-    private static (TranslationDefinition?, TranslationReference?) InterpretDefinitionFactory(
+    private static (TranslationDefinition?, TranslationReference?) InterpretDefinitionFactoryByName(
         ScannedCallSite call,
         string key,
         IReadOnlyList<FluentChainWalker.ChainLink>? chain,

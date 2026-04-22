@@ -7,7 +7,7 @@
         <Nullable>enable</Nullable>
         <PackAsTool>true</PackAsTool>
         <ToolCommandName>blazor-loc</ToolCommandName>
-        <Version>10.2.0</Version>
+        <Version>10.3.0</Version>
         <NoWarn>$(NoWarn);NU1510;RS1041;RS1036;RS2008</NoWarn>
     </PropertyGroup>
 

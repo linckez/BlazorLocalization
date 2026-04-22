@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:element name="root" msdata:IsDataSet="true">
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+
+  <!-- BL0002 code fix targets — source text for GetString/indexer replacements -->
+  <data name="Edge.Title" xml:space="preserve">
+    <value>Edge case page title</value>
+  </data>
+  <data name="Edge.Subtitle" xml:space="preserve">
+    <value>Edge case subtitle</value>
+  </data>
+  <data name="Edge.Greeting" xml:space="preserve">
+    <value>Hello {name}!</value>
+  </data>
+  <data name="Edge.Welcome" xml:space="preserve">
+    <value>Welcome, {name}!</value>
+  </data>
+  <data name="Edge.CodeBehind.Title" xml:space="preserve">
+    <value>Code-behind edge title</value>
+  </data>
+  <data name="Edge.CodeBehind.Subtitle" xml:space="preserve">
+    <value>Code-behind subtitle</value>
+  </data>
+  <data name="Edge.CodeBehind.Welcome" xml:space="preserve">
+    <value>Code-behind welcome</value>
+  </data>
+  <data name="Edge.CodeBehind.Greeting" xml:space="preserve">
+    <value>Code-behind greeting</value>
+  </data>
+
+  <!-- BL0003 resx context — value differs from inline "Version A"/"Version B" -->
+  <data name="Edge.Inline.Conflict" xml:space="preserve">
+    <value>The original version</value>
+  </data>
+
+  <!-- Extract refactoring targets -->
+  <data name="Extract.Save" xml:space="preserve">
+    <value>Save</value>
+  </data>
+  <data name="Extract.Greeting" xml:space="preserve">
+    <value>Hello {name}!</value>
+  </data>
+  <data name="Extract.Cancel" xml:space="preserve">
+    <value>Cancel</value>
+  </data>
+</root>

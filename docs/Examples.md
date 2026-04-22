@@ -250,4 +250,4 @@ With the indexer, the raw key is returned when translations haven't loaded (`"Ho
 
 ---
 
-**Next:** [Configuration](Configuration.md) for cache settings, culture detection, and provider setup.
+**See also:** [Configuration](Configuration.md) for cache settings, culture detection, and provider setup · [Analyzers](Analyzers.md) for compile-time checks

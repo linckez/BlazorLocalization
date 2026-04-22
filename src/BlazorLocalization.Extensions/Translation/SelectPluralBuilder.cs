@@ -123,6 +123,8 @@ public sealed class SelectPluralBuilder<TSelect> where TSelect : Enum
         return _key;
     }
 
+    public static implicit operator string(SelectPluralBuilder<TSelect> builder) => builder.ToString();
+
     private void SetMessage(string pluralSuffix, string message)
     {
         if (_currentLocale is null)

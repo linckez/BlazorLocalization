@@ -6,7 +6,7 @@ namespace BlazorLocalization.Extensions.Exceptions;
 /// </summary>
 /// <remarks>
 /// Requires developer intervention. Logged at <c>Warning</c> level by
-/// <see cref="ProviderBasedStringLocalizer"/> so it surfaces in default log output.
+/// ProviderBasedStringLocalizer so it surfaces in default log output.
 /// </remarks>
 public sealed class TranslationProviderConfigurationException(
     string providerName,

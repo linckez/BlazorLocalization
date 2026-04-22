@@ -113,6 +113,8 @@ public sealed class SelectBuilder<TSelect> where TSelect : Enum
         return _key;
     }
 
+    public static implicit operator string(SelectBuilder<TSelect> builder) => builder.ToString();
+
     private void SetMessage(string selectKey, string message)
     {
         if (_currentLocale is null)

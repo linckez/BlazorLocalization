@@ -32,6 +32,7 @@ on:
       - main
     paths:
       - src/BlazorLocalization.Extensions/**
+      - src/BlazorLocalization.Extensions.Abstractions/**
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}

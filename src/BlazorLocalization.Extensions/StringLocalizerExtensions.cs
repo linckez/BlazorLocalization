@@ -121,6 +121,71 @@ public static class StringLocalizerExtensions
             where TSelect : Enum
             => new(localizer, key, select, howMany, ordinal, replaceWith);
 
+        // ── Key-only overloads ───────────────────────────────────────
+        // Reference a translation key defined elsewhere (via DefineXxx or
+        // a Translation(key, message) call). Returns a builder so you can
+        // chain .For()/.One()/.When() etc. when building the definition
+        // in a different location. The key itself is used as the fallback
+        // display text until a definition is provided.
+
+        /// <summary>
+        /// References a translation key defined elsewhere. The key is used as
+        /// fallback text until a proper definition is provided.
+        /// <code>
+        /// Loc.Translation(key: "Common.Save")
+        /// </code>
+        /// </summary>
+        /// <param name="key">The translation key to look up.</param>
+        public SimpleBuilder Translation(string key)
+            => new(localizer, key, key, null);
+
+        /// <summary>
+        /// References a plural translation key defined elsewhere.
+        /// <code>
+        /// Loc.Translation(key: "Cart.Items", howMany: itemCount)
+        ///     .One(message: "1 item").Other(message: "{Count} items")
+        /// </code>
+        /// </summary>
+        /// <param name="key">The translation key to look up.</param>
+        /// <param name="howMany">The quantity that determines which plural form to use.</param>
+        public PluralBuilder Translation(string key, int howMany)
+            => new(localizer, key, howMany, false, null);
+
+        /// <summary>
+        /// References a select translation key defined elsewhere.
+        /// <code>
+        /// Loc.Translation(key: "Greeting", select: userTier)
+        ///     .When(select: Tier.Premium, message: "Welcome back, VIP!")
+        ///     .Otherwise(message: "Welcome!")
+        /// </code>
+        /// </summary>
+        /// <param name="key">The translation key to look up.</param>
+        /// <param name="select">The enum value that picks which variant to show.</param>
+        /// <typeparam name="TSelect">An enum type whose members represent the variants.</typeparam>
+        public SelectBuilder<TSelect> Translation<TSelect>(string key, TSelect select)
+            where TSelect : Enum
+            => new(localizer, key, select, null);
+
+        /// <summary>
+        /// References a select+plural translation key defined elsewhere.
+        /// <code>
+        /// Loc.Translation(key: "Inbox", select: Gender.Female, howMany: msgCount)
+        ///     .When(select: Gender.Female)
+        ///         .One(message: "She has 1 message")
+        ///         .Other(message: "She has {N} messages")
+        ///     .Otherwise()
+        ///         .One(message: "They have 1 message")
+        ///         .Other(message: "They have {N} messages")
+        /// </code>
+        /// </summary>
+        /// <param name="key">The translation key to look up.</param>
+        /// <param name="select">The enum value that picks which variant to show.</param>
+        /// <param name="howMany">The quantity that determines which plural form to use.</param>
+        /// <typeparam name="TSelect">An enum type whose members represent the variants.</typeparam>
+        public SelectPluralBuilder<TSelect> Translation<TSelect>(string key, TSelect select, int howMany)
+            where TSelect : Enum
+            => new(localizer, key, select, howMany, false, null);
+
         /// <summary>
         /// Returns the localized display text for an enum member decorated with
         /// <see cref="TranslationAttribute"/>.

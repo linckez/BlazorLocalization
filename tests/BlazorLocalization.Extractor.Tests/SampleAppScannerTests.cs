@@ -360,4 +360,38 @@ public class SampleAppScannerTests(SampleAppFixture fixture) : IClassFixture<Sam
 	{
 		Entry("_dynamicNoResx").Status.Should().Be(TranslationStatus.Review);
 	}
+
+	// ── Key-only Translation overloads ──
+
+	[Fact]
+	public void KeyOnly_Simple_ProducesReferenceOnly()
+	{
+		var entry = Entry("S30.KeyOnly");
+		entry.Definitions.Should().BeEmpty("key-only Translation(key) has no source text");
+		entry.References.Should().ContainSingle();
+	}
+
+	[Fact]
+	public void KeyOnly_Plural_ProducesReferenceOnly()
+	{
+		var entry = Entry("S31.KeyOnlyPlural");
+		entry.Definitions.Should().BeEmpty("key-only Translation(key, howMany) has no source text");
+		entry.References.Should().ContainSingle();
+	}
+
+	[Fact]
+	public void KeyOnly_Select_ProducesReferenceOnly()
+	{
+		var entry = Entry("S32.KeyOnlySelect");
+		entry.Definitions.Should().BeEmpty("key-only Translation(key, select) has no source text");
+		entry.References.Should().ContainSingle();
+	}
+
+	[Fact]
+	public void KeyOnly_SelectPlural_ProducesReferenceOnly()
+	{
+		var entry = Entry("S33.KeyOnlySelectPlural");
+		entry.Definitions.Should().BeEmpty("key-only Translation(key, select, howMany) has no source text");
+		entry.References.Should().ContainSingle();
+	}
 }

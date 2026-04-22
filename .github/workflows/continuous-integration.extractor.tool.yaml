@@ -16,6 +16,7 @@ on:
     paths:
       - src/BlazorLocalization.Extractor/**
       - src/BlazorLocalization.Extensions/**
+      - src/BlazorLocalization.Extensions.Abstractions/**
 
 jobs:
   test:
@@ -40,12 +41,12 @@ jobs:
 
       - name: Get Package Version 📌
         id: csproj
-        run: echo "version=$(dotnet msbuild src/BlazorLocalization.Extractor/BlazorLocalization.Extractor.csproj -getProperty:PackageVersion)" >> $GITHUB_OUTPUT
+        run: echo "version=$(dotnet msbuild src/BlazorLocalization.Extractor/BlazorLocalization.Extractor.csproj -getProperty:Version)" >> $GITHUB_OUTPUT
 
       - name: Fail if version not bumped ❌
         if: steps.released.outputs.version == steps.csproj.outputs.version
         run: |
-          echo "::error::PackageVersion ${{ steps.csproj.outputs.version }} matches latest release. Bump <PackageVersion> in the csproj."
+          echo "::error::Version ${{ steps.csproj.outputs.version }} matches latest release. Bump <Version> in the csproj."
           exit 1
 
       - name: Build .NET Project 🚧
